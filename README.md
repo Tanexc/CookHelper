@@ -1,11 +1,11 @@
 <h1 align="center">CookHelper</br>[🚧Work in Progress🚧]</h1>
 
 <p align="center">
-  <img alt="WebSockrts" src="https://img.shields.io/badge/Api%2021+-50f270?logo=websocket&logoColor=1cd3a2&style=for-the-badge"/></a>
-  <img alt="Http" src="https://img.shields.io/badge/Api%2021+-50f270?logo=http&logoColor=30d5c8&style=for-the-badge"/></a>
+  <img alt="WebSockets" src="https://img.shields.io/static/v1?message=Websockets&logo=websocket&logoColor=1cd3a2&style=for-the-badge"/></a>
+  <img alt="Http" src="https://img.shields.io/static/v1?message=Http&logo=http&logoColor=30d5c8&style=for-the-badge"/></a>
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-a503fc?logo=kotlin&logoColor=white&style=for-the-badge"/></a>
   <img alt="Ktor" src="https://img.shields.io/static/v1?style=for-the-badge&message=Ktor&color=4285F4&logo=Ktor&logoColor=E97450&label="/></a> 
-  <img alt="Koin" src="https://img.shields.io/static/v1?style=for-the-badge&message=Ktor&color=4285F4&logo=Koin&logoColor=F9B233&label="/></a> 
+  <img alt="Koin" src="https://img.shields.io/static/v1?style=for-the-badge&message=Koin&color=4285F4&logo=Koin&logoColor=F9B233&label="/></a> 
   <a href="https://github.com/tannec"><img alt="Profile" src="https://img.shields.io/badge/Github-Tannec-6495ed?logo=github&logoColor=white&style=for-the-badge"/></a> 
 </p>
 
