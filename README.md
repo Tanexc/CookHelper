@@ -10,7 +10,7 @@
 </p>
 
 <p align="">  
-CookHelper is an application that will allow you to cook a delicious dish from an existing recipe book or create your own to share it with the whole world!
+CookHelper is a cross-platform application that will allow you to cook a delicious dish from an existing recipe book or create your own to share it with the whole world!
 An endless recipe feed will keep you entertained, chat on the forum for cooking tips, and decorate your page with colorful posts to get a ton of likes! 
 In this repository you can find server part of our project.
 </p>
