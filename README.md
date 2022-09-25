@@ -16,15 +16,15 @@ In this repository you can find server part of our project.
 </p>
 
 ## Other parts of project
--Android application [CookHelper](https://github.com/t8rin/cookhelper) repository of [T8RIN](https://github.com/t8rin)
+- [Android application CookHelper](https://github.com/t8rin/cookhelper) repository of [T8RIN](https://github.com/t8rin)
 
 ## Tech stack
 
 - [Kotlin](https://kotlinlang.org/) based 
 
-- [Ktor](https://github.com/Kotlin/kotlinx.coroutines) that used to create the server
+- [Ktor](https://ktor.io/) that used to create the server
 
-- [Koin](https://dagger.dev/hilt/) for dependency injection.
+- [Koin](https://insert-koin.io/) for dependency injection.
 
 - Architecture
   - Repository Pattern
