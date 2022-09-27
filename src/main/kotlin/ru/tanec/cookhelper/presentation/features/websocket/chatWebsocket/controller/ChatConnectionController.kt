@@ -1,15 +1,12 @@
-package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.manager
+package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller
 
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
-import io.ktor.websocket.serialization.*
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.*
-import ru.tanec.cookhelper.domain.model.Attachment
 import ru.tanec.cookhelper.domain.model.Message
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
 
-class ChatConnectionManager(
+class ChatConnectionController(
     val repository: ChatConnectionRepository
 ) {
     fun connect(

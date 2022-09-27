@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository
+package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket
 
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -6,12 +6,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.domain.model.ChatReceiveObject
 import ru.tanec.cookhelper.domain.model.Message
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.manager.ChatConnectionManager
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 
 suspend fun chatWebsocket(
     session: DefaultWebSocketServerSession,
     incoming: ReceiveChannel<Frame>,
-    manager: ChatConnectionManager,
+    controller: ChatConnectionController,
     token: String? = null,
     chatId: Long? = null
 ) {
@@ -19,10 +19,10 @@ suspend fun chatWebsocket(
     //TODO: get user from token
     //  add messages to db
 
-    if (manager.connect(session, chatId) is State.Success) {
-        while (chatId?.let { manager.connected(session, it) } == true) {
+    if (controller.connect(session, chatId) is State.Success) {
+        while (chatId?.let { controller.connected(session, it) } == true) {
             val message = session.receiveDeserialized<ChatReceiveObject>()
-            manager.sendMessage(
+            controller.sendMessage(
                 session,
                 chatId,
                 Message(

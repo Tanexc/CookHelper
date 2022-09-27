@@ -7,17 +7,12 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import org.koin.ktor.ext.inject
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.manager.ChatConnectionManager
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.chatWebsocket
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.chatWebsocket
 
 fun Application.routes() {
     routing {
 
-        get("/" ) {
-            call.respondText("qweqweqwee")
-        }
-
-        // Static plugin. Try to access `/static/index.html`
         static("/static") {
             resources("static")
         }
@@ -31,7 +26,7 @@ fun Application.routes() {
         }
 
         webSocket("/chat/{id}") {
-            val manager: ChatConnectionManager by inject()
+            val manager: ChatConnectionController by inject()
             chatWebsocket(
                 this,
                 incoming,
