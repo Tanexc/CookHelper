@@ -1,6 +1,9 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val koin_version: String by project
+val ktorm_version: String by project
+val postgresql_driver_version: String by project
 
 plugins {
     application
@@ -44,7 +47,10 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets:$ktor_version")
 
     // dependency injection
-    val koin_version = "3.2.1"
     implementation("io.insert-koin:koin-core:$koin_version")
     implementation("io.insert-koin:koin-ktor:$koin_version")
+
+    //database
+    implementation("org.ktorm:ktorm-support-postgresql:$ktorm_version")
+    implementation("org.postgresql:postgresql:$postgresql_driver_version")
 }
