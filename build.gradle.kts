@@ -4,6 +4,7 @@ val logback_version: String by project
 val koin_version: String by project
 val ktorm_version: String by project
 val postgresql_driver_version: String by project
+val exposed_version: String by project
 
 plugins {
     application
@@ -53,4 +54,8 @@ dependencies {
     //database
     implementation("org.ktorm:ktorm-support-postgresql:$ktorm_version")
     implementation("org.postgresql:postgresql:$postgresql_driver_version")
+    implementation("org.ktorm:ktorm-core:$ktorm_version")
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
 }

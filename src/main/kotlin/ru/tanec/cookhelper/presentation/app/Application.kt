@@ -9,10 +9,12 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.plugins.configureRouting
 import ru.tanec.cookhelper.presentation.routing.routes
+import ru.tanec.cookhelper.core.db.factory.DatabaseFactory
 
 fun main() {
 
     embeddedServer(Netty) {
+        DatabaseFactory.init()
         configureAdministration()
         configureSockets()
         configureSerialization()
