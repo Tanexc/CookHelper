@@ -12,14 +12,12 @@ import ru.tanec.cookhelper.presentation.routing.routes
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory
 
 fun main() {
-
     embeddedServer(Netty) {
         DatabaseFactory.init()
         configureAdministration()
         configureSockets()
         configureSerialization()
         //configureHTTP()
-        //configureSecurity()
         configureRouting()
         configureDI()
         routes()

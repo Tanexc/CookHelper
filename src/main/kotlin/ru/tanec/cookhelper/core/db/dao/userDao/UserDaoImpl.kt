@@ -84,10 +84,10 @@ class UserDaoImpl : UserDao {
             .singleOrNull()
     }
 
-    override suspend fun editById(id: Long, user: User): User? = dbQuery {
+    override suspend fun editUser(user: User): User = dbQuery {
         Users
-            .update({ Users.id eq id }) {
-                it[Users.id] = user.id
+            .update({ Users.id eq user.id }) {
+                it[id] = user.id
                 it[name] = user.name
                 it[surname] = user.surname
                 it[nickname] = user.nickname
@@ -120,6 +120,21 @@ class UserDaoImpl : UserDao {
             .deleteWhere { Users.id eq id }
 
         true
+    }
+
+    override suspend fun getByLogin(login: String): MutableList<User> = dbQuery {
+        Users
+            .select {(Users.nickname eq login) or (Users.email eq login) }
+            .map(::resultRowToUser)
+            .toMutableList()
+    }
+
+    override suspend fun getByToken(token: String): User? = dbQuery {
+        Users
+            .select { Users.token eq token }
+            .map(::resultRowToUser)
+            .toMutableList()
+            .singleOrNull()
     }
 }
 

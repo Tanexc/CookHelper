@@ -14,17 +14,17 @@ fun Application.configureSecurity() {
     
     authentication {
             jwt {
-                val jwtAudience = this@configureSecurity.environment.config.property("jwt.audience").getString()
-                realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
+                val secret = this@configureSecurity.environment.config.property("jwt.secret").getString()
+                val issuer = this@configureSecurity.environment.config.property("jwt.issuer").getString()
+                val audience = this@configureSecurity.environment.config.property("jwt.audience").getString()
                 verifier(
                     JWT
                         .require(Algorithm.HMAC256("secret"))
-                        .withAudience(jwtAudience)
-                        .withIssuer(this@configureSecurity.environment.config.property("jwt.domain").getString())
+                        .withAudience(audience)
                         .build()
                 )
                 validate { credential ->
-                    if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+                    if (credential.payload.audience.contains(audience)) JWTPrincipal(credential.payload) else null
                 }
             }
         }

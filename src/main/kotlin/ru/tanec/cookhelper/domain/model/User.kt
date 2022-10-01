@@ -1,37 +1,51 @@
 package ru.tanec.cookhelper.domain.model
 
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 @Serializable
 data class User(
     val id: Long,
 
-    val name: String,
-    val surname: String,
-    val nickname: String,
-    val email: String,
-    val password: String,
+    var name: String,
+    var surname: String,
+    var nickname: String,
+    var email: String,
+    var password: String,
 
-    val avatar: String,
-    val lastSeen: Long,
-    val status: String,
+    var avatar: String = "",
+    var status: String = "",
+    var lastSeen: Long,
 
-    val deleted: Boolean,
-    val verified: Boolean,
-    val code: String,
-    val recoveryCode: String,
-    val token: String,
+    var deleted: Boolean = false,
+    var verified: Boolean = false,
+    var code: String = "",
+    var recoveryCode: String = "",
+    var token: String = "",
 
-    val fridge: MutableList<Int>,
-    val topics: MutableList<Int>,
-    val starredRecipes: MutableList<Int>,
-    val bannedRecipes: MutableList<Int>,
-    val starredIngredients: MutableList<Int>,
-    val bannedIngredients: MutableList<Int>,
-    val chats: MutableList<Int>,
+    val fridge: MutableList<Int> = mutableListOf(),
+    val topics: MutableList<Int> = mutableListOf(),
+    val starredRecipes: MutableList<Int> = mutableListOf(),
+    val bannedRecipes: MutableList<Int> = mutableListOf(),
+    val starredIngredients: MutableList<Int> = mutableListOf(),
+    val bannedIngredients: MutableList<Int> = mutableListOf(),
+    val chats: MutableList<Int> = mutableListOf(),
 
-    val userRecipes: MutableList<Int>,
-    val userPosts: MutableList<Int>
+    val userRecipes: MutableList<Int> = mutableListOf(),
+    val userPosts: MutableList<Int> = mutableListOf()
 
 
-)
+) {
+    fun generateRecoveryCode() {
+        recoveryCode = mutableListOf(
+            Random.nextInt(0, 10),
+            Random.nextInt(0, 10),
+            Random.nextInt(0, 10),
+            Random.nextInt(0, 10),
+            Random.nextInt(0, 10),
+            Random.nextInt(0, 10)
+        ).joinToString()
+    }
+
+    fun checkRecoveryCode(input: String) = recoveryCode == input
+}
