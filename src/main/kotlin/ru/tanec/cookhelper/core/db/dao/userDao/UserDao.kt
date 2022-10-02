@@ -1,6 +1,5 @@
 package ru.tanec.cookhelper.core.db.dao.userDao
 
-import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.domain.model.User
 
 interface UserDao {

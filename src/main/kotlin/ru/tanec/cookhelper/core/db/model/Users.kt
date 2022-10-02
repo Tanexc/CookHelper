@@ -29,6 +29,9 @@ object Users: Table() {
     val bannedIngredients = text("bannedIngredients")
     val chats = text("chats")
 
+    val subscribers = text("subscribers")
+    val subscribes = text("subscribes")
     val userRecipes = text("userRecipes")
     val userPosts = text("userPosts")
+    val registrationTimestamp = long("registrationTimestamp")
 }

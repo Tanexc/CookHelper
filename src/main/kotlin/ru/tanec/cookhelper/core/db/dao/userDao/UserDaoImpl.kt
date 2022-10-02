@@ -1,8 +1,6 @@
 package ru.tanec.cookhelper.core.db.dao.userDao
 
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.core.db.model.Users
 import ru.tanec.cookhelper.domain.model.User
@@ -16,7 +14,7 @@ class UserDaoImpl : UserDao {
         nickname = row[Users.nickname],
         email = row[Users.email],
         password = row[Users.password],
-        avatar = row[Users.avatar],
+        avatar = row[Users.avatar].split(" ").map { it.toLong() }.toMutableList(),
         lastSeen = row[Users.lastSeen],
         status = row[Users.status],
         deleted = row[Users.deleted],
@@ -25,15 +23,18 @@ class UserDaoImpl : UserDao {
         recoveryCode = row[Users.recoveryCode],
         token = row[Users.token],
 
-        fridge = row[Users.fridge].split(" ").map { it.toInt() }.toMutableList(),
-        topics = row[Users.topics].split(" ").map { it.toInt() }.toMutableList(),
-        starredRecipes = row[Users.starredRecipes].split(" ").map { it.toInt() }.toMutableList(),
-        bannedRecipes = row[Users.bannedRecipes].split(" ").map { it.toInt() }.toMutableList(),
-        starredIngredients = row[Users.starredIngredients].split(" ").map { it.toInt() }.toMutableList(),
-        bannedIngredients = row[Users.bannedIngredients].split(" ").map { it.toInt() }.toMutableList(),
-        chats = row[Users.chats].split(" ").map { it.toInt() }.toMutableList(),
-        userRecipes = row[Users.userRecipes].split(" ").map { it.toInt() }.toMutableList(),
-        userPosts = row[Users.userPosts].split(" ").map { it.toInt() }.toMutableList()
+        fridge = row[Users.fridge].split(" ").map { it.toLong() }.toMutableList(),
+        topics = row[Users.topics].split(" ").map { it.toLong() }.toMutableList(),
+        starredRecipes = row[Users.starredRecipes].split(" ").map { it.toLong() }.toMutableList(),
+        bannedRecipes = row[Users.bannedRecipes].split(" ").map { it.toLong() }.toMutableList(),
+        starredIngredients = row[Users.starredIngredients].split(" ").map { it.toLong() }.toMutableList(),
+        bannedIngredients = row[Users.bannedIngredients].split(" ").map { it.toLong() }.toMutableList(),
+        chats = row[Users.chats].split(" ").map { it.toLong() }.toMutableList(),
+        userRecipes = row[Users.userRecipes].split(" ").map { it.toLong() }.toMutableList(),
+        userPosts = row[Users.userPosts].split(" ").map { it.toLong() }.toMutableList(),
+        subscribes = row[Users.subscribes].split(" ").map { it.toLong() }.toMutableList(),
+        subscribers = row[Users.subscribers].split(" ").map { it.toLong() }.toMutableList(),
+        registrationTimestamp = row[Users.registrationTimestamp]
 
     )
 
@@ -59,7 +60,7 @@ class UserDaoImpl : UserDao {
                 it[nickname] = user.nickname
                 it[email] = user.email
                 it[password] = user.password
-                it[avatar] = user.avatar
+                it[avatar] = user.avatar.joinToString(" ")
                 it[lastSeen] = user.lastSeen
                 it[status] = user.status
                 it[deleted] = user.deleted
@@ -76,10 +77,13 @@ class UserDaoImpl : UserDao {
                 it[chats] = user.chats.joinToString(" ")
                 it[userRecipes] = user.userRecipes.joinToString(" ")
                 it[userPosts] = user.userPosts.joinToString(" ")
+                it[subscribes] = user.subscribes.joinToString(" ")
+                it[subscribers] = user.subscribers.joinToString(" ")
+                it[registrationTimestamp] = user.registrationTimestamp!!
             }
 
         Users
-            .select {Users.nickname eq user.nickname}
+            .select { Users.nickname eq user.nickname }
             .map(::resultRowToUser)
             .singleOrNull()
     }
@@ -93,7 +97,7 @@ class UserDaoImpl : UserDao {
                 it[nickname] = user.nickname
                 it[email] = user.email
                 it[password] = user.password
-                it[avatar] = user.avatar
+                it[avatar] = user.avatar.joinToString(" ")
                 it[lastSeen] = user.lastSeen
                 it[status] = user.status
                 it[deleted] = user.deleted
@@ -110,6 +114,8 @@ class UserDaoImpl : UserDao {
                 it[chats] = user.chats.joinToString(" ")
                 it[userRecipes] = user.userRecipes.joinToString(" ")
                 it[userPosts] = user.userPosts.joinToString(" ")
+                it[subscribes] = user.subscribes.joinToString(" ")
+                it[subscribers] = user.subscribers.joinToString(" ")
             }
         user
     }
@@ -124,7 +130,7 @@ class UserDaoImpl : UserDao {
 
     override suspend fun getByLogin(login: String): MutableList<User> = dbQuery {
         Users
-            .select {(Users.nickname eq login) or (Users.email eq login) }
+            .select { (Users.nickname eq login) or (Users.email eq login) }
             .map(::resultRowToUser)
             .toMutableList()
     }
@@ -137,5 +143,3 @@ class UserDaoImpl : UserDao {
             .singleOrNull()
     }
 }
-
-val userDao: UserDao = UserDaoImpl()

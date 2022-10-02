@@ -11,7 +11,6 @@ import ru.tanec.cookhelper.core.utils.ValidatorImpl
 import ru.tanec.cookhelper.domain.model.User
 import ru.tanec.cookhelper.domain.repository.UserRepository
 import ru.tanec.cookhelper.domain.utls.Validator.*
-import kotlin.random.Random
 
 
 class UserRepositoryImpl(
@@ -42,11 +41,11 @@ class UserRepositoryImpl(
                     nickname = nickname,
                     email = email,
                     password = hashTool.getHash(password),
-                    lastSeen = getTimeMillis()
+                    registrationTimestamp = getTimeMillis()
                 )
             )
 
-            if (user != null) emit(State.Success(user))
+            if (user != null) emit(State.Success(user.commonInfo()))
 
         } catch (e: Exception) {
             emit(State.Error(message = e.message))
@@ -59,9 +58,8 @@ class UserRepositoryImpl(
         var user = dao.getByLogin(login).singleOrNull()
         if (user == null) emit(State.Error(message = "user not found"))
         else if (hashTool.checkHash(password, user.password)) {
-
             user = action(user)
-            emit(State.Success(user))
+            emit(State.Success(user.privateInfo()))
         }
 
     }
@@ -70,44 +68,61 @@ class UserRepositoryImpl(
         token: String,
         avatarId: Long
     ): Flow<State<User?>> = flow {
-        val user = dao.getByToken(token)
+        emit(State.Processing())
+        var user = dao.getByToken(token)
+        if (user == null) emit(State.Expired(message="token expired"))
+        else {user.avatar.add(avatarId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo()))}
     }
 
-    override fun deleteAvatar(token: String, avatarIndex: Int): Flow<State<User?>> {
-        TODO("Not yet implemented")
+    override fun deleteAvatar(token: String, avatarIndex: Int): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        var user = dao.getByToken(token)
+        if (user == null) emit(State.Expired(message="token expired"))
+        else {user.avatar.removeAt(avatarIndex); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo()))}
     }
 
-    override suspend fun action(user: User): User {
-        user.lastSeen = getTimeMillis()
-        dao.editUser(user)
-        return user
+
+    override fun getUser(token: String, id: Long): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        var user = dao.getByToken(token)
+        val requestedUser = dao.getById(id)
+        if (user == null) emit(State.Expired(message="token expired"))
+        else if (requestedUser == null) emit(State.Error(message="user not found"))
+        else if (requestedUser.id == user.id) emit(State.Success(user.privateInfo())) else emit(State.Success(requestedUser.commonInfo()))
+
     }
 
-    override fun getUser(token: String, id: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
+    override fun getAll(): Flow<State<MutableList<User>>> = flow {
+        emit(State.Processing())
+        try {
+            val userList = dao.getAll().map{it.smallInfo()}.toMutableList()
+            emit(State.Success(data=userList))
+        } catch (e: Exception) {emit(State.Error(message=e.message))}
     }
 
-    override fun getAll(): Flow<State<User?>> {
-        TODO("Not yet implemented")
+    override fun addRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        var user = dao.getByToken(token)
+        if (user == null) emit(State.Expired(message="token expired"))
+        else {user.userRecipes.add(recipeId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo()))}
     }
 
-    override fun addRecipe(token: String, recipeId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteRecipe(token: String, recipeId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
+    override fun deleteRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        var user = dao.getByToken(token)
+        if (user == null) emit(State.Expired(message="token expired"))
+        else {user.userRecipes.remove(recipeId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo()))}
     }
 
     override fun addPost(token: String, postId: Long): Flow<State<User?>> {
         TODO("Not yet implemented")
     }
 
-    override fun addProducts(token: String, products: MutableList<Int>): Flow<State<User?>> {
+    override fun addProducts(token: String, products: MutableList<Long>): Flow<State<User?>> {
         TODO("Not yet implemented")
     }
 
-    override fun deleteProducts(token: String, products: MutableList<Int>): Flow<State<User?>> {
+    override fun deleteProducts(token: String, products: MutableList<Long>): Flow<State<User?>> {
         TODO("Not yet implemented")
     }
 
@@ -127,7 +142,7 @@ class UserRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun addSubscriber(token: String, userId: Long): Flow<State<User?>> {
+    override fun addSubscriber(id: Long, userId: Long): Flow<State<User?>> {
         TODO("Not yet implemented")
     }
 
@@ -186,5 +201,10 @@ class UserRepositoryImpl(
             is Validity.Invalid -> false
         }
 
+    override suspend fun action(user: User): User {
+        user.lastSeen = getTimeMillis()
+        dao.editUser(user)
+        return user
+    }
 
 }
