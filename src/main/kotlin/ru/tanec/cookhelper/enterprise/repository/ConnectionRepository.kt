@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.domain.repository
+package ru.tanec.cookhelper.enterprise.repository
 
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State

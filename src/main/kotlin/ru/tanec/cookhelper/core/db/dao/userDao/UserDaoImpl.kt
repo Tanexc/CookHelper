@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.core.db.dao.userDao
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.core.db.model.Users
-import ru.tanec.cookhelper.domain.model.User
+import ru.tanec.cookhelper.enterprise.model.User
 
 class UserDaoImpl : UserDao {
 

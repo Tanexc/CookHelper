@@ -1,7 +1,6 @@
-package ru.tanec.cookhelper.domain.model
+package ru.tanec.cookhelper.enterprise.model
 
 import kotlinx.serialization.Serializable
-import java.sql.Timestamp
 
 @Serializable
 data class Message(

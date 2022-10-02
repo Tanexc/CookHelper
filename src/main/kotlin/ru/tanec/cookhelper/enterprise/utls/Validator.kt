@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.domain.utls
+package ru.tanec.cookhelper.enterprise.utls
 
 interface Validator {
     fun isValidPassword(password: String): Validity

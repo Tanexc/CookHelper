@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.domain.model
+package ru.tanec.cookhelper.enterprise.model
 
 import kotlinx.serialization.Serializable
 

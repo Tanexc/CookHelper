@@ -4,8 +4,8 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.domain.model.ChatReceiveObject
-import ru.tanec.cookhelper.domain.model.Message
+import ru.tanec.cookhelper.enterprise.model.ChatReceiveObject
+import ru.tanec.cookhelper.enterprise.model.Message
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 
 suspend fun chatWebsocket(

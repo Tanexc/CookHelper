@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.domain.model
+package ru.tanec.cookhelper.enterprise.model
 
 data class ChatResponseObject(
     val message: String,

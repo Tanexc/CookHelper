@@ -1,11 +1,11 @@
-package ru.tanec.cookhelper.domain.repository
+package ru.tanec.cookhelper.enterprise.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.db.dao.userDao.UserDao
 import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.core.utils.ValidatorImpl
-import ru.tanec.cookhelper.domain.model.User
+import ru.tanec.cookhelper.enterprise.model.User
 
 interface UserRepository {
     val dao: UserDao
@@ -40,7 +40,7 @@ interface UserRepository {
         id: Long
     ): Flow<State<User?>>
 
-    fun getAll(): Flow<State<User?>>
+    fun getAll(): Flow<State<MutableList<User>>>
 
     fun addRecipe(
         token: String,
@@ -59,12 +59,12 @@ interface UserRepository {
 
     fun addProducts(
         token: String,
-        products: MutableList<Int>
+        products: MutableList<Long>
     ): Flow<State<User?>>
 
     fun deleteProducts(
         token: String,
-        products: MutableList<Int>
+        products: MutableList<Long>
     ): Flow<State<User?>>
 
     fun starRecipe(
@@ -88,7 +88,7 @@ interface UserRepository {
     ): Flow<State<User?>>
 
     fun addSubscriber(
-        token: String,
+        id: Long,
         userId: Long
     ): Flow<State<User?>>
 

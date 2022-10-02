@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.contro
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.*
-import ru.tanec.cookhelper.domain.model.Message
+import ru.tanec.cookhelper.enterprise.model.Message
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
 
 class ChatConnectionController(

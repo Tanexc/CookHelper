@@ -8,9 +8,9 @@ import ru.tanec.cookhelper.core.db.dao.userDao.UserDao
 import ru.tanec.cookhelper.core.db.dao.userDao.UserDaoImpl
 import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.core.utils.ValidatorImpl
-import ru.tanec.cookhelper.domain.model.User
-import ru.tanec.cookhelper.domain.repository.UserRepository
-import ru.tanec.cookhelper.domain.utls.Validator.*
+import ru.tanec.cookhelper.enterprise.model.User
+import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.utls.Validator.*
 
 
 class UserRepositoryImpl(
