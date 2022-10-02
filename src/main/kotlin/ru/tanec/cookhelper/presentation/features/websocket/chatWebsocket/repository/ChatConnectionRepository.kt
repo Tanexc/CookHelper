@@ -1,9 +1,8 @@
 package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository
 
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.domain.repository.ConnectionRepository
+import ru.tanec.cookhelper.enterprise.repository.ConnectionRepository
 
 
 class ChatConnectionRepository(
