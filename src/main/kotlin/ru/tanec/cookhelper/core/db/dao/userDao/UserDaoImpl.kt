@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.core.db.dao.userDao
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.core.db.model.Users
-import ru.tanec.cookhelper.enterprise.model.User
+import ru.tanec.cookhelper.enterprise.model.entity_data.User
 
 class UserDaoImpl : UserDao {
 
@@ -14,7 +14,7 @@ class UserDaoImpl : UserDao {
         nickname = row[Users.nickname],
         email = row[Users.email],
         password = row[Users.password],
-        avatar = row[Users.avatar].split(" ").map { it.toLong() }.toMutableList(),
+        avatar = row[Users.avatar].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
         lastSeen = row[Users.lastSeen],
         status = row[Users.status],
         deleted = row[Users.deleted],
@@ -23,17 +23,17 @@ class UserDaoImpl : UserDao {
         recoveryCode = row[Users.recoveryCode],
         token = row[Users.token],
 
-        fridge = row[Users.fridge].split(" ").map { it.toLong() }.toMutableList(),
-        topics = row[Users.topics].split(" ").map { it.toLong() }.toMutableList(),
-        starredRecipes = row[Users.starredRecipes].split(" ").map { it.toLong() }.toMutableList(),
-        bannedRecipes = row[Users.bannedRecipes].split(" ").map { it.toLong() }.toMutableList(),
-        starredIngredients = row[Users.starredIngredients].split(" ").map { it.toLong() }.toMutableList(),
-        bannedIngredients = row[Users.bannedIngredients].split(" ").map { it.toLong() }.toMutableList(),
-        chats = row[Users.chats].split(" ").map { it.toLong() }.toMutableList(),
-        userRecipes = row[Users.userRecipes].split(" ").map { it.toLong() }.toMutableList(),
-        userPosts = row[Users.userPosts].split(" ").map { it.toLong() }.toMutableList(),
-        subscribes = row[Users.subscribes].split(" ").map { it.toLong() }.toMutableList(),
-        subscribers = row[Users.subscribers].split(" ").map { it.toLong() }.toMutableList(),
+        fridge = row[Users.fridge].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        topics = row[Users.topics].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        starredRecipes = row[Users.starredRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        bannedRecipes = row[Users.bannedRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        starredIngredients = row[Users.starredIngredients].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        bannedIngredients = row[Users.bannedIngredients].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        chats = row[Users.chats].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        userRecipes = row[Users.userRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        userPosts = row[Users.userPosts].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        subscribes = row[Users.subscribes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        subscribers = row[Users.subscribers].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
         registrationTimestamp = row[Users.registrationTimestamp]
 
     )
@@ -59,7 +59,7 @@ class UserDaoImpl : UserDao {
                 it[surname] = user.surname
                 it[nickname] = user.nickname
                 it[email] = user.email
-                it[password] = user.password
+                it[password] = user.getPsw()
                 it[avatar] = user.avatar.joinToString(" ")
                 it[lastSeen] = user.lastSeen
                 it[status] = user.status
@@ -96,7 +96,7 @@ class UserDaoImpl : UserDao {
                 it[surname] = user.surname
                 it[nickname] = user.nickname
                 it[email] = user.email
-                it[password] = user.password
+                it[password] = user.getPsw()
                 it[avatar] = user.avatar.joinToString(" ")
                 it[lastSeen] = user.lastSeen
                 it[status] = user.status

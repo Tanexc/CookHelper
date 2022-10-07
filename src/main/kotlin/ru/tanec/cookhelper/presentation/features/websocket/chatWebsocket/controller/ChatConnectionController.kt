@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.contro
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.*
-import ru.tanec.cookhelper.enterprise.model.Message
+import ru.tanec.cookhelper.enterprise.model.entity_data.Message
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
 
 class ChatConnectionController(
@@ -15,10 +15,10 @@ class ChatConnectionController(
     ): State<out Any> {
 
         return if (chatId == null) {
-            State.Error(REQUIRED("id"))
+            State.Error(message=REQUIRED("id"), status=399)
         } else {
             repository.add(chatId, session)
-            State.Success()
+            State.Success(status=300)
         }
 
     }
@@ -35,11 +35,11 @@ class ChatConnectionController(
                     r.sendSerialized(message)
                 }
 
-                return State.Success(SUCCESS)
+                return State.Success(status=300)
 
             }
 
-            else -> {return State.Error()}
+            else -> {return State.Error(message="some error occurred", status = 399)}
         }
 
     }
@@ -49,10 +49,10 @@ class ChatConnectionController(
         chatId: Long?
     ): State<out Any> {
         return if (chatId == null) {
-            State.Error(REQUIRED("id"))
+            State.Error(message=REQUIRED("id"), status = 399)
         } else {
             repository.del(chatId, session)
-            State.Success(CLOSED)
+            State.Success(status=305)
         }
     }
 

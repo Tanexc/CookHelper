@@ -1,11 +1,11 @@
 package ru.tanec.cookhelper.core.utils
 
-import de.nycode.bcrypt.*
+import de.nycode.bcrypt.hash
+import de.nycode.bcrypt.verify
+
 
 object HashTool {
-    fun getHash(input: String): String = hash(input, 256).toString()
+    fun getHash(password: String) = hash(password, 8)
 
-
-    fun checkHash(input: String, hash: String): Boolean =
-        verify(input, hash.toByteArray())
+    fun verifyHash(password: String, expected: ByteArray) = verify(password, expected)
 }

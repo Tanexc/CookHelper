@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model
+package ru.tanec.cookhelper.enterprise.model.entity_data
 
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -11,7 +11,7 @@ data class User(
     var surname: String = "",
     var nickname: String = "",
     var email: String = "",
-    var password: String = "",
+    var password: ByteArray = byteArrayOf(),
 
     var status: String = "",
     var lastSeen: Long = 0,
@@ -41,6 +41,8 @@ data class User(
 
 
 ) {
+
+    fun getPsw() = password
     fun generateRecoveryCode() {
         recoveryCode = mutableListOf(
             Random.nextInt(0, 10),

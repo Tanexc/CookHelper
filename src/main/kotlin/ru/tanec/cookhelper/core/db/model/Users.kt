@@ -9,7 +9,7 @@ object Users: Table() {
     val surname = text("surname")
     val nickname = text("nickname").uniqueIndex()
     val email = text("email").uniqueIndex()
-    val password = text("password")
+    val password = binary("password", length=256)
 
     val avatar = text("avatar")
     val lastSeen = long("lastSeen")

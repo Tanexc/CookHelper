@@ -1,6 +1,6 @@
 package ru.tanec.cookhelper.core.db.dao.userDao
 
-import ru.tanec.cookhelper.enterprise.model.User
+import ru.tanec.cookhelper.enterprise.model.entity_data.User
 
 interface UserDao {
     suspend fun getAll(): MutableList<User>

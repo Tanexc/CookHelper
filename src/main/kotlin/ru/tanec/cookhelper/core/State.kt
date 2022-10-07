@@ -16,7 +16,7 @@ sealed class State<T>(
     class Interrupted<T>(data: T? = null, message: String = "interrupted", status: Int) :
         State<T>(data = data, message = message, status = status)
 
-    class Processing<T>(data: T? = null, message: String = "processing", status: Int) :
+    class Processing<T>(data: T? = null, message: String = "processing", status: Int = 0) :
         State<T>(data = data, message = message, status = status)
 
 

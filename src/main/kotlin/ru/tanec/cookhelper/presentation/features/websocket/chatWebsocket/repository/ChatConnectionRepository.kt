@@ -29,7 +29,7 @@ class ChatConnectionRepository(
         if (data[unit] == null) {
             data[unit] = mutableListOf()
         }
-        return State.Success(data = data[unit])
+        return State.Success(data = data[unit], status=300)
     }
 
 }
