@@ -5,7 +5,7 @@ import de.nycode.bcrypt.verify
 
 
 object HashTool {
-    fun getHash(password: String) = hash(password, 8)
+    fun getHash(password: String) = hash(password, 15)
 
     fun verifyHash(password: String, expected: ByteArray) = verify(password, expected)
 }

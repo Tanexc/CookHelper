@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model.receive_data.userApi
+package ru.tanec.cookhelper.enterprise.model.receive.userApi
 
 import io.ktor.http.*
 import kotlinx.serialization.Serializable

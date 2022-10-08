@@ -5,7 +5,7 @@ import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.db.dao.userDao.UserDao
 import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.core.utils.ValidatorImpl
-import ru.tanec.cookhelper.enterprise.model.entity_data.User
+import ru.tanec.cookhelper.enterprise.model.entity.User
 
 interface UserRepository {
     val dao: UserDao

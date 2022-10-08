@@ -3,11 +3,10 @@ package ru.tanec.cookhelper.presentation.features.api.userApi.use_case
 
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.constants.MISSED
-import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
 import ru.tanec.cookhelper.core.utils.allNotNull
-import ru.tanec.cookhelper.enterprise.model.entity_data.User
-import ru.tanec.cookhelper.enterprise.model.receive_data.userApi.RegistrationData
-import ru.tanec.cookhelper.enterprise.model.response_data.ApiResponse
+import ru.tanec.cookhelper.enterprise.model.entity.User
+import ru.tanec.cookhelper.enterprise.model.receive.userApi.RegistrationData
+import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.UserRepository
 
 

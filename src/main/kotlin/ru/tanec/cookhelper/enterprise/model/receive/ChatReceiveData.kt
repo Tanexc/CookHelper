@@ -1,7 +1,7 @@
-package ru.tanec.cookhelper.enterprise.model.receive_data
+package ru.tanec.cookhelper.enterprise.model.receive
 
 import kotlinx.serialization.Serializable
-import ru.tanec.cookhelper.enterprise.model.entity_data.Attachment
+import ru.tanec.cookhelper.enterprise.model.entity.Attachment
 
 @Serializable
 data class ChatReceiveData(

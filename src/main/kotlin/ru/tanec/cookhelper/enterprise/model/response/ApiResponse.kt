@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model.response_data
+package ru.tanec.cookhelper.enterprise.model.response
 
 import kotlinx.serialization.Serializable
 

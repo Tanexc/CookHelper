@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model.entity_data
+package ru.tanec.cookhelper.enterprise.model.entity
 
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -17,7 +17,7 @@ data class User(
     var lastSeen: Long = 0,
 
     var deleted: Boolean = false,
-    var verified: Boolean = false,
+    var verified: Boolean = true,
     var code: String = "",
     var recoveryCode: String = "",
     var token: String = "",

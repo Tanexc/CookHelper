@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model.entity_data
+package ru.tanec.cookhelper.enterprise.model.entity
 
 import kotlinx.serialization.Serializable
 
