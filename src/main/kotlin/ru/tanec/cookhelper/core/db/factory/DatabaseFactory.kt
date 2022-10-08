@@ -5,6 +5,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import ru.tanec.cookhelper.core.db.model.Recipes
 import ru.tanec.cookhelper.core.db.model.Users
 
 object DatabaseFactory {
@@ -14,7 +15,7 @@ object DatabaseFactory {
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
             SchemaUtils.create(Users)
-
+            SchemaUtils.create(Recipes)
         }
     }
 
