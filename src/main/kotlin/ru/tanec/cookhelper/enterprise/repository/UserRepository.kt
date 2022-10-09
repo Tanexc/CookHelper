@@ -26,7 +26,7 @@ interface UserRepository {
 
     fun addAvatar(
         token: String,
-        avatarId: Long
+        avatarPath: String
     ): Flow<State<User?>>
 
     fun deleteAvatar(
@@ -125,4 +125,6 @@ interface UserRepository {
     ): Boolean
 
     suspend fun action(user: User): User
+
+    suspend fun getByToken(token: String): Flow<State<User?>>
 }

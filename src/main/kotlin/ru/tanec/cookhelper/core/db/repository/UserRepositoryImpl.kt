@@ -75,13 +75,13 @@ class UserRepositoryImpl(
 
     override fun addAvatar(
         token: String,
-        avatarId: Long
+        avatarPath: String
     ): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
         if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.EXCEPTION))
         else {
-            user.avatar.add(avatarId); user = action(user); dao.editUser(user); emit(
+            user.avatar.add(avatarPath); user = action(user); dao.editUser(user); emit(
                 State.Success(
                     user.privateInfo(),
                     status = UserStatus.SUCCESS
@@ -247,6 +247,13 @@ class UserRepositoryImpl(
         user.lastSeen = getTimeMillis()
         dao.editUser(user)
         return user
+    }
+
+    override suspend fun getByToken(token: String): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        val user = dao.getByToken(token)
+        if (user != null) emit(State.Success(user, status = UserStatus.SUCCESS))
+        else emit(State.Error(status=UserStatus.USER_NOT_FOUND))
     }
 
 }

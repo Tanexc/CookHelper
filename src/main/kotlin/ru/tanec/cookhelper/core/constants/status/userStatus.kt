@@ -1,6 +1,7 @@
 package ru.tanec.cookhelper.core.constants.status
 
 object UserStatus {
+
     const val SUCCESS: Int = 100
     const val EXCEPTION: Int = 199
     const val USER_NOT_FOUND: Int = 101
@@ -13,4 +14,5 @@ object UserStatus {
     const val EMAIL_REJECTED: Int = 108
     const val PASSWORD_REJECTED: Int = 109
     const val TOKEN_EXPIRED: Int = 110
+    const val UPLOAD_FAILED: Int = 111
 }

@@ -14,7 +14,7 @@ class UserDaoImpl : UserDao {
         nickname = row[Users.nickname],
         email = row[Users.email],
         password = row[Users.password],
-        avatar = row[Users.avatar].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        avatar = row[Users.avatar].split(" ").toMutableList(),
         lastSeen = row[Users.lastSeen],
         status = row[Users.status],
         deleted = row[Users.deleted],

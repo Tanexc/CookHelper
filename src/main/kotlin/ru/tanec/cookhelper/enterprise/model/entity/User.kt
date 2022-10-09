@@ -22,7 +22,7 @@ data class User(
     var recoveryCode: String = "",
     var token: String = "",
 
-    var avatar: MutableList<Long> = mutableListOf(),
+    var avatar: MutableList<String> = mutableListOf(),
     val fridge: MutableList<Long> = mutableListOf(),
     val topics: MutableList<Long> = mutableListOf(),
     val starredRecipes: MutableList<Long> = mutableListOf(),

@@ -18,18 +18,12 @@ fun Application.routes() {
 
         userApiRoutes(this, userRepository)
 
-        get("/") {  }
-
         static("/static") {
             resources("static")
         }
 
         webSocket("/messenger/{token}") {
             val token = call.parameters["token"]
-        }
-
-        webSocket("/w") {
-            send("sdvsdvsdv")
         }
 
         webSocket("/chat/{id}") {
