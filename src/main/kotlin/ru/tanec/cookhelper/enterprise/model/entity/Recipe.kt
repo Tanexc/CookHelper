@@ -9,6 +9,7 @@ data class Recipe(
     val cookSteps: List<String>,
     val time: Long,
     val ingredients: List<Long>,
+    val category: Long,
 
     val proteins: Double,
     val carbohydrates: Double,

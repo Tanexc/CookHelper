@@ -30,29 +30,25 @@ class UserRepositoryImpl(
     ): Flow<State<User?>> = flow {
         emit(State.Processing())
 
-            if (!nicknameAccessibility(nickname)) throw Exception("nickname rejected")
-            if (!emailAccessibility(email)) throw Exception("login rejected")
-            if (!validatePassword(password)) throw Exception("invalid password")
+        if (!nicknameAccessibility(nickname)) throw Exception("nickname rejected")
+        if (!emailAccessibility(email)) throw Exception("login rejected")
+        if (!validatePassword(password)) throw Exception("invalid password")
 
 
-
-
-
-            val user = dao.addNew(
-                User(
-                    id = 0,
-                    name = name,
-                    surname = surname,
-                    nickname = nickname,
-                    email = email,
-                    password=getHash(password),
-                    registrationTimestamp = getTimeMillis()
-                )
+        val user = dao.addNew(
+            User(
+                id = 0,
+                name = name,
+                surname = surname,
+                nickname = nickname,
+                email = email,
+                password = getHash(password),
+                registrationTimestamp = getTimeMillis()
             )
+        )
 
 
-            if (user != null) emit(State.Success(user.commonInfo(), status = SUCCESS))
-
+        if (user != null) emit(State.Success(user.commonInfo(), status = UserStatus.SUCCESS))
 
 
     }
@@ -63,17 +59,17 @@ class UserRepositoryImpl(
 
         emit(State.Processing())
 
-        if (user == null) emit(State.Error(status=EXCEPTION))
+        if (user == null) emit(State.Error(status = UserStatus.EXCEPTION))
         else if (hashTool.verifyHash(password, user.password)) {
             if (user.token == "") user.token = generateToken(
                 user.name,
                 user.surname,
-                user.registrationTimestamp?:0L,
+                user.registrationTimestamp ?: 0L,
                 user.password.toString()
             )
             user = action(user)
-            emit(State.Success(user.privateInfo(), status=SUCCESS))
-        } else emit(State.Error(status=USER_NOT_FOUND))
+            emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+        } else emit(State.Error(status = UserStatus.USER_NOT_FOUND))
 
     }
 
@@ -83,48 +79,76 @@ class UserRepositoryImpl(
     ): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message="token expired", status=EXCEPTION))
-        else {user.avatar.add(avatarId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status=SUCCESS))}
+        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.EXCEPTION))
+        else {
+            user.avatar.add(avatarId); user = action(user); dao.editUser(user); emit(
+                State.Success(
+                    user.privateInfo(),
+                    status = UserStatus.SUCCESS
+                )
+            )
+        }
     }
 
     override fun deleteAvatar(token: String, avatarIndex: Int): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message="token expired", status=TOKEN_EXPIRED))
-        else {user.avatar.removeAt(avatarIndex); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status=SUCCESS))}
+        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        else {
+            user.avatar.removeAt(avatarIndex); user =
+                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+        }
     }
 
 
     override fun getUser(token: String, id: Long): Flow<State<User?>> = flow {
         emit(State.Processing())
-        var user = dao.getByToken(token)
+        val user = dao.getByToken(token)
         val requestedUser = dao.getById(id)
-        if (user == null) emit(State.Expired(message="token expired", status=TOKEN_EXPIRED))
-        else if (requestedUser == null) emit(State.Error(message="user not found", status=USER_NOT_FOUND))
-        else if (requestedUser.id == user.id) emit(State.Success(user.privateInfo(), status=SUCCESS)) else emit(State.Success(requestedUser.commonInfo(), status= SUCCESS))
+        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        else if (requestedUser == null) emit(
+            State.Error(
+                message = "user not found",
+                status = UserStatus.USER_NOT_FOUND
+            )
+        )
+        else if (requestedUser.id == user.id) emit(
+            State.Success(
+                user.privateInfo(),
+                status = UserStatus.SUCCESS
+            )
+        ) else emit(State.Success(requestedUser.commonInfo(), status = UserStatus.SUCCESS))
 
     }
 
     override fun getAll(): Flow<State<MutableList<User>>> = flow {
         emit(State.Processing())
         try {
-            val userList = dao.getAll().map{it.smallInfo()}.toMutableList()
-            emit(State.Success(data=userList, status= SUCCESS))
-        } catch (e: Exception) {emit(State.Error(status= EXCEPTION))}
+            val userList = dao.getAll().map { it.smallInfo() }.toMutableList()
+            emit(State.Success(data = userList, status = UserStatus.SUCCESS))
+        } catch (e: Exception) {
+            emit(State.Error(status = UserStatus.EXCEPTION))
+        }
     }
 
     override fun addRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message="token expired", status=TOKEN_EXPIRED))
-        else {user.userRecipes.add(recipeId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status=SUCCESS))}
+        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        else {
+            user.userRecipes.add(recipeId); user =
+                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+        }
     }
 
     override fun deleteRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message="token expired", status=TOKEN_EXPIRED))
-        else {user.userRecipes.remove(recipeId); user = action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status=SUCCESS))}
+        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        else {
+            user.userRecipes.remove(recipeId); user =
+                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+        }
     }
 
     override fun addPost(token: String, postId: Long): Flow<State<User?>> {
@@ -166,28 +190,33 @@ class UserRepositoryImpl(
     override fun recoverAccess(code: String, login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(login).singleOrNull()
-        if (user == null) emit(State.Error(message = "user not found", status= USER_NOT_FOUND))
-        else if (user.checkRecoveryCode(code)) emit(State.Success(user, status=SUCCESS)) else emit(State.Error(message = "incorrect code", status= WRONG_CREDENTAILS))
+        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
+        else if (user.checkRecoveryCode(code)) emit(
+            State.Success(
+                user,
+                status = UserStatus.SUCCESS
+            )
+        ) else emit(State.Error(message = "incorrect code", status = UserStatus.WRONG_CREDENTAILS))
     }
 
     override fun recoveryCode(login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(login).singleOrNull()
-        if (user == null) emit(State.Error(message = "user not found", status= USER_NOT_FOUND))
+        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
         else {
             user.generateRecoveryCode()
             dao.editUser(user)
-            emit(State.Success(user, status=SUCCESS))
+            emit(State.Success(user, status = UserStatus.SUCCESS))
         }
     }
 
     override fun verify(code: String, email: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(email).singleOrNull()
-        if (user == null) emit(State.Error(message = "user not found", status=USER_NOT_FOUND))
+        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
         else if (user.code == code) {
-            dao.editUser(user); emit(State.Success(user, status= SUCCESS))
-        } else emit(State.Error(message = "incorrect code", status= WRONG_CREDENTAILS))
+            dao.editUser(user); emit(State.Success(user, status = UserStatus.SUCCESS))
+        } else emit(State.Error(message = "incorrect code", status = UserStatus.WRONG_CREDENTAILS))
     }
 
     override fun validatePassword(password: String): Boolean =

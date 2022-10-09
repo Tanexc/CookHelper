@@ -11,6 +11,7 @@ object Recipes: Table() {
     val cookSteps = text("cookSteps")
     val time = long("time")
     val ingredients = text("ingredients")
+    val category = long("category")
 
     val proteins = double("proteins")
     val carbohydrates = double("carbohydrates")
