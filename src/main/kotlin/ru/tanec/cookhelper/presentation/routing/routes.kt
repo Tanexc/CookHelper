@@ -6,7 +6,9 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import org.koin.ktor.ext.inject
+import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.chatWebsocket
@@ -15,8 +17,10 @@ fun Application.routes() {
     routing {
 
         val userRepository: UserRepository by inject()
+        val recipeRepository: RecipeRepository by inject()
 
         userApiRoutes(this, userRepository)
+        recipeApiRoutes(this, recipeRepository)
 
         static("/static") {
             resources("static")

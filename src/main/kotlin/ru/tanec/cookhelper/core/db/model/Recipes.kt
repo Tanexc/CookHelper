@@ -22,5 +22,6 @@ object Recipes: Table() {
     val comments = text("comments")
     val reposts = text("reposts")
     val likes = text("likes")
+    val timestamp = long("timestamp")
 
 }

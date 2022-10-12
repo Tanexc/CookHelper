@@ -1,6 +1,9 @@
 package ru.tanec.cookhelper.enterprise.model.entity
 
+import io.ktor.util.date.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Recipe(
     val id: Long = 0,
 
@@ -17,7 +20,8 @@ data class Recipe(
     val calories: Double,
 
     val image: String,
-    val comments: List<Long>,
-    val reposts: List<Long>,
-    val likes: List<Long>,
+    val comments: List<Long> = listOf(),
+    val reposts: List<Long> = listOf(),
+    val likes: List<Long> = listOf(),
+    val timestamp: Long = getTimeMillis()
 )

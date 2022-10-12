@@ -38,8 +38,7 @@ object SetAvatarUseCase {
 
         return when ((avatarPart != null) and (user != null)) {
             true -> {
-                val uniqueName = "${(user!!.lastSeen / 3600000).toInt()}${avatarPart?.originalFileName}"
-                FileController.uploadUserFile(avatarPart!!, user = user!!.id, uniqueName = uniqueName)
+                val uniqueName = FileController.uploadUserFile(avatarPart!!, user = user!!.id)
                 val state = repository.addAvatar(token = token, uniqueName).last()
                 ApiResponse(state.status, state.message, state.data)
             }

@@ -28,6 +28,7 @@ class RecipeDaoImpl : RecipeDao {
         comments = row[Recipes.comments].split(" ").mapNotNull { it.toLongOrNull() },
         reposts = row[Recipes.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Recipes.likes].split(" ").mapNotNull { it.toLongOrNull() },
+        timestamp = row[Recipes.timestamp]
 
         )
 
@@ -94,8 +95,13 @@ class RecipeDaoImpl : RecipeDao {
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")
+                it[category] = recipe.category
+                it[timestamp] = recipe.timestamp
             }
-        recipe
+        Recipes
+            .select{Recipes.timestamp eq recipe.timestamp}
+            .map(::resultRowToRecipe)
+            .single()
     }
 
     override suspend fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): List<Recipe> = dbQuery {
@@ -126,6 +132,7 @@ class RecipeDaoImpl : RecipeDao {
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")
+                it[category] = recipe.category
             }
         recipe
     }

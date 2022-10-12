@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.SOME_ERROR
+import ru.tanec.cookhelper.core.constants.SUCCESS
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.db.dao.recipeDao.RecipeDao
 import ru.tanec.cookhelper.core.db.dao.recipeDao.RecipeDaoImpl
@@ -17,7 +18,8 @@ class RecipeRepositoryImpl(
     override fun insert(recipe: Recipe): Flow<State<Recipe?>> = flow {
         emit(State.Processing())
         try {
-            dao.insertRecipe(recipe)
+            val data = dao.insertRecipe(recipe)
+            emit(State.Success(message= SUCCESS, status=RecipeStatus.SUCCESS, data=data))
         } catch (e: Exception) {
             emit(State.Error(message = e.message ?: SOME_ERROR, status = RecipeStatus.EXCEPTION))
         }
