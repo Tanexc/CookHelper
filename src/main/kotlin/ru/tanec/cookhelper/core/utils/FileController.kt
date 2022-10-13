@@ -10,6 +10,7 @@ import java.nio.file.Paths
 object FileController {
     const val userDataFolder = "data/user"
     const val recipeDataFolder = "data/recipe"
+    const val feedDataFolder = "data/feed"
 
     fun uploadUserFile(file: FileItem, user: Long): String {
         runCatching {
@@ -22,7 +23,9 @@ object FileController {
     }
 
     fun uploadRecipeImage(file: FileItem, category: Long): String {
-        val uniqueName = "${(getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()}_${category}_${file.originalFileName}"
+        val uniqueName = "${
+            (getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()
+        }_${category}_${file.originalFileName}"
         runCatching {
             createDirectory(Paths.get("$recipeDataFolder/$category"))
         }
@@ -38,4 +41,24 @@ object FileController {
         }
         return null
     }
+
+    fun uploadPostFile(file: FileItem, owner: Long): String {
+        val uniqueName = "${
+            (getTimeMillis().toString().reversed().toInt() / 35333442.9 + owner).toInt()
+        }_${owner}_${file.originalFileName}"
+        runCatching {
+            createDirectory(Paths.get("$feedDataFolder/$owner"))
+        }
+        File("$feedDataFolder/$owner/$uniqueName").writeBytes(file.streamProvider().readBytes())
+        return "$owner/$uniqueName"
+    }
+
+    fun getPostFile(path: String): File? {
+
+        runCatching {
+            return File("$feedDataFolder/$path")
+        }
+        return null
+    }
+
 }
