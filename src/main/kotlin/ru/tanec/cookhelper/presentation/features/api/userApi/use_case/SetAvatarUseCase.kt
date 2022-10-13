@@ -43,7 +43,7 @@ object SetAvatarUseCase {
                 ApiResponse(state.status, state.message, state.data)
             }
 
-            else -> {
+            false -> {
                 ApiResponse(UserStatus.UPLOAD_FAILED, "upload failed", null)
             }
         }

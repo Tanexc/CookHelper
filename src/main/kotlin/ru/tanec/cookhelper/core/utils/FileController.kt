@@ -6,24 +6,23 @@ import io.ktor.util.date.*
 import java.io.File
 import java.nio.file.Files.createDirectory
 import java.nio.file.Paths
-import kotlin.random.Random
 
 object FileController {
-    val userDataFolder = "data/user"
-    val recipeDataFolder = "data/recipe"
+    const val userDataFolder = "data/user"
+    const val recipeDataFolder = "data/recipe"
 
     fun uploadUserFile(file: FileItem, user: Long): String {
         runCatching {
             createDirectory(Paths.get("$userDataFolder/$user"))
         }
-        val uniqueName = "${((getTimeMillis() + Random.nextInt(2, 1990)).toString().subSequence(5, 10).toString()).toInt()}${file.originalFileName}"
+        val uniqueName =
+            "${(getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()}${file.originalFileName}"
         File("$userDataFolder/$user/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return uniqueName
     }
 
     fun uploadRecipeImage(file: FileItem, category: Long): String {
-        val uniqueName = "${((getTimeMillis() + Random.nextInt(2, 1990)).toString().subSequence(5, 10).toString()).toInt()}_${category}_${file.originalFileName
-        }"
+        val uniqueName = "${(getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()}_${category}_${file.originalFileName}"
         runCatching {
             createDirectory(Paths.get("$recipeDataFolder/$category"))
         }
@@ -35,8 +34,7 @@ object FileController {
 
     fun getRecipeImage(path: String): File? {
         runCatching {
-            val file: File =  File("$recipeDataFolder/$path")
-            return file
+            return File("$recipeDataFolder/$path")
         }
         return null
     }
