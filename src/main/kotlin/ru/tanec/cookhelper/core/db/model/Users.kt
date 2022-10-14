@@ -5,6 +5,8 @@ import org.jetbrains.exposed.sql.Table
 object Users: Table() {
     val id = long("id").autoIncrement()
 
+    override val primaryKey = PrimaryKey(id)
+
     val name = text("name")
     val surname = text("surname")
     val nickname = text("nickname").uniqueIndex()

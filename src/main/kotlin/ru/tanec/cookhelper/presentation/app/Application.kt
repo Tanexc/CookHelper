@@ -8,7 +8,7 @@ import ru.tanec.cookhelper.presentation.routing.routes
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory
 
 fun main() {
-    embeddedServer(Netty) {
+    embeddedServer(Netty, host = "127.0.0.1", port=5000) {
         DatabaseFactory.init()
         configureAdministration()
         configureSockets()

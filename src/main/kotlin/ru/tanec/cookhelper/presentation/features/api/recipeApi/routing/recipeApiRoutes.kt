@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.presentation.features.api.recipeApi.routing
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,6 +19,7 @@ import ru.tanec.cookhelper.presentation.features.api.recipeApi.use_case.GetRecip
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.use_case.GetRecipeUseCase
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.use_case.RecipeCreateUseCase
 import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.RegistrationUseCase
+import java.io.File
 
 
 fun recipeApiRoutes(
@@ -37,7 +39,7 @@ fun recipeApiRoutes(
 
     }
 
-    route.get("api/recipe/get/image") {
+    route.get("/api/recipe/get/image") {
         try {
             call.respondFile(GetRecipeImageUseCase(call.request.queryParameters))
         } catch (_:Exception) {

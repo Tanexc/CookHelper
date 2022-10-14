@@ -1,10 +1,13 @@
 package ru.tanec.cookhelper.core.db.model
 
 import org.jetbrains.exposed.sql.Table
+import ru.tanec.cookhelper.core.db.model.Users.entityId
 
 
 object Recipes: Table() {
     val id = long("id").autoIncrement()
+
+    override val primaryKey = PrimaryKey(id)
 
     val owner = long("userId")
     val title = text("title")

@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.core.db.dao.postDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.DELIMITER
+import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.SECOND_DELIMITER
 import ru.tanec.cookhelper.core.constants.SEPORATOR
 import ru.tanec.cookhelper.core.db.factory.DatabaseFactory.dbQuery
@@ -16,8 +17,8 @@ class PostDaoImpl : PostDao {
         id = row[Posts.id],
         owner = row[Posts.owner],
         text = row[Posts.text],
-        attachment = row[Posts.attachment].split(" "),
-        images = row[Posts.images].split(" "),
+        attachment = row[Posts.attachment].split(FILE_DELIMITER),
+        images = row[Posts.images].split(FILE_DELIMITER),
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -72,7 +73,7 @@ class PostDaoImpl : PostDao {
                 it[owner] = post.owner
                 it[text] = post.text
                 it[attachment] = post.attachment.joinToString(SEPORATOR)
-                it[images] = post.images.joinToString(SEPORATOR)
+                it[images] = post.images.joinToString(FILE_DELIMITER)
                 it[likes] = post.likes.joinToString(" ")
                 it[reposts] = post.reposts.joinToString(" ")
                 it[comments] = post.comments.joinToString(SECOND_DELIMITER)
@@ -91,8 +92,8 @@ class PostDaoImpl : PostDao {
         Posts
             .update {
                 it[text] = post.text
-                it[attachment] = post.attachment.joinToString(SEPORATOR)
-                it[images] = post.images.joinToString(SEPORATOR)
+                it[attachment] = post.attachment.joinToString(FILE_DELIMITER)
+                it[images] = post.images.joinToString(FILE_DELIMITER)
                 it[likes] = post.likes.joinToString(" ")
                 it[reposts] = post.reposts.joinToString(" ")
                 it[comments] = post.comments.joinToString(SECOND_DELIMITER)
