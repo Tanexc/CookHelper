@@ -14,22 +14,24 @@ object FileController {
 
     fun uploadUserFile(file: FileItem, user: Long): String {
         runCatching {
-            createDirectory(Paths.get("$userDataFolder/$user"))
+            createDirectory(Paths.get(userDataFolder))
         }
         val uniqueName =
-            "${(getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()}${file.originalFileName}"
-        File("$userDataFolder/$user/$uniqueName").writeBytes(file.streamProvider().readBytes())
+            "${
+                (("1" + getTimeMillis().toString().reversed()).toLong() / 35333442.9 + user).toInt()
+            }${file.originalFileName}"
+        File("$userDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return uniqueName
     }
 
     fun uploadRecipeImage(file: FileItem, category: Long): String {
         val uniqueName = "${
-            (getTimeMillis().toString().reversed().toInt() / 35333442.9).toInt()
+            (("1" + getTimeMillis().toString().reversed()).toLong() / 38333410.9).toInt()
         }_${category}_${file.originalFileName}"
         runCatching {
             createDirectory(Paths.get("$recipeDataFolder/$category"))
         }
-        File("$recipeDataFolder/$category/$uniqueName").writeBytes(file.streamProvider().readBytes())
+        File("$recipeDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return "$category/$uniqueName"
     }
 
@@ -37,26 +39,26 @@ object FileController {
 
     fun getRecipeImage(path: String): File? {
         runCatching {
-            return File("$recipeDataFolder/$path")
+            return File(recipeDataFolder)
         }
         return null
     }
 
     fun uploadPostFile(file: FileItem, owner: Long): String {
         val uniqueName = "${
-            (getTimeMillis().toString().reversed().toInt() / 35333442.9 + owner).toInt()
+            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + owner).toInt()
         }_${owner}_${file.originalFileName}"
         runCatching {
             createDirectory(Paths.get("$feedDataFolder/$owner"))
         }
-        File("$feedDataFolder/$owner/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return "$owner/$uniqueName"
+        File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
+        return uniqueName
     }
 
     fun getPostFile(path: String): File? {
 
         runCatching {
-            return File("$feedDataFolder/$path")
+            return File(feedDataFolder)
         }
         return null
     }
