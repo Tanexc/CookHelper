@@ -60,6 +60,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("com.h2database:h2:$h2_version")
+    implementation("org.xerial:sqlite-jdbc:3.8.11.2")
 
     //hash generating
     implementation("de.nycode:bcrypt:2.3.0")
