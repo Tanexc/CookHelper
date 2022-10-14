@@ -1,0 +1,17 @@
+package ru.tanec.cookhelper.presentation.features.api.categoryApi.use_case
+
+import kotlinx.coroutines.flow.last
+import ru.tanec.cookhelper.enterprise.model.entity.Category
+import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
+import ru.tanec.cookhelper.enterprise.repository.CategoryRepository
+
+object CatGetAllUseCase {
+    suspend operator fun invoke(
+        repository: CategoryRepository
+    ): ApiResponse<List<Category>> {
+
+        val state = repository.getAll().last()
+
+        return ApiResponse(state.status, state.message, state.data)
+    }
+}

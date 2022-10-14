@@ -4,16 +4,15 @@ import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 import org.koin.ktor.ext.inject
-import ru.tanec.cookhelper.enterprise.repository.PostRepository
-import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.*
+import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.chatWebsocket
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import java.io.File
 
 fun Application.routes() {
@@ -22,10 +21,14 @@ fun Application.routes() {
         val userRepository: UserRepository by inject()
         val recipeRepository: RecipeRepository by inject()
         val postRepository: PostRepository by inject()
+        val ingredientRepository: IngredientRepository by inject()
+        val categoryRepository: CategoryRepository by inject()
 
         userApiRoutes(this, userRepository)
         recipeApiRoutes(this, recipeRepository)
         feedApiRoutes(this, postRepository)
+        categoryApiRoutes(this, categoryRepository)
+        ingredientApiRoutes(this, ingredientRepository)
 
         static("/static") {
             resources("static")

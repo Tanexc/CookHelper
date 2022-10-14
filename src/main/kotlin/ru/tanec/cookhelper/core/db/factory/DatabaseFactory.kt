@@ -5,9 +5,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import ru.tanec.cookhelper.core.db.model.Posts
-import ru.tanec.cookhelper.core.db.model.Recipes
-import ru.tanec.cookhelper.core.db.model.Users
+import ru.tanec.cookhelper.core.db.model.*
 
 object DatabaseFactory {
     fun init() {
@@ -18,6 +16,8 @@ object DatabaseFactory {
             SchemaUtils.create(Users)
             SchemaUtils.create(Recipes)
             SchemaUtils.create(Posts)
+            SchemaUtils.create(Categories)
+            SchemaUtils.create(Ingredients)
         }
     }
 
