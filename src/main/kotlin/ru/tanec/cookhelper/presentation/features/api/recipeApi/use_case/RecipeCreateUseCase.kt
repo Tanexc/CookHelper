@@ -5,19 +5,21 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.utils.FileController.uploadRecipeImage
-import ru.tanec.cookhelper.enterprise.model.entity.Recipe
+import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
+import ru.tanec.cookhelper.enterprise.repository.UserRepository
 
 
 object RecipeCreateUseCase {
     suspend operator fun invoke(
         repository: RecipeRepository,
+        userRepository: UserRepository,
         parameters: List<PartData>
     ): ApiResponse<Recipe> {
 
-        val state = when (val recipe = fromMultipart(parameters)?.asDomain()) {
+        val state = when (val recipe = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {
                 State.Error(status = RecipeStatus.PARAMETER_MISSED)
             }
@@ -33,9 +35,9 @@ object RecipeCreateUseCase {
     }
 
 
-    private fun fromMultipart(partList: List<PartData>): RecipeData? {
+    suspend private fun fromMultipart(partList: List<PartData>, userRepository: UserRepository): RecipeData? {
         var title: String? = null
-        var owner: Long? = null
+        var authorId: Long? = null
         var cookSteps: List<String>? = null
         var ingredients: List<Long>? = null
         var category: Long? = null
@@ -47,7 +49,7 @@ object RecipeCreateUseCase {
         var fats: Double? = null
         var calories: Double? = null
 
-        var _params = 11
+        var _params = 10
 
         partList.forEach { pt ->
             if (pt is PartData.FormItem)
@@ -57,14 +59,16 @@ object RecipeCreateUseCase {
                         _params -= 1
                     }
 
-                    "owner" -> {
-                        owner = pt.value.toLong()
-                        _params -= 1
-                    }
-
                     "cookSteps" -> {
                         cookSteps = pt.value.split("\n")
                         _params -= 1
+                    }
+
+                    "token" -> {
+                        val user = userRepository.getByToken(pt.value).last().data
+                        if (user != null) {
+                            authorId = user.id
+                        }
                     }
 
                     "ingredients" -> {
@@ -118,7 +122,7 @@ object RecipeCreateUseCase {
         return when (_params) {
             0 -> RecipeData(
                 title!!,
-                owner!!,
+                authorId!!,
                 cookSteps!!,
                 ingredients!!,
                 category!!,
@@ -137,7 +141,7 @@ object RecipeCreateUseCase {
 
     private fun RecipeData.asDomain(): Recipe {
         return Recipe(
-            owner = this.owner,
+            authorId = this.authorId,
             calories = this.calories,
             cookSteps = this.cookSteps,
             fats = this.fats,

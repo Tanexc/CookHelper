@@ -2,8 +2,8 @@ package ru.tanec.cookhelper.enterprise.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.db.dao.recipeDao.RecipeDao
-import ru.tanec.cookhelper.enterprise.model.entity.Recipe
+import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDao
+import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 
 interface RecipeRepository {
     val dao: RecipeDao

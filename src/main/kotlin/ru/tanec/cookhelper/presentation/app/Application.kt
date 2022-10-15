@@ -5,7 +5,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import ru.tanec.cookhelper.core.plugins.configureRouting
 import ru.tanec.cookhelper.presentation.routing.routes
-import ru.tanec.cookhelper.core.db.factory.DatabaseFactory
+import ru.tanec.cookhelper.database.factory.DatabaseFactory
 
 fun main() {
     embeddedServer(Netty, host = "127.0.0.1", port=5000) {

@@ -25,7 +25,7 @@ fun Application.routes() {
         val categoryRepository: CategoryRepository by inject()
 
         userApiRoutes(this, userRepository)
-        recipeApiRoutes(this, recipeRepository)
+        recipeApiRoutes(this, recipeRepository, userRepository)
         feedApiRoutes(this, postRepository)
         categoryApiRoutes(this, categoryRepository)
         ingredientApiRoutes(this, ingredientRepository)

@@ -2,8 +2,8 @@ package ru.tanec.cookhelper.enterprise.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.db.dao.categoryDao.CategoryDao
-import ru.tanec.cookhelper.enterprise.model.entity.Category
+import ru.tanec.cookhelper.database.dao.categoryDao.CategoryDao
+import ru.tanec.cookhelper.enterprise.model.entity.recipe.Category
 
 interface CategoryRepository {
     val dao: CategoryDao

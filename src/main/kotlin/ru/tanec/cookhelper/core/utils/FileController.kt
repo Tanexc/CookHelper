@@ -44,12 +44,12 @@ object FileController {
         return null
     }
 
-    fun uploadPostFile(file: FileItem, owner: Long): String {
+    fun uploadPostFile(file: FileItem, authorId: Long): String {
         val uniqueName = "${
-            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + owner).toInt()
-        }_${owner}_${file.originalFileName}"
+            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + authorId).toInt()
+        }_${authorId}_${file.originalFileName}"
         runCatching {
-            createDirectory(Paths.get("$feedDataFolder/$owner"))
+            createDirectory(Paths.get("$feedDataFolder/$authorId"))
         }
         File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return uniqueName

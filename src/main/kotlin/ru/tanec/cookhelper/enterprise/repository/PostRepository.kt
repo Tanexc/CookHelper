@@ -2,10 +2,8 @@ package ru.tanec.cookhelper.enterprise.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.db.dao.postDao.PostDao
-import ru.tanec.cookhelper.core.db.dao.recipeDao.RecipeDao
-import ru.tanec.cookhelper.core.db.dao.recipeDao.RecipeDaoImpl
-import ru.tanec.cookhelper.enterprise.model.entity.Post
+import ru.tanec.cookhelper.database.dao.postDao.PostDao
+import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 
 interface PostRepository {
 

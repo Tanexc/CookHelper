@@ -2,21 +2,17 @@ package ru.tanec.cookhelper.enterprise.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.db.dao.userDao.UserDao
+import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.core.utils.ValidatorImpl
-import ru.tanec.cookhelper.enterprise.model.entity.User
+import ru.tanec.cookhelper.enterprise.model.entity.user.User
 
 interface UserRepository {
     val dao: UserDao
     val hashTool: HashTool
     val validator: ValidatorImpl
     fun register(
-        name: String,
-        surname: String,
-        nickname: String,
-        email: String,
-        password: String
+        user: User
     ): Flow<State<User?>>
 
     fun login(

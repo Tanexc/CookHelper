@@ -4,7 +4,7 @@ import io.ktor.server.websocket.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import ru.tanec.cookhelper.core.db.repository.*
+import ru.tanec.cookhelper.database.repository.*
 import ru.tanec.cookhelper.enterprise.repository.*
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
