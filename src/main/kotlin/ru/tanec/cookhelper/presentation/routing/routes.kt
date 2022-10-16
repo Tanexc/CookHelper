@@ -7,6 +7,7 @@ import io.ktor.server.websocket.*
 import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.enterprise.repository.*
 import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
@@ -23,12 +24,14 @@ fun Application.routes() {
         val postRepository: PostRepository by inject()
         val ingredientRepository: IngredientRepository by inject()
         val categoryRepository: CategoryRepository by inject()
+        val commentRepository: CommentRepository by inject()
 
         userApiRoutes(this, userRepository)
-        recipeApiRoutes(this, recipeRepository, userRepository)
-        feedApiRoutes(this, postRepository)
+        recipeApiRoutes(this, recipeRepository, userRepository, commentRepository)
+        feedApiRoutes(this, postRepository, userRepository)
         categoryApiRoutes(this, categoryRepository)
         ingredientApiRoutes(this, ingredientRepository)
+        commentApiRoutes(this, commentRepository)
 
         static("/static") {
             resources("static")
@@ -45,21 +48,6 @@ fun Application.routes() {
             static("feed") {
                 files("feed")
             }
-        }
-
-        webSocket("/messenger/{token}") {
-            val token = call.parameters["token"]
-        }
-
-        webSocket("/chat/{id}") {
-            val manager: ChatConnectionController by inject()
-            chatWebsocket(
-                this,
-                incoming,
-                manager,
-                call.request.queryParameters["token"],
-                call.parameters["id"]?.toLong()
-            )
         }
     }
 }

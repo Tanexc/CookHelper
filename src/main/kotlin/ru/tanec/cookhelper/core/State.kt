@@ -1,11 +1,15 @@
 package ru.tanec.cookhelper.core
 
+import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
+
 
 sealed class State<T>(
     val data: T? = null,
     val message: String,
     val status: Int
 ) {
+
+    fun asApiResponse(): ApiResponse<T> = ApiResponse(this.status, this.message, this.data)
 
     class Success<T>(data: T? = null, message: String = "success", status: Int) :
         State<T>(data = data, message = message, status = status)

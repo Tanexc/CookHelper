@@ -83,7 +83,7 @@ class RecipeDaoImpl : RecipeDao {
             .insert {
                 it[title] = recipe.title
                 it[cookSteps] = recipe.cookSteps.joinToString(DELIMITER)
-                it[authorId] = recipe.authorId
+                it[authorId] = recipe.authorId?: 0
                 it[time] = recipe.time
                 it[ingredients] = recipe.ingredients.joinToString(" ")
                 it[proteins] = recipe.proteins
@@ -120,7 +120,7 @@ class RecipeDaoImpl : RecipeDao {
             .update({ Recipes.id eq recipe.id}) {
                 it[title] = recipe.title
                 it[cookSteps] = recipe.cookSteps.joinToString(DELIMITER)
-                it[authorId] = recipe.authorId
+                it[authorId] = recipe.authorId?: 0
                 it[time] = recipe.time
                 it[ingredients] = recipe.ingredients.joinToString(" ")
                 it[proteins] = recipe.proteins

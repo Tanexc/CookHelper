@@ -4,6 +4,7 @@ import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
+import ru.tanec.cookhelper.core.constants.status.UserStatus
 import ru.tanec.cookhelper.core.utils.FileController.uploadRecipeImage
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
@@ -17,7 +18,7 @@ object RecipeCreateUseCase {
         repository: RecipeRepository,
         userRepository: UserRepository,
         parameters: List<PartData>
-    ): ApiResponse<Recipe> {
+    ): ApiResponse<Recipe?> {
 
         val state = when (val recipe = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {
@@ -25,17 +26,19 @@ object RecipeCreateUseCase {
             }
 
             else -> {
+                if (recipe.authorId != null)
                 repository.insert(
                     recipe
                 ).last()
+                else State.Error(status=UserStatus.USER_NOT_FOUND)
             }
         }
 
-        return ApiResponse(state.status, state.message, state.data)
+        return state.asApiResponse()
     }
 
 
-    suspend private fun fromMultipart(partList: List<PartData>, userRepository: UserRepository): RecipeData? {
+    private suspend fun fromMultipart(partList: List<PartData>, userRepository: UserRepository): RecipeData? {
         var title: String? = null
         var authorId: Long? = null
         var cookSteps: List<String>? = null
@@ -122,7 +125,7 @@ object RecipeCreateUseCase {
         return when (_params) {
             0 -> RecipeData(
                 title!!,
-                authorId!!,
+                authorId,
                 cookSteps!!,
                 ingredients!!,
                 category!!,

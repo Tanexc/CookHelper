@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.model.entity.chat
+package ru.tanec.cookhelper.enterprise.model.entity.attachment
 
 import kotlinx.serialization.Serializable
 

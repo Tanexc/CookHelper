@@ -19,6 +19,11 @@ object DatabaseFactory {
             SchemaUtils.create(Categories)
             SchemaUtils.create(Ingredients)
             SchemaUtils.create(Comments)
+            SchemaUtils.create(Topics)
+            SchemaUtils.create(Attachments)
+            SchemaUtils.create(Messages)
+            SchemaUtils.create(Chats)
+            SchemaUtils.create(Answers)
         }
     }
 

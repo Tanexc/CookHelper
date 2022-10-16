@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Recipe(
     val id: Long = 0,
 
-    val authorId: Long,
+    val authorId: Long?,
     val title: String,
     val cookSteps: List<String>,
     val time: Long,

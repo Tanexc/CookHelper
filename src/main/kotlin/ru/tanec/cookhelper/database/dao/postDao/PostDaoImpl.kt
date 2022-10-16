@@ -67,7 +67,7 @@ class PostDaoImpl : PostDao {
     override suspend fun insertPost(post: Post): Post = dbQuery {
         Posts
             .insert {
-                it[authorId] = post.authorId
+                it[authorId] = post.authorId?: 0
                 it[text] = post.text
                 it[attachment] = post.attachment.joinToString(SEPORATOR)
                 it[images] = post.images.joinToString(FILE_DELIMITER)
@@ -103,6 +103,6 @@ class PostDaoImpl : PostDao {
 
     override suspend fun deletePost(post: Post) {
         Posts
-            .deleteWhere { (Posts.id eq post.id) and (Posts.authorId eq post.authorId)  }
+            .deleteWhere { (Posts.id eq post.id) and (Posts.authorId eq post.authorId!!)  }
     }
 }

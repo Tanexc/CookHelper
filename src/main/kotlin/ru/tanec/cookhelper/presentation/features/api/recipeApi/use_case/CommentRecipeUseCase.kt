@@ -1,20 +1,25 @@
 package ru.tanec.cookhelper.presentation.features.api.recipeApi.use_case
 
 import io.ktor.http.content.*
+import io.ktor.util.date.*
 import kotlinx.coroutines.flow.last
+import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.INVALID_TOKEN
 import ru.tanec.cookhelper.core.constants.MISSED
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.constants.status.UserStatus
+import ru.tanec.cookhelper.enterprise.model.entity.comment.Comment
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
+import ru.tanec.cookhelper.enterprise.repository.CommentRepository
 import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.UserRepository
 
-class CommentRecipeUseCase {
+object CommentRecipeUseCase {
     suspend operator fun invoke(
         recipeRepository: RecipeRepository,
         userRepository: UserRepository,
+        commentRepository: CommentRepository,
         parameters: List<PartData>
     ): ApiResponse<Recipe> {
 
@@ -29,11 +34,13 @@ class CommentRecipeUseCase {
                         id = it.value.toLong()
                     }
                 }
+
                 "token" -> {
                     if (it is PartData.FormItem) {
                         token = it.value
                     }
                 }
+
                 "text" -> {
                     if (it is PartData.FormItem) {
                         text = it.value
@@ -43,6 +50,7 @@ class CommentRecipeUseCase {
         }
 
         if (id == null) return ApiResponse(RecipeStatus.PARAMETER_MISSED, MISSED, null)
+        if (text == null) return ApiResponse(RecipeStatus.PARAMETER_MISSED, MISSED, null)
         if (token == null) return ApiResponse(RecipeStatus.PARAMETER_MISSED, INVALID_TOKEN, null)
 
         val data = recipeRepository.getById(id!!).last().data ?: return ApiResponse(
@@ -56,12 +64,29 @@ class CommentRecipeUseCase {
             null
         )
 
-        //TODO("comment creation + commentRepo")
+        val commentState = commentRepository.insertComment(
+            Comment(
+                id = 0,
+                authorId = user.id,
+                text = text ?: "",
+                timestamp = getTimeMillis()
+            )
+        ).last()
 
-        val recipe = data.copy(likes = data.likes + listOf(user.id))
-        val state = recipeRepository.editRecipe(recipe).last()
+        return when (commentState) {
+            is State.Success -> {
+                val recipe = data.copy(comments = data.comments + listOf(commentState.data!!.id))
+                val state = recipeRepository.editRecipe(recipe).last()
 
-        return ApiResponse(state.status, state.message, state.data)
+                ApiResponse(state.status, state.message, state.data)
+            }
+
+            else -> {
+                ApiResponse(status = RecipeStatus.EXCEPTION, message = "comment not inserted", data = null)
+            }
+        }
+
+
     }
 
 }

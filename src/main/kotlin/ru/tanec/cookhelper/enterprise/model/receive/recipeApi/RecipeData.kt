@@ -5,7 +5,7 @@ import io.ktor.http.content.*
 
 data class RecipeData(
     val title: String,
-    val authorId: Long,
+    val authorId: Long?,
     val cookSteps: List<String>,
     val ingredients: List<Long>,
     val category: Long,

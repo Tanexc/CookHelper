@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Post(
     val id: Long = 0,
-    val authorId: Long,
+    val authorId: Long?,
     val text: String = "",
     val attachment: List<String> = listOf(),
     val images: List<String> = listOf(),
