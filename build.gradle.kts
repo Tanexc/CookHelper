@@ -7,6 +7,9 @@ val postgresql_driver_version: String by project
 val exposed_version: String by project
 val h2_version: String by project
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 plugins {
     application
     kotlin("jvm") version "1.7.10"

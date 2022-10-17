@@ -1,0 +1,154 @@
+
+Recipe api:
+    * api/recipe/get/?token=<USER TOKEN required>&id=<RECIPE ID> ( Находим пользователя по токену, и сопоставляем id пользователя и рецепта)
+
+        response: - without id > {"recipe": [{"id": VALUE, "title": VALUE, ...}, {"id": VALUE, "title": VALUE, ...}, ...], "status": 1}
+
+                  - id defined > {"recipe": [{"id": VALUE, "title": VALUE, ...}], "status": 1}
+                               > {"message": "Recipe not found", "id": <FORUM ID>, "status": -1}
+
+    * api/recipe/post/create/?token=<USER TOKEN required>&title=<>&steps=<>&ingredients=<>&time=<>&category=<RECIPE category>
+
+        response: - {"message": "Recipe added", "id": VALUE, "status": 1}
+
+                  - {"message": "Missing required fields", "fields": [missed fields]>, status: -1}
+
+    * api/recipe/post/delete/?token=<USER TOKEN required>&id=<RECIPE ID required>
+
+        response: - {"message": "Recipe deleted", "status": 1}
+
+                  - {"message": "Recipe not found", "id": <RECIPE ID>, "status": -1}
+
+                  - {"message": "Permission denied", "id": <RECIPE ID>, "status": -1}
+
+                  - {"message": "Missing required params", "params": [missed params]>, status: -1}
+
++User api:
+    * Verify new account | api/user/post/verify/?code=<SIX DIGIT code from email message>&token=<TOKEN>
+
+
+    * Authorization | api/user/post/auth/?login=<NICKNAME or EMAIL>&password=<PASSWORD required>
+
+
+    * Change password | api/user/post/password/?token=<USER TOKEN required>&old_password=<OLD PASSWORD required>&new_password=<NEW PASSWORD required>
+
+
+    * Registration | api/user/post/reg/?password=<PASSWORD required>&name=<USER NAME required>&surname=<SURNAME required>&nickname=<NICKNAME required>&email=<USER EMAIL required>
+
+
+    * Get some field(s) in User | api/user/get/?token=<USER TOKEN required>&field=<SOME FIELD IN USER>&id=<USER id> (если не указать field, то придет вся информация о пользователе)
+
+
+    * Delete User | api/user/post/delete/?token=<>&password=<>
+
+
+    * Add product(s) in fridge | api/user/post/fridge/add/?token=<>&products=[...]
+
+
+    * Delete product(s) in fridge | api/user/post/fridge/delete/?token=<>&products=[...]
+
+
+    * Star recipe | api/user/post/starred-recipes/add
+    * Delete from starred recipe | api/user/post/starred-recipes/delete
+    * Set avatar | api/user/post/avatar/?token=<USER token required> ( Необходимо добавить в запрос файл с именем(key) 'image' с типом 'image/jpeg', 'image/png' и т.п)
+    * Add Forum  | api/user/post/forums/add
+    * Delete Forum | api/user/post/forums/delete/token=<>&forum=<FORUM id>
+    * recoverPassword. Get code in email | api/user/get/recover-password/?login=<EMAIL or NICKNAME>
+    * recoverPassword. Post code and new password | api/user/post/recover-password/?code=<CODE>&password=<PASSWORD>
+
++Forum api:
+    * api/forum/get/?token=<USER TOKEN>&id=<FORUM ID> (если не указать id, то придут все)
+
+        response: - without id > {"forum": [{"id": VALUE, "title": VALUE, ...}, {"id": VALUE, "title": VALUE, ...}, ...], "status": 1}
+
+                  - id defined > {"forum": [{"id": VALUE, "title": VALUE, ...}], "status": 1}
+                               > {"message": "Forum not found", "id": <FORUM ID>, "status": -1}
+
+    * api/forum/post/message/?token=<USER TOKEN required>&id=<FORUM ID required>
+
+        response: - {"message": "Message sended", "status": 1}
+
+                  - {"message": "Wrong token", "status": -1}
+
+                  - {"message": "Wrong forum id", "status": -1}
+
+    * api/forum/post/add-member/?token=<USER TOKEN required>&title=<FORUM TITLE required>
+
+        response: - {"message": "Forum created", "status": 1}
+
+                  - {"message": "Wrong token", "status": -1}
+
+                  - {"message": "Wrong forum title", "status": -1}
+
+    * api/forum/post/delete-memeber/?token=<USER TOKEN required>&id=<INGREDIENT ID required>
+
+        response: - {"message": "Wrong forum id", "status": -1}
+
+                  - {"message": "Wrong token", "status": -1}
+
+                  - {"message": "Forum deleted", "status": 1}
+
+    * api/forum/post/create/?token=<USER token>&title=<FORUM title>
+
+Ingredient api:
+    * api/ingredient/get/?id=<INGREDIENT ID> (если не указать id, то придут все)
+
+        response: - without id > {"ingredient": [{"id": VALUE, "title": VALUE, ...}, {"id": VALUE, "title": VALUE, ...}, ...], "status": 1}
+
+                  - id defined > {"ingredient": [{"id": VALUE, "title": VALUE, ...}], "status": 1}
+                               > {"message": "Ingredient not found", "id": <INGREDIENT ID>, "status": -1}
+
+    * api/ingredient/post/add/?token=<USER TOKEN required>&title=<INGREDIENT TITLE required>
+
+        response: - {"message": "Ingredient added", "status": 1}
+
+                  - {"message": "Wrong token", "status": -1}
+
+                  - {"message": "Wrong ingredient title", "status": -1}
+
+    * api/ingredient/post/delete/?token=<USER TOKEN required>&id=<INGREDIENT ID required>
+
+        response: - {"message": "Wrong ingredient id", "status": -1}
+
+                  - {"message": "Wrong token", "status": -1}
+
+                  - {"message": "Ingredient deleted", "status": 1}
+
+Chat api:
+    * api/chat/get/?token=<USER TOKEN>&id=<CHAT ID> (если не указать, то придут все чаты пользователя)
+        response: - without id > {"chat": [{"id": VALUE, ...}, {"id": VALUE, ...}, ...], "status": 300}
+                  - id defined > {"chat": [{"id": VALUE, ...}], "status": 1}
+                               > {"message": "Chat not found", "chat": [], "status": -1}
+
+    * api/chat/post/create-chat/?token=<USER ADMIN TOKEN>&members=<OTHER MEMBERS>&isgroup=<1 - true; 0 - false>&title=<TITLE of CHAT if isgroup> ( При необходимости аватарки чата добавить в запрос файл с именем(key) 'image' с типом 'image/jpeg', 'image/png' и т.п; будет применено если isgroup == 1)
+
+    * api/chat/post/message/?token=<USER ADMIN TOKEN>&text=<text of message>&id=<chat id> (При необходимости добавить вложение в запрос с именем(key) attachment
+
+    * api/chat/get/messages/?token=<>&id=<> ------- response example ----->
+         ------------------------>          {
+                                            "message": "Success",
+                                            "status": 400,
+                                            "chat": [
+                                                {
+                                                    "id": 4,
+                                                    "time": 1660169615281,
+                                                    "text": "tigeywerwer",
+                                                    "attachement": "7",
+                                                    "user": 1
+                                                },
+                                                {
+                                                    "id": 5,
+                                                    "time": 1660169768876,
+                                                    "text": "tigeywerwer",
+                                                    "attachement": "8",
+                                                    "user": 1
+                                                },
+                                                {
+                                                    "id": 6,
+                                                    "time": 1660169925883,
+                                                    "text": "tigeywerweывсывсr",
+                                                    "attachement": "",
+                                                    "user": 1
+                                                }
+                                            ]
+                                        }
