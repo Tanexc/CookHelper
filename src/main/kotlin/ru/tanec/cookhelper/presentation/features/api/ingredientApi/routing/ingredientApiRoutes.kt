@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import ru.tanec.cookhelper.enterprise.repository.IngredientRepository
+import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.use_case.*
 
 fun ingredientApiRoutes(

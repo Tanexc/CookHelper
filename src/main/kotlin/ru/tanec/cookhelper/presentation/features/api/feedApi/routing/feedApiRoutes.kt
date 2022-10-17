@@ -5,8 +5,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import ru.tanec.cookhelper.enterprise.repository.PostRepository
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.presentation.features.api.feedApi.use_case.PostCreateUseCase
 import ru.tanec.cookhelper.presentation.features.api.feedApi.use_case.PostGetByIdUseCase
 

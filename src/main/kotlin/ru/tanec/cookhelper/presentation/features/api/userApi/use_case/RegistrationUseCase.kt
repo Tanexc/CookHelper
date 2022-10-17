@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.core.constants.MISSED
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.userApi.RegistrationData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
 
 object RegistrationUseCase {

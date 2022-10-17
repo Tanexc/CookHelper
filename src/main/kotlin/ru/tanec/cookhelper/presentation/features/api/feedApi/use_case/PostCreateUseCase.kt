@@ -10,8 +10,8 @@ import ru.tanec.cookhelper.core.utils.FileController.uploadPostFile
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.PostRepository
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
 object PostCreateUseCase {
     suspend operator fun invoke(

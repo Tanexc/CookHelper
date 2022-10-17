@@ -4,7 +4,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.enterprise.model.entity.comment.Comment
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.CommentRepository
+import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
 
 object GetCommentsUseCase {
     suspend operator fun invoke(

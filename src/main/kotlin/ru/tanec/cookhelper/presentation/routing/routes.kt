@@ -3,17 +3,14 @@ package ru.tanec.cookhelper.presentation.routing
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
 import org.koin.ktor.ext.inject
-import ru.tanec.cookhelper.enterprise.repository.*
+import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.chatWebsocket
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import java.io.File
 
 fun Application.routes() {

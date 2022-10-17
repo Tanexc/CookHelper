@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDao
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
-import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
+import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 
 
 class RecipeRepositoryImpl(

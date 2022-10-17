@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
+import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 
 object GetRecipeByUserUseCase {
     suspend operator fun invoke(

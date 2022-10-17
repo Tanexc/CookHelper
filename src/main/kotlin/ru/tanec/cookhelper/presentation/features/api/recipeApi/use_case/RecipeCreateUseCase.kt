@@ -9,8 +9,8 @@ import ru.tanec.cookhelper.core.utils.FileController.uploadRecipeImage
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.RecipeRepository
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
 
 object RecipeCreateUseCase {

@@ -11,7 +11,7 @@ import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.core.utils.JwtTool.generateToken
 import ru.tanec.cookhelper.core.utils.ValidatorImpl
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.utls.Validator.*
 
 

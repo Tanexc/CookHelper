@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.core.constants.status.PostStatus
 import ru.tanec.cookhelper.database.dao.postDao.PostDao
 import ru.tanec.cookhelper.database.dao.postDao.PostDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
-import ru.tanec.cookhelper.enterprise.repository.PostRepository
+import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
 
 class PostRepositoryImpl(
     override val dao: PostDao = PostDaoImpl()

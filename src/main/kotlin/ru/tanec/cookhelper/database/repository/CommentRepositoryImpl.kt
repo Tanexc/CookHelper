@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.core.constants.status.CommentStatus
 import ru.tanec.cookhelper.database.dao.commentDao.CommentDao
 import ru.tanec.cookhelper.database.dao.commentDao.CommentDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.comment.Comment
-import ru.tanec.cookhelper.enterprise.repository.CommentRepository
+import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
 
 class CommentRepositoryImpl(
     override val dao: CommentDao = CommentDaoImpl()

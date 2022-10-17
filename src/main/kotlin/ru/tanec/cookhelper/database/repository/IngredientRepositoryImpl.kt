@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.database.dao.ingredientDao.IngredientDao
 import ru.tanec.cookhelper.database.dao.ingredientDao.IngredientDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Ingredient
-import ru.tanec.cookhelper.enterprise.repository.IngredientRepository
+import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 
 class IngredientRepositoryImpl(
     override val dao: IngredientDao = IngredientDaoImpl()

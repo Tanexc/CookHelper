@@ -6,7 +6,7 @@ import ru.tanec.cookhelper.core.constants.MISSED
 import ru.tanec.cookhelper.core.constants.status.PostStatus
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.PostRepository
+import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
 
 object PostGetByIdUseCase {
     suspend operator fun invoke(

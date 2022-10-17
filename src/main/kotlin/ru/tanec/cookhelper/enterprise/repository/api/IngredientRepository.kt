@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.repository
+package ru.tanec.cookhelper.enterprise.repository.api
 
 import kotlinx.coroutines.flow.Flow
 import ru.tanec.cookhelper.core.State

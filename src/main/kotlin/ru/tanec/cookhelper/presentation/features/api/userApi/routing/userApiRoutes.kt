@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.core.constants.MISSED
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.userApi.LoginData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.LoginUseCase
 import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.RegistrationUseCase
 import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.SetAvatarUseCase

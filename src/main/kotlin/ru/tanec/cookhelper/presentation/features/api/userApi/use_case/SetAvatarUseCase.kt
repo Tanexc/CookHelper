@@ -6,7 +6,7 @@ import ru.tanec.cookhelper.core.constants.status.UserStatus
 import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.UserRepository
+import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
 object SetAvatarUseCase {
     suspend operator fun invoke(

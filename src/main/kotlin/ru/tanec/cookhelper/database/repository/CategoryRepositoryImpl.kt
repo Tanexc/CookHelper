@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.database.dao.categoryDao.CategoryDao
 import ru.tanec.cookhelper.database.dao.categoryDao.CategoryDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Category
-import ru.tanec.cookhelper.enterprise.repository.CategoryRepository
+import ru.tanec.cookhelper.enterprise.repository.api.CategoryRepository
 
 class CategoryRepositoryImpl(
     override val dao: CategoryDao = CategoryDaoImpl()
