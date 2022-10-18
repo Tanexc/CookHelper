@@ -7,8 +7,6 @@ val postgresql_driver_version: String by project
 val exposed_version: String by project
 val h2_version: String by project
 
-sourceCompatibility = 11
-targetCompatibility = 11
 
 plugins {
     application
@@ -17,7 +15,7 @@ plugins {
                 id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
 }
 
-group = "com.example"
+group = "ru.tanec.cookhelper"
 version = "0.0.1"
 application {
     mainClass.set("ru.tanec.cookhelper.ApplicationKt")
