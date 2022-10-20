@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.presentation.features.api.userApi
+package ru.tanec.cookhelper.presentation.features.api.userApi.routing
 
 import io.ktor.http.content.*
 import io.ktor.server.application.*

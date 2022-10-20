@@ -10,7 +10,7 @@ import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentA
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
-import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.userApi.routing.userApiRoutes
 import java.io.File
 
 fun Application.routes() {
