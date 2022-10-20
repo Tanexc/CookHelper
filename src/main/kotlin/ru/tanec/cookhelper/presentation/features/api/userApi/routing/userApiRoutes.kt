@@ -19,7 +19,7 @@ fun userApiRoutes(
     repository: UserRepository
 ) {
 
-    route.post("/api/user/post/reg") {
+    route.post("/api/user/post/reg/") {
         try {
             val data = call.receiveMultipart().readAllParts()
             call.respond(RegistrationUseCase(repository, data))
@@ -29,12 +29,12 @@ fun userApiRoutes(
 
     }
 
-    route.post("/api/user/post/auth") {
+    route.post("/api/user/post/auth/") {
         val params = call.receiveMultipart().readAllParts()
         call.respond(LoginUseCase(repository, params))
     }
 
-    route.post("/api/user/post/avatar") {
+    route.post("/api/user/post/avatar/") {
         call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
     }
 }
