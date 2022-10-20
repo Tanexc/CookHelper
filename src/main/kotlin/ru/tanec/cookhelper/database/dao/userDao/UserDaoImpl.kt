@@ -128,11 +128,11 @@ class UserDaoImpl : UserDao {
         true
     }
 
-    override suspend fun getByLogin(login: String): MutableList<User> = dbQuery {
+    override suspend fun getByLogin(login: String): User? = dbQuery {
         Users
             .select { (Users.nickname eq login) or (Users.email eq login) }
             .map(::resultRowToUser)
-            .toMutableList()
+            .singleOrNull()
     }
 
     override suspend fun getByToken(token: String): User? = dbQuery {

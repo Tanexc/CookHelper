@@ -41,9 +41,8 @@ class UserRepositoryImpl(
 
     override fun login(login: String, password: String): Flow<State<User?>> = flow {
         emit(State.Processing())
-        var user = dao.getByLogin(login).singleOrNull()
 
-        emit(State.Processing())
+        var user = dao.getByLogin(login)
 
         if (user == null) emit(State.Error(status = UserStatus.EXCEPTION))
         else if (hashTool.verifyHash(password, user.password)) {
@@ -175,7 +174,7 @@ class UserRepositoryImpl(
 
     override fun recoverAccess(code: String, login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
-        val user = dao.getByLogin(login).singleOrNull()
+        val user = dao.getByLogin(login)
         if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
         else if (user.checkRecoveryCode(code)) emit(
             State.Success(
@@ -187,7 +186,7 @@ class UserRepositoryImpl(
 
     override fun recoveryCode(login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
-        val user = dao.getByLogin(login).singleOrNull()
+        val user = dao.getByLogin(login)
         if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
         else {
             user.generateRecoveryCode()
@@ -198,7 +197,7 @@ class UserRepositoryImpl(
 
     override fun verify(code: String, email: String): Flow<State<User?>> = flow {
         emit(State.Processing())
-        val user = dao.getByLogin(email).singleOrNull()
+        val user = dao.getByLogin(email)
         if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
         else if (user.code == code) {
             dao.editUser(user); emit(State.Success(user, status = UserStatus.SUCCESS))
@@ -214,16 +213,15 @@ class UserRepositoryImpl(
     override suspend fun nicknameAccessibility(nickname: String): Boolean =
         when (validator.isValidLogin(nickname)) {
             is Validity.Valid -> {
-                dao.getByLogin(nickname).size == 0
+                dao.getByLogin(nickname) == null
             }
-
             is Validity.Invalid -> false
         }
 
     override suspend fun emailAccessibility(email: String): Boolean =
         when (validator.isValidLogin(email)) {
             is Validity.Valid -> {
-                dao.getByLogin(email).size == 0
+                dao.getByLogin(email) == null
             }
 
             is Validity.Invalid -> false
