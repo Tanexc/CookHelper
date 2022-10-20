@@ -8,12 +8,11 @@ import ru.tanec.cookhelper.presentation.routing.routes
 import ru.tanec.cookhelper.database.factory.DatabaseFactory
 
 fun main() {
-    embeddedServer(Netty, port=System.getenv("PORT").toInt()) {
+    embeddedServer(Netty, port=8080) {
         DatabaseFactory.init()
         configureAdministration()
         configureSockets()
         configureSerialization()
-        //configureHTTP()
         configureRouting()
         configureDI()
         routes()
