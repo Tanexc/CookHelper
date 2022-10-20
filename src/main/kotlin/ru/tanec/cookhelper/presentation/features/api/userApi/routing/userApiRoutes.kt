@@ -30,7 +30,6 @@ fun userApiRoutes(
     }
 
     route.post("/api/user/post/auth/") {
-        print("AUE")
         val params = call.receiveMultipart().readAllParts()
         call.respond(LoginUseCase(repository, params))
     }
