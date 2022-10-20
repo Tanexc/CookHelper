@@ -29,9 +29,9 @@ fun userApiRoutes(
 
     }
 
-    route.get("/api/user/get/auth") {
-        val params = call.request.queryParameters
-        call.respond(LoginUseCase(repository, LoginData(params["login"], params["password"])))
+    route.post("/api/user/post/auth") {
+        val params = call.receiveMultipart().readAllParts()
+        call.respond(LoginUseCase(repository, params))
     }
 
     route.post("/api/user/post/avatar") {
