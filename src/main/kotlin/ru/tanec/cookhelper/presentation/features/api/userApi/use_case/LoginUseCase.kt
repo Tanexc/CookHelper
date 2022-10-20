@@ -18,8 +18,8 @@ object LoginUseCase {
 
             parameters.forEach {
                 when(it.name) {
-                    "login" -> login = if (it is PartData.FormItem) it.value else ""
-                    "password" -> password = if (it is PartData.FormItem) it.value else ""
+                    "login" -> login = if (it is PartData.FormItem) it.value.filter {it != '"'} else ""
+                    "password" -> password = if (it is PartData.FormItem) it.value.filter {it != '"'} else ""
                 }
             }
 

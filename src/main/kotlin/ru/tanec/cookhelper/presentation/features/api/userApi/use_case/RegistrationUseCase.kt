@@ -33,23 +33,23 @@ object RegistrationUseCase {
             if (it is PartData.FormItem) {
                 when (it.name) {
                     "name" -> {
-                        r.name = it.value
+                        r.name = it.value.filter {it != '"'}
                         _params -= 1
                     }
                     "surname" -> {
-                        r.surname = it.value
+                        r.surname = it.value.filter {it != '"'}
                         _params -= 1
                     }
                     "nickname" -> {
-                        r.nickname = it.value
+                        r.nickname = it.value.filter {it != '"'}
                         _params -= 1
                     }
                     "email" -> {
-                        r.email = it.value
+                        r.email = it.value.filter {it != '"'}
                         _params -= 1
                     }
                     "password" -> {
-                        r.password = it.value
+                        r.password = it.value.filter {it != '"'}
                         _params -= 1
                     }
                 }

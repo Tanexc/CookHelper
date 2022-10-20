@@ -12,7 +12,7 @@ object LoginAvailabilityUserUseCase {
         repository: UserRepository,
         parameters: Parameters
     ): ApiResponse<User?> {
-        val login = parameters["login"]?: return ApiResponse(status = UserStatus.PARAMETER_MISSED,data=null, message= REQUIRED("login"))
+        val login = parameters["login"]?.filter {it != '"'}?: return ApiResponse(status = UserStatus.PARAMETER_MISSED,data=null, message= REQUIRED("login"))
         return ApiResponse(status = UserStatus.PARAMETER_MISSED, message= REQUIRED("login"), data=null)
 
     }
