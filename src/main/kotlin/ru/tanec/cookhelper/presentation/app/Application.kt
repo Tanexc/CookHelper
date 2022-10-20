@@ -7,7 +7,6 @@ import ru.tanec.cookhelper.core.plugins.configureRouting
 import ru.tanec.cookhelper.presentation.routing.routes
 import ru.tanec.cookhelper.database.factory.DatabaseFactory
 
-class Application {
     fun main() {
         embeddedServer(Netty, port = 8080) {
             DatabaseFactory.init()
@@ -21,4 +20,3 @@ class Application {
 
         }.start(wait = true)
     }
-}
