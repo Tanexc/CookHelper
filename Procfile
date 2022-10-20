@@ -1,1 +1,1 @@
-web: src/main/kotlin/ru.tanec.cookhelper/presentation/app
+web: ./build/install/ru.tanec.cookhelper/bin/ru.tanec.cookhelper
