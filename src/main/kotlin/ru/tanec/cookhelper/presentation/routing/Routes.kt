@@ -13,7 +13,7 @@ import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApi
 import ru.tanec.cookhelper.presentation.features.api.userApi.routing.userApiRoutes
 import java.io.File
 
-fun Application.routes() {
+fun Application.apiRoutes() {
     routing {
 
         val userRepository: UserRepository by inject()
