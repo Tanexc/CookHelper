@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.SECOND_DELIMITER
 import ru.tanec.cookhelper.core.constants.SEPORATOR
+import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
@@ -22,18 +23,6 @@ class PostDaoImpl : PostDao {
         timestamp = row[Posts.timestamp]
 
     )
-
-    // part - index of list divided on pieces with length div
-    private fun <T> List<T>.partOfDiv(part: Int, div: Int): List<T> {
-        return if ((div * (part + 1) > this.size) and (div * part < this.size)) {
-            this.subList(div * part, this.size)
-        } else if (div * (part + 1) <= this.size) {
-            this.subList(div * part, div * (part + 1))
-        } else {
-            listOf()
-        }
-
-    }
 
     override suspend fun getAll(): List<Post> = dbQuery {
         Posts

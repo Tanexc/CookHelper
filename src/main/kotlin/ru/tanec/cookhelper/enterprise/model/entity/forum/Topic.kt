@@ -7,9 +7,9 @@ import ru.tanec.cookhelper.enterprise.model.entity.attachment.Attachment
 data class Topic(
     val id: Long,
     val title: String,
-    val problem: Answer,
-    val answers: List<Answer>,
-    val attachments: List<Attachment>,
+    val problem: String,
+    val answers: List<Long>,
+    val attachments: List<String>,
     val timestamp: Long,
     val closed: Boolean
 )

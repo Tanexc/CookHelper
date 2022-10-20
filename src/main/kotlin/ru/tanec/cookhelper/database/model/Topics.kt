@@ -9,7 +9,7 @@ object Topics: Table() {
     override val primaryKey = PrimaryKey(id)
 
     val title = text("title")
-    val problemId = long("problemId")
+    val problem = text("problem")
     val answers = text("answers")
     val timestamp = long("timestamp")
     val closed = bool("closed")

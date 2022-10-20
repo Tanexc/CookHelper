@@ -1,1 +1,1 @@
-web ./build/install/CookHelper/bin/CookHelper
+web: build/install/CookHelper/bin/CookHelper

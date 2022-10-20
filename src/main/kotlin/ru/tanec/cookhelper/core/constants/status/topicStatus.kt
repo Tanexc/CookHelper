@@ -8,4 +8,5 @@ object TopicStatus {
     const val PARAMETER_MISSED: Int = 404
     const val TOPIC_DELETED: Int = 405
     const val PERMISSION_DENIED: Int = 406
+    const val ANSWER_NOT_ADDED: Int = 407
 }

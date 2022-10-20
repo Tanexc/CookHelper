@@ -8,7 +8,7 @@ data class Answer(
     val id: Long,
     val authorId: Long,
     val text: String,
-    val attachment: List<Attachment>?,
+    val attachments: List<Long>,
     val replyToId: Long,
     val timestamp: Long,
     val likes: List<Long>
