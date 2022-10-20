@@ -1,1 +1,1 @@
-web: build/install/cookhelper/bin/cookhelper
+web: ./build/install/ru.tanec.cookhelper/bin/ru.tanec.cookhelper
