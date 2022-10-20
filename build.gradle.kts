@@ -65,7 +65,6 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets:$ktor_version")
 
     // dependency injection
-    implementation("io.insert-koin:koin-core:$koin_version")
     implementation("io.insert-koin:koin-ktor:$koin_version")
 
     //database
