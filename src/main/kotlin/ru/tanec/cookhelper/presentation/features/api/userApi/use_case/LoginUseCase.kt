@@ -23,7 +23,7 @@ object LoginUseCase {
                 }
             }
 
-
+            print("$login $password")
 
             val state = repository.login(
                 login,
