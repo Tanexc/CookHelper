@@ -15,7 +15,7 @@ fun topicWebsocketRoutes(
     controller: TopicConnectionController
 ) {
 
-    route.webSocket("websocket/api/topic/") {
+    route.webSocket("/websocket/api/topic/") {
         val flow = controller.connect(this, call.parameters)
         var user: User?
         flow.collect {
