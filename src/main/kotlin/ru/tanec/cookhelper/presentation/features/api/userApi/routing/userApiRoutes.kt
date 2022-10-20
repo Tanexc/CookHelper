@@ -10,10 +10,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.userApi.LoginData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
-import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.LoginAvailabilityUserUseCase
-import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.LoginUseCase
-import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.RegistrationUseCase
-import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.SetAvatarUseCase
+import ru.tanec.cookhelper.presentation.features.api.userApi.use_case.*
 
 fun userApiRoutes(
     route: Routing,
@@ -39,8 +36,14 @@ fun userApiRoutes(
         call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
     }
 
-    route.get("/api/user/get/login") {
+    route.get("/api/user/get/email-availability") {
         val params = call.request.queryParameters
-        call.respond(LoginAvailabilityUserUseCase(repository, params))
+        call.respond(EmailAvailabilityUserUseCase(repository, params))
     }
+    route.get("/api/user/get/nickname-availability") {
+        val params = call.request.queryParameters
+        call.respond(NicknameAvailabilityUserUseCase(repository, params))
+    }
+
 }
+

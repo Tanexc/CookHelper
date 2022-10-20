@@ -44,7 +44,7 @@ class UserRepositoryImpl(
 
         var user = dao.getByLogin(login)
 
-        if (user == null) emit(State.Error(status = UserStatus.EXCEPTION))
+        if (user == null) emit(State.Error(status = UserStatus.USER_NOT_FOUND))
         else if (hashTool.verifyHash(password, user.password)) {
             if (user.token == "") user.token = generateToken(
                 user.name,
