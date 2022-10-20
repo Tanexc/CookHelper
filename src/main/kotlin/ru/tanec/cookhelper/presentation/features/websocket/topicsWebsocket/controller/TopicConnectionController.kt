@@ -63,7 +63,8 @@ class TopicConnectionController {
 
     suspend fun sendMessage(
         answer: Answer,
-        user: User
+        user: User,
+        topicId: Long
     ) {
 
         val response = AnswerResponseData(
@@ -80,6 +81,9 @@ class TopicConnectionController {
             avatar=user.avatar[0]
         )
 
+        for (receiver: DefaultWebSocketServerSession in data[topicId]?: listOf()) {
+            receiver.sendSerialized(response)
+        }
 
 
     }

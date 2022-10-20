@@ -32,7 +32,8 @@ fun topicWebsocketRoutes(
                             is State.Success -> {
                                 controller.sendMessage(
                                     answer.data!!,
-                                    user!!
+                                    user!!,
+                                    it.data!!.id
                                 )
                             }
 
