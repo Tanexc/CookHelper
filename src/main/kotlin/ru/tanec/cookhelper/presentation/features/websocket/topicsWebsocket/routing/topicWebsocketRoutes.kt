@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket
 
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.flow.forEach
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
@@ -25,20 +26,26 @@ fun topicWebsocketRoutes(
 
                 if (user != null) {
 
-                    for (frame in incoming) {
+                    try {
+                        for (frame in incoming) {
 
-                        val data: ForumReceiveAnswerData = this.receiveDeserialized()
-                        when (val answer = controller.receiveMessage(data, user!!)) {
-                            is State.Success -> {
-                                controller.sendMessage(
-                                    answer.data!!,
-                                    user!!,
-                                    it.data!!.id
-                                )
+                            val data: ForumReceiveAnswerData = this.receiveDeserialized()
+                            when (val answer = controller.receiveMessage(data, user!!)) {
+                                is State.Success -> {
+                                    controller.sendMessage(
+                                        answer.data!!,
+                                        user!!,
+                                        it.data!!.id
+                                    )
+                                }
+
+                                else -> break
                             }
 
-                            else -> break
                         }
+                    } finally {
+                        controller.disconnect(this, it.data!!.id)
+                        this.close()
                     }
                 }
             }

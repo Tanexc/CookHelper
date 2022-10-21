@@ -4,6 +4,7 @@ import io.ktor.http.content.*
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
+import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.constants.status.UserStatus
 import ru.tanec.cookhelper.core.utils.FileController
@@ -25,7 +26,7 @@ object PostCreateUseCase {
 
         val state = when (val post = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {
-                State.Error(status = RecipeStatus.PARAMETER_MISSED)
+                State.Error(status = PARAMETER_MISSED)
             }
 
             else -> {
@@ -72,7 +73,7 @@ object PostCreateUseCase {
                 //TODO("attachment")
 
                 is PartData.FileItem -> {
-
+                    print("rererererererere")
                     images = images + listOf(pt)
                 }
 

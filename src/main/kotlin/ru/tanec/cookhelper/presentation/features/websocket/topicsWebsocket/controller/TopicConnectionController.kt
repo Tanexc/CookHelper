@@ -57,8 +57,8 @@ class TopicConnectionController {
 
     }
 
-    suspend fun disconnect() {
-
+    fun disconnect(session: DefaultWebSocketServerSession, id: Long): Boolean {
+           return data[id]?.remove(session)?: return true
     }
 
     suspend fun sendMessage(

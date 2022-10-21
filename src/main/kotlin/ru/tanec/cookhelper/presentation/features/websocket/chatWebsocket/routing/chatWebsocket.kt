@@ -13,8 +13,7 @@ suspend fun chatWebsocket(
     chatId: Long? = null
 ) {
 
-    //TODO: get user from token
-    //  add messages to db
+
 
    /* if (controller.connect(session, chatId) is State.Success) {
         while (chatId?.let { controller.connected(session, it) } == true) {

@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository
+package ru.tanec.cookhelper.database.repository
 
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State

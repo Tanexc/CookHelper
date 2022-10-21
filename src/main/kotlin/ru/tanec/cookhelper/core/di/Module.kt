@@ -8,7 +8,7 @@ import ru.tanec.cookhelper.database.repository.*
 import ru.tanec.cookhelper.enterprise.repository.*
 import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
+import ru.tanec.cookhelper.database.repository.ChatConnectionRepository
 
 val socketModule = module {
     singleOf(::ChatConnectionController)

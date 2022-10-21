@@ -4,7 +4,7 @@ import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.*
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
-import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.repository.ChatConnectionRepository
+import ru.tanec.cookhelper.database.repository.ChatConnectionRepository
 
 class ChatConnectionController(
     val repository: ChatConnectionRepository
