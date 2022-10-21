@@ -92,7 +92,7 @@ object PostCreateUseCase {
             else -> null
         }
 
-        println("asaasasasasas")
+        println(images.toString())
 
         println("author id  $authorId")
 
@@ -114,7 +114,7 @@ object PostCreateUseCase {
             text = this.text ?: "",
             label = this.label?: "",
             attachments = this.attachment.map { uploadPostFile(it, this.authorId ?: 0) },
-            images = this.images.map { uploadPostFileImage(it, this.authorId ?: 0) },
+            images = this.images.mapNotNull{ uploadPostFileImage(it, this.authorId ?: 0) },
             comments = listOf(),
             likes = listOf(),
             reposts = listOf(),

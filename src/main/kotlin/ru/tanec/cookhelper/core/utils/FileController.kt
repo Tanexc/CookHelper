@@ -59,7 +59,10 @@ object FileController {
         return uniqueName
     }
 
-    fun uploadPostFileImage(file: FileItem, authorId: Long): Image {
+    fun uploadPostFileImage(file: FileItem, authorId: Long): Image? {
+        if (file == null) {
+            return null
+        }
         val uniqueName = "${
             (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + authorId).toInt()
         }_${authorId}_${file.originalFileName}"
