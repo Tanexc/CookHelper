@@ -1,5 +1,6 @@
 package ru.tanec.cookhelper.enterprise.model.receive.userApi
 
+import io.ktor.util.date.*
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.core.utils.HashTool
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
@@ -17,6 +18,7 @@ data class RegistrationData(
         surname=this.surname?:"",
         nickname=this.nickname?:"",
         email=this.email?:"",
-        password=HashTool.getHash(this.password?:"")
+        password=HashTool.getHash(this.password?:""),
+        lastSeen = getTimeMillis()
     )
 }

@@ -29,7 +29,7 @@ class UserRepositoryImpl(
         if (!emailAccessibility(user.email)) throw Exception("login rejected")
 
         val data = dao.addNew(
-            user.copy(registrationTimestamp = getTimeMillis())
+            user.copy(registrationTimestamp = getTimeMillis(), token=generateToken(user.name, user.surname, user.registrationTimestamp?:0L, user.password.toString()))
         )
 
 
