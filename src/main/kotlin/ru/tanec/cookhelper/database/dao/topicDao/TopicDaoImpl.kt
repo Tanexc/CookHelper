@@ -10,6 +10,7 @@ class TopicDaoImpl: TopicDao {
 
     private fun resultRowToTopic(row: ResultRow) = Topic(
         id = row[Topics.id],
+        authorId = row[Topics.authorId],
         title= row[Topics.title],
         problem = row[Topics.problem],
         answers = row[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
@@ -42,6 +43,7 @@ class TopicDaoImpl: TopicDao {
     override suspend fun insert(topic: Topic): Topic? = dbQuery {
         Topics
             .insert {
+                it[authorId] = topic.authorId
                 it[problem] = topic.problem
                 it[title] = topic.title
                 it[answers] = topic.answers.joinToString(" ")
@@ -59,9 +61,9 @@ class TopicDaoImpl: TopicDao {
     override suspend fun editTopic(topic: Topic): Topic? = dbQuery {
         Topics
             .update {
-                it[Topics.answers] = topic.answers.joinToString(" ")
-                it[Topics.attachments] = topic.attachments.joinToString(ATTCH_DELIMITER)
-                it[Topics.closed] = topic.closed
+                it[answers] = topic.answers.joinToString(" ")
+                it[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER)
+                it[closed] = topic.closed
             }
 
         Topics

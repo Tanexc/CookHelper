@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.presentation.features.api.ingredientApi.use_case
 
 import io.ktor.http.*
 import kotlinx.coroutines.flow.last
+import ru.tanec.cookhelper.core.constants.REQUIRED
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Ingredient
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -17,7 +18,7 @@ object IngGetPartUseCase {
         val div = parameters["div"]?.toIntOrNull()
 
         if ((part == null) or (div == null)) {
-            return ApiResponse(RecipeStatus.PARAMETER_MISSED, "parameter missed", null)
+            return ApiResponse(RecipeStatus.PARAMETER_MISSED, REQUIRED("part: Int; div: Int"), null)
         }
 
         val state = repository.getAll().last()

@@ -46,7 +46,7 @@ class PostDaoImpl : PostDao {
             .singleOrNull()
     }
 
-    override suspend fun getByUser(userId: Long, part: Int, div: Int): List<Post> = dbQuery {
+    override suspend fun getByUser(userId: Long, part: Int?, div: Int?): List<Post> = dbQuery {
         Posts
             .select { Posts.authorId eq userId }
             .map(::resultRowToPost)
@@ -93,5 +93,13 @@ class PostDaoImpl : PostDao {
     override suspend fun deletePost(post: Post) {
         Posts
             .deleteWhere { (Posts.id eq post.id) and (Posts.authorId eq post.authorId!!)  }
+    }
+
+    override suspend fun getByList(listId: List<Long>, part: Int?, div: Int?): List<Post> {
+        val data: MutableList<Post> = mutableListOf()
+        for (id: Long in if (part != null && div != null ) listId.partOfDiv(part, div) else listId) {
+            getById(id)?.let { data.add(it) }
+        }
+        return data.toList()
     }
 }

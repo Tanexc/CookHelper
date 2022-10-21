@@ -8,6 +8,7 @@ object Topics: Table() {
 
     override val primaryKey = PrimaryKey(id)
 
+    val authorId = long("authorId")
     val title = text("title")
     val problem = text("problem")
     val answers = text("answers")

@@ -24,4 +24,6 @@ val apiRepositoryModule = module {
     single<CategoryRepository> { CategoryRepositoryImpl() }
     single<IngredientRepository> { IngredientRepositoryImpl() }
     single<CommentRepository> { CommentRepositoryImpl() }
+
+    single<TopicRepository> {TopicRepositoryImpl()}
 }

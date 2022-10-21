@@ -15,7 +15,9 @@ interface PostRepository {
 
     fun getAll(id: Long, part: Int, div: Int): Flow<State<List<Post>>>
 
-    fun getByUser(userId: Long, part: Int, div: Int): Flow<State<List<Post>>>
+    fun getByUser(userId: Long, part: Int?, div: Int?): Flow<State<List<Post>>>
+
+    fun getByList(id: List<Long>, part: Int?, div:Int?): Flow<State<List<Post>>>
 
     fun editPost(post: Post): Flow<State<Post>>
 

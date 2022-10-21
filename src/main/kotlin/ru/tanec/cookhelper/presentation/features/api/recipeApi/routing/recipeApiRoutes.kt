@@ -22,25 +22,29 @@ fun recipeApiRoutes(
     commentRepository: CommentRepository
 ) {
 
-    route.post("/api/recipe/post/create") {
+    route.post("/api/recipe/post/create/") {
         call.respond(RecipeCreateUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
 
     }
 
-    route.get("/api/recipe/get") {
+    route.get("/api/recipe/get/") {
 
         call.respond(GetRecipeUseCase(repository, call.request.queryParameters))
 
     }
 
-    route.get("/api/recipe/get/image") {
+    route.get("/api/recipe/get/by-ingredients/") {
+        //TODO
+    }
+
+    route.get("/api/recipe/get/image/") {
         try {
             call.respondFile(GetRecipeImageUseCase(call.request.queryParameters))
         } catch (_:Exception) {
             call.respondFile(GetRecipeImageUseCase(Parameters.Empty))
         }
     }
-    route.get("/api/recipe/post/like") {
+    route.get("/api/recipe/post/like/") {
         try {
             call.respond(LikeRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
@@ -48,7 +52,7 @@ fun recipeApiRoutes(
         }
     }
 
-    route.get("/api/recipe/post/comment") {
+    route.get("/api/recipe/post/comment/") {
         try {
             call.respond(CommentRecipeUseCase(repository, userRepository, commentRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
@@ -56,7 +60,7 @@ fun recipeApiRoutes(
         }
     }
 
-    route.get("/api/recipe/post/repost") {
+    route.get("/api/recipe/post/repost/") {
         try {
             call.respond(RepostRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {

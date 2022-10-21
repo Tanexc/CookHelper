@@ -45,5 +45,13 @@ fun userApiRoutes(
         call.respond(NicknameAvailabilityUserUseCase(repository, params))
     }
 
+    route.post("/api/user/post/fridge/") {
+        //TODO
+    }
+
+    route.get("/api/user/get/fridge/") {
+        //TODO
+    }
+
 }
 

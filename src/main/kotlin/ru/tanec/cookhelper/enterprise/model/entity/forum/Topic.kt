@@ -6,6 +6,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.attachment.Attachment
 @Serializable
 data class Topic(
     val id: Long,
+    val authorId: Long,
     val title: String,
     val problem: String,
     val answers: List<Long>,

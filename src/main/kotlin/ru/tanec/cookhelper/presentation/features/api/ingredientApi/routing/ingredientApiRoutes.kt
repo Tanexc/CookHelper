@@ -10,15 +10,15 @@ fun ingredientApiRoutes(
     route: Routing,
     repository: IngredientRepository
 ) {
-    route.get("api/ingredient/get/all") {
+    route.get("api/ingredient/get/all/") {
         call.respond(IngGetAllUseCase(repository))
     }
 
-    route.get("api/ingredient/get/part") {
+    route.get("api/ingredient/get/part/") {
         call.respond(IngGetPartUseCase(repository, call.request.queryParameters))
     }
 
-    route.get("api/ingredient/get/id") {
+    route.get("api/ingredient/get/id/") {
         call.respond(IngGetByIdUseCase(repository, call.request.queryParameters))
     }
 }

@@ -9,7 +9,7 @@ const val EXCEPTION: Int = 0
 const val USER_NOT_FOUND: Int = 101
 const val WRONG_CREDENTIALS: Int = 102
 const val USER_NOT_VERIFIED: Int = 103
-const val USER_PARAMETER_MISSED: Int = 104
+const val USER_TOKEN_INVALID: Int = 104
 const val USER_DELETED: Int = 105
 const val NICKNAME_REJECTED: Int = 106
 const val EMAIL_REJECTED: Int = 107
@@ -23,6 +23,7 @@ const val RECIPE_DELETED: Int = 202
 const val TOPIC_NOT_FOUND: Int = 401
 const val TOPIC_DELETED: Int = 402
 const val ANSWER_NOT_ADDED: Int = 403
+const val TOPIC_NOT_CREATED: Int = 404
 
 const val COMMENT_NOT_FOUND: Int = 801
 const val COMMENT_DELETED: Int = 802

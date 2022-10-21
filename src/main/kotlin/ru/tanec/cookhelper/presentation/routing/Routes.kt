@@ -8,6 +8,7 @@ import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.routing.userApiRoutes
@@ -22,6 +23,7 @@ fun Application.apiRoutes() {
         val ingredientRepository: IngredientRepository by inject()
         val categoryRepository: CategoryRepository by inject()
         val commentRepository: CommentRepository by inject()
+        val topicRepository: TopicRepository by inject()
 
         userApiRoutes(this, userRepository)
         recipeApiRoutes(this, recipeRepository, userRepository, commentRepository)
@@ -29,6 +31,7 @@ fun Application.apiRoutes() {
         categoryApiRoutes(this, categoryRepository)
         ingredientApiRoutes(this, ingredientRepository)
         commentApiRoutes(this, commentRepository)
+        forumApiRoutes(this, topicRepository, userRepository)
 
         static("/static") {
             resources("static")
@@ -44,6 +47,9 @@ fun Application.apiRoutes() {
             }
             static("feed") {
                 files("feed")
+            }
+            static("attachment") {
+                files("attachment")
             }
         }
     }

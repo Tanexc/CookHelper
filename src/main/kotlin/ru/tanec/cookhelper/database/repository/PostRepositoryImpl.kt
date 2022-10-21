@@ -43,10 +43,20 @@ class PostRepositoryImpl(
 
     }
 
-    override fun getByUser(userId: Long, part: Int, div: Int): Flow<State<List<Post>>> = flow {
+    override fun getByUser(userId: Long, part: Int?, div: Int?): Flow<State<List<Post>>> = flow {
         emit(State.Processing())
         try {
             emit(State.Success(dao.getByUser(userId, part, div), status = PostStatus.SUCCESS))
+
+        } catch (e: Exception) {
+            emit(State.Error(status = PostStatus.EXCEPTION))
+        }
+    }
+
+    override fun getByList(id: List<Long>, part: Int?, div: Int?): Flow<State<List<Post>>> = flow {
+        emit(State.Processing())
+        try {
+            emit(State.Success(dao.getByList(id, part, div), status = PostStatus.SUCCESS))
 
         } catch (e: Exception) {
             emit(State.Error(status = PostStatus.EXCEPTION))
