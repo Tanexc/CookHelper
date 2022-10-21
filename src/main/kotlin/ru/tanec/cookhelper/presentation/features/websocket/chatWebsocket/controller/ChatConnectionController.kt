@@ -1,5 +1,6 @@
 package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller
 
+import io.ktor.http.*
 import io.ktor.server.websocket.*
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.*
@@ -11,8 +12,10 @@ class ChatConnectionController(
 ) {
     fun connect(
         session: DefaultWebSocketServerSession,
-        chatId: Long?
+        parameters: Parameters
     ): State<out Any> {
+
+        val chatId = 0L
 
         return if (chatId == null) {
             State.Error(message=REQUIRED("id"), status=399)
