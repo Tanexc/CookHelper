@@ -31,10 +31,10 @@ object PostCreateUseCase {
 
             else -> {
                 if (post.authorId != null) {
-                repository.insert(
-                    post
-                ).last()}
-                else State.Error(status = UserStatus.USER_NOT_FOUND)
+                    repository.insert(
+                        post
+                    ).last()
+                } else State.Error(status = UserStatus.USER_NOT_FOUND)
             }
         }
 
@@ -56,17 +56,17 @@ object PostCreateUseCase {
                     when (pt.name) {
                         "token" -> {
                             println(pt.value)
-                            token = pt.value.filter { it !='"' }
+                            token = pt.value.filter { it != '"' }
                         }
 
                         "text" -> {
                             println("text")
-                            text = pt.value.filter { it !='"' }
+                            text = pt.value.filter { it != '"' }
                         }
 
                         "label" -> {
                             println("label")
-                            label = pt.value.filter { it !='"' }
+                            label = pt.value.filter { it != '"' }
                         }
 
                         else -> {}
@@ -85,9 +85,9 @@ object PostCreateUseCase {
 
         }
 
-        val data = userRepository.getByToken(token?:"").last()
+        val data = userRepository.getByToken(token ?: "").last()
 
-        authorId = when(data) {
+        authorId = when (data) {
             is State.Success -> data.data?.id
             else -> null
         }
@@ -112,9 +112,9 @@ object PostCreateUseCase {
         return Post(
             authorId = this.authorId,
             text = this.text ?: "",
-            label = this.label?: "",
+            label = this.label ?: "",
             attachments = this.attachment.map { uploadPostFile(it, this.authorId ?: 0) },
-            images = this.images.mapNotNull{ uploadPostFileImage(it, this.authorId ?: 0) },
+            images = if (this.images.isNotEmpty()) this.images.mapNotNull { uploadPostFileImage(it, this.authorId ?: 0) } else emptyList(),
             comments = listOf(),
             likes = listOf(),
             reposts = listOf(),
