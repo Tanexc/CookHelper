@@ -5,12 +5,9 @@ import io.ktor.util.date.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
-import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.constants.status.UserStatus
-import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.FileController.uploadPostFile
 import ru.tanec.cookhelper.core.utils.FileController.uploadPostFileImage
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -23,6 +20,10 @@ object PostCreateUseCase {
         userRepository: UserRepository,
         parameters: List<PartData>
     ): ApiResponse<Post> {
+
+        //TODO("send more info about user")
+
+        //TODO fix comment when sending response
 
         val state = when (val post = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {

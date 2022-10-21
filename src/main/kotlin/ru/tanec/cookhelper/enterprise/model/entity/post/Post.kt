@@ -1,7 +1,7 @@
 package ru.tanec.cookhelper.enterprise.model.entity.post
 
 import kotlinx.serialization.Serializable
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 
 @Serializable
 data class Post(
@@ -10,7 +10,7 @@ data class Post(
     val text: String = "",
     val label: String = "",
     val attachments: List<String> = listOf(),
-    val images: List<Image> = listOf(),
+    val images: List<FileData> = listOf(),
 
     val likes: List<Long>,
     val comments: List<String>,

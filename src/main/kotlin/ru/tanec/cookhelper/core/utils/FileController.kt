@@ -3,18 +3,15 @@ package ru.tanec.cookhelper.core.utils
 import io.ktor.http.content.*
 import io.ktor.http.content.PartData.*
 import io.ktor.util.date.*
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
+import ru.tanec.cookhelper.core.constants.*
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import java.io.File
 import java.nio.file.Files.createDirectory
 import java.nio.file.Paths
 import kotlin.random.Random
 
 object FileController {
-    const val userDataFolder = "data/user"
-    const val recipeDataFolder = "data/recipe"
-    const val feedDataFolder = "data/feed"
-    const val attachmentDataFloder = "data/attachment"
-    const val apiDomen = "https://cookhelper-inc.herokuapp.com/"
+
 
     fun uploadUserFile(file: FileItem, user: Long): String {
         runCatching {
@@ -59,7 +56,7 @@ object FileController {
         return uniqueName
     }
 
-    fun uploadPostFileImage(file: FileItem, authorId: Long): Image? {
+    fun uploadPostFileImage(file: FileItem, authorId: Long): FileData? {
         if (file == null) {
             return null
         }
@@ -70,7 +67,7 @@ object FileController {
             createDirectory(Paths.get(feedDataFolder))
         }
         File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return Image(uniqueName, createPostFileLink(uniqueName))
+        return FileData(uniqueName, createPostFileLink(uniqueName))
     }
 
     fun getPostFile(path: String): File? {
@@ -103,5 +100,21 @@ object FileController {
     fun createPostFileLink(path: String): String {
         return "$apiDomen/$feedDataFolder/$path"
     }
+
+    fun uploadFile(folder: String, file: FileItem): File {
+        val uniqueName = "${file.hashCode()}" +
+                "${Random.nextInt(2098)}" +
+                "${getTimeMillis().toString().reversed().toLong() / 3536904.2}" +
+                "${file.originalFileName}"
+        runCatching {
+            createDirectory(Paths.get(folder))
+        }
+        return File(uniqueName, "$apiDomen/$folder/$uniqueName")
+    }
+
+    fun String.toFile(folder: String): FileData = FileData(
+        id=this,
+        link="$apiDomen/$folder/$this"
+    )
 
 }

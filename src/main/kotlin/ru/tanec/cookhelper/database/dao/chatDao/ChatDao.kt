@@ -8,4 +8,6 @@ interface ChatDao {
     suspend fun getById(id: Long): Chat?
 
     suspend fun getByList(listId: List<Long>, part: Int?, div: Int?): List<Chat>
+
+    suspend fun edit(chat: Chat): Chat?
 }

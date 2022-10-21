@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.chatApi.routing.chatApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRoutes
@@ -24,6 +25,8 @@ fun Application.apiRoutes() {
         val categoryRepository: CategoryRepository by inject()
         val commentRepository: CommentRepository by inject()
         val topicRepository: TopicRepository by inject()
+        val chatRepository: ChatRepository by inject()
+        val messageRepository: MessageRepository by inject()
 
         userApiRoutes(this, userRepository)
         recipeApiRoutes(this, recipeRepository, userRepository, commentRepository)
@@ -32,6 +35,7 @@ fun Application.apiRoutes() {
         ingredientApiRoutes(this, ingredientRepository)
         commentApiRoutes(this, commentRepository)
         forumApiRoutes(this, topicRepository, userRepository)
+        chatApiRoutes(this, chatRepository, userRepository, messageRepository)
 
         static("/static") {
             resources("static")
@@ -50,6 +54,9 @@ fun Application.apiRoutes() {
             }
             static("attachment") {
                 files("attachment")
+            }
+            static("chat") {
+                files("chat")
             }
         }
     }

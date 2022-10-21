@@ -19,11 +19,19 @@ const val USER_UPLOAD_FAILED: Int = 110
 
 const val RECIPE_NOT_FOUND: Int = 201
 const val RECIPE_DELETED: Int = 202
+const val RECIPE_NOT_CREATED: Int = 204
+
+const val CHAT_NOT_FOUND: Int = 301
+const val CHAT_DELETED: Int = 302
+const val CHAT_NOT_CREATED: Int = 304
 
 const val TOPIC_NOT_FOUND: Int = 401
 const val TOPIC_DELETED: Int = 402
 const val ANSWER_NOT_ADDED: Int = 403
 const val TOPIC_NOT_CREATED: Int = 404
+
+const val MESSAGE_NOT_FOUND: Int = 501
+const val MESSAGE_NOT_CREATED: Int = 504
 
 const val COMMENT_NOT_FOUND: Int = 801
 const val COMMENT_DELETED: Int = 802

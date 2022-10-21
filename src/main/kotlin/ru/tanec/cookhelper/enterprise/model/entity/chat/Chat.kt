@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Chat(
     val id: Long,
+    val title: String?,
     val members: List<Long>,
     val messages: List<Long>,
     val attachments: List<Long>,

@@ -17,6 +17,8 @@ fun userApiRoutes(
     repository: UserRepository
 ) {
 
+    //TODO add user images!!!
+
     route.post("/api/user/post/reg/") {
         try {
             val data = call.receiveMultipart().readAllParts()

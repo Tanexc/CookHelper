@@ -11,6 +11,10 @@ interface UserRepository {
     val dao: UserDao
     val hashTool: HashTool
     val validator: ValidatorImpl
+
+    fun editChats(
+        user: User
+    ): Flow<State<User?>>
     fun register(
         user: User
     ): Flow<State<User?>>
@@ -123,4 +127,6 @@ interface UserRepository {
     suspend fun action(user: User): User
 
     suspend fun getByToken(token: String): Flow<State<User?>>
+
+    suspend fun getById(id: Long): Flow<State<User?>>
 }

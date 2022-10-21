@@ -20,6 +20,10 @@ class UserRepositoryImpl(
     override val hashTool: HashTool = HashTool,
     override val validator: ValidatorImpl = ValidatorImpl
 ) : UserRepository {
+    override fun editChats(user: User): Flow<State<User?>> = flow {
+        dao.getById(user.id)?.let { dao.editUser(it.copy(chats=user.chats)) }
+    }
+
     override fun register(
         user: User
     ): Flow<State<User?>> = flow {
@@ -238,6 +242,13 @@ class UserRepositoryImpl(
         val user = dao.getByToken(token)
         if (user != null) emit(State.Success(user, status = UserStatus.SUCCESS))
         else emit(State.Error(status=UserStatus.USER_NOT_FOUND))
+    }
+
+    override suspend fun getById(id: Long): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        val user = dao.getById(id)?.commonInfo()
+        emit(State.Success(data=user))
+
     }
 
 }

@@ -1,9 +1,6 @@
 package ru.tanec.cookhelper.database.dao.chatDao
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Chats
@@ -13,6 +10,7 @@ class ChatDaoImpl: ChatDao {
 
     private fun resultRowToChat(row: ResultRow): Chat = Chat(
         id=row[Chats.id],
+        title= row[Chats.title].ifEmpty { null },
         members=row[Chats.members].split(" ").mapNotNull { it.toLongOrNull() },
         attachments=row[Chats.attachments].split(" ").mapNotNull { it.toLongOrNull() },
         avatar=row[Chats.avatar].split(FILE_DELIMITER),
@@ -50,5 +48,19 @@ class ChatDaoImpl: ChatDao {
             getById(id)?.let {data.add(it)}
         }
         return data.toList()
+    }
+
+    override suspend fun edit(chat: Chat): Chat? = dbQuery {
+        Chats
+            .update {
+                it[messages] = chat.messages.joinToString(" ")
+                it[title] = chat.title?: ""
+                it[attachments] = chat.attachments.joinToString(" ")
+            }
+
+        Chats
+            .select {Chats.id eq chat.id}
+            .map(::resultRowToChat)
+            .singleOrNull()
     }
 }

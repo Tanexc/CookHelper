@@ -26,4 +26,5 @@ val apiRepositoryModule = module {
     single<CommentRepository> { CommentRepositoryImpl() }
 
     single<TopicRepository> {TopicRepositoryImpl()}
+    single<ChatRepository> {ChatRepositoryImpl()}
 }

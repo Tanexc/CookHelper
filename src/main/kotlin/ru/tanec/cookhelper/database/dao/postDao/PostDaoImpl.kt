@@ -8,7 +8,7 @@ import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 
 class PostDaoImpl : PostDao {
@@ -19,7 +19,7 @@ class PostDaoImpl : PostDao {
         text = row[Posts.text],
         label = row[Posts.label],
         attachments = row[Posts.attachments].split(FILE_DELIMITER),
-        images = row[Posts.images].split(FILE_DELIMITER).map { Image(id=it, link=FileController.createPostFileLink(it)) },
+        images = row[Posts.images].split(FILE_DELIMITER).map { FileData(id=it, link=FileController.createPostFileLink(it)) },
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
