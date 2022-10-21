@@ -37,7 +37,7 @@ fun Application.apiRoutes() {
             resources("static")
         }
 
-        static("/file") {
+        static("/data") {
             staticRootFolder = File("data")
             static("recipe") {
                 files("recipe")

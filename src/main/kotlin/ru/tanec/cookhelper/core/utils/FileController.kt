@@ -14,6 +14,7 @@ object FileController {
     const val recipeDataFolder = "data/recipe"
     const val feedDataFolder = "data/feed"
     const val attachmentDataFloder = "data/attachment"
+    const val apiDomen = "https://cookhelper-inc.herokuapp.com/"
 
     fun uploadUserFile(file: FileItem, user: Long): String {
         runCatching {
@@ -66,7 +67,7 @@ object FileController {
             createDirectory(Paths.get(feedDataFolder))
         }
         File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return Image(uniqueName, "$feedDataFolder/$uniqueName")
+        return Image(uniqueName, createPostFileLink(uniqueName))
     }
 
     fun getPostFile(path: String): File? {
@@ -94,6 +95,10 @@ object FileController {
             return File("$attachmentDataFloder/$path")
         }
         return null
+    }
+
+    fun createPostFileLink(path: String): String {
+        return "$apiDomen/$feedDataFolder/$path"
     }
 
 }
