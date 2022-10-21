@@ -33,7 +33,7 @@ class UserRepositoryImpl(
         )
 
 
-        if (data != null) emit(State.Success(data.commonInfo(), status = UserStatus.SUCCESS))
+        if (data != null) emit(State.Success(data.privateInfo(), status = UserStatus.SUCCESS))
         else emit(State.Error(status=UserStatus.EXCEPTION))
 
 
