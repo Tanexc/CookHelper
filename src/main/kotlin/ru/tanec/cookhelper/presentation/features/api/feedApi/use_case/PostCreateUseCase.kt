@@ -56,17 +56,17 @@ object PostCreateUseCase {
                     when (pt.name) {
                         "token" -> {
                             println(pt.value)
-                            token = pt.value
+                            token = pt.value.filter { it !='"' }
                         }
 
                         "text" -> {
                             println("text")
-                            text = pt.value
+                            text = pt.value.filter { it !='"' }
                         }
 
                         "label" -> {
                             println("label")
-                            label = pt.value
+                            label = pt.value.filter { it !='"' }
                         }
 
                         else -> {}
