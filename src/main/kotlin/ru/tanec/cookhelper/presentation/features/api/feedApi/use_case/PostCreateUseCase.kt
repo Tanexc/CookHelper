@@ -55,7 +55,7 @@ object PostCreateUseCase {
                 is PartData.FormItem -> {
                     when (pt.name) {
                         "token" -> {
-                            println("token")
+                            println(pt.value)
                             token = pt.value
                         }
 
