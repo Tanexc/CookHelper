@@ -12,4 +12,5 @@ object Chats: Table() {
     val members = text("members")
     val messages = text("messages")
     val attachments = text("attachments")
+    val creationTimestamp = long("creationTimestamp")
 }

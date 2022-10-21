@@ -8,5 +8,6 @@ data class Chat(
     val members: List<Long>,
     val messages: List<Long>,
     val attachments: List<Long>,
-    var avatar: List<String> = listOf()
+    val avatar: List<String> = listOf(),
+    val creationTimestamp: Long
 )
