@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.core.utils
 import io.ktor.http.content.*
 import io.ktor.http.content.PartData.*
 import io.ktor.util.date.*
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
 import java.io.File
 import java.nio.file.Files.createDirectory
 import java.nio.file.Paths
@@ -55,6 +56,17 @@ object FileController {
         }
         File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return uniqueName
+    }
+
+    fun uploadPostFileImage(file: FileItem, authorId: Long): Image {
+        val uniqueName = "${
+            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + authorId).toInt()
+        }_${authorId}_${file.originalFileName}"
+        runCatching {
+            createDirectory(Paths.get(feedDataFolder))
+        }
+        File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
+        return Image(uniqueName, "$feedDataFolder/$uniqueName")
     }
 
     fun getPostFile(path: String): File? {

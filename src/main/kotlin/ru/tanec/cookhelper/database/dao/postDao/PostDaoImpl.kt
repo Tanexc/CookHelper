@@ -4,9 +4,11 @@ import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.SECOND_DELIMITER
 import ru.tanec.cookhelper.core.constants.SEPORATOR
+import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 
 class PostDaoImpl : PostDao {
@@ -15,8 +17,8 @@ class PostDaoImpl : PostDao {
         id = row[Posts.id],
         authorId = row[Posts.authorId],
         text = row[Posts.text],
-        attachment = row[Posts.attachment].split(FILE_DELIMITER),
-        images = row[Posts.images].split(FILE_DELIMITER),
+        attachments = row[Posts.attachments].split(FILE_DELIMITER),
+        images = row[Posts.images].split(FILE_DELIMITER).map { Image(id=it, link=FileController.feedDataFolder) },
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -55,15 +57,16 @@ class PostDaoImpl : PostDao {
 
     override suspend fun insertPost(post: Post): Post = dbQuery {
         Posts
-            .insert {
-                it[authorId] = post.authorId?: 0
-                it[text] = post.text
-                it[attachment] = post.attachment.joinToString(SEPORATOR)
-                it[images] = post.images.joinToString(FILE_DELIMITER)
-                it[likes] = post.likes.joinToString(" ")
-                it[reposts] = post.reposts.joinToString(" ")
-                it[comments] = post.comments.joinToString(SECOND_DELIMITER)
-                it[timestamp] = post.timestamp
+            .insert { row ->
+                row[authorId] = post.authorId?: 0
+                row[text] = post.text
+                row[label] = post.label
+                row[attachments] = post.attachments.joinToString(SEPORATOR)
+                row[images] = post.images.joinToString(FILE_DELIMITER) { it.id }
+                row[likes] = post.likes.joinToString(" ")
+                row[reposts] = post.reposts.joinToString(" ")
+                row[comments] = post.comments.joinToString(SECOND_DELIMITER)
+                row[timestamp] = post.timestamp
 
             }
 
@@ -78,7 +81,8 @@ class PostDaoImpl : PostDao {
         Posts
             .update {
                 it[text] = post.text
-                it[attachment] = post.attachment.joinToString(FILE_DELIMITER)
+                it[label] = post.label
+                it[attachments] = post.attachments.joinToString(FILE_DELIMITER)
                 it[images] = post.images.joinToString(FILE_DELIMITER)
                 it[likes] = post.likes.joinToString(" ")
                 it[reposts] = post.reposts.joinToString(" ")

@@ -1,14 +1,16 @@
 package ru.tanec.cookhelper.enterprise.model.entity.post
 
 import kotlinx.serialization.Serializable
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
 
 @Serializable
 data class Post(
     val id: Long = 0,
     val authorId: Long?,
     val text: String = "",
-    val attachment: List<String> = listOf(),
-    val images: List<String> = listOf(),
+    val label: String = "",
+    val attachments: List<String> = listOf(),
+    val images: List<Image> = listOf(),
 
     val likes: List<Long>,
     val comments: List<String>,

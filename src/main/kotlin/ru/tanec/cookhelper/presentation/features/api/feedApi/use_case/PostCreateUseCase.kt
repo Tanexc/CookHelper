@@ -6,7 +6,10 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.RecipeStatus
 import ru.tanec.cookhelper.core.constants.status.UserStatus
+import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.FileController.uploadPostFile
+import ru.tanec.cookhelper.core.utils.FileController.uploadPostFileImage
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.Image
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -42,6 +45,7 @@ object PostCreateUseCase {
         var token: String? = null
         val authorId: Long?
         var text: String? = null
+        var label: String? = null
         val attachment: List<PartData.FileItem> = listOf()
         var images: List<PartData.FileItem> = listOf()
 
@@ -55,6 +59,10 @@ object PostCreateUseCase {
 
                         "text" -> {
                             text = pt.value
+                        }
+
+                        "label" -> {
+                            label = pt.value
                         }
 
                         else -> {}
@@ -80,9 +88,10 @@ object PostCreateUseCase {
             else -> null
         }
 
-        return if ((token != null) and (text != null)) PostData(
+        return if ((authorId != null) and (text != null)) PostData(
             authorId,
             text,
+            label,
             attachment,
             images
         ) else null
@@ -95,8 +104,9 @@ object PostCreateUseCase {
         return Post(
             authorId = this.authorId,
             text = this.text ?: "",
-            attachment = this.attachment.map { uploadPostFile(it, this.authorId ?: 0) },
-            images = this.images.map { uploadPostFile(it, this.authorId ?: 0) },
+            label = this.label?: "",
+            attachments = this.attachment.map { uploadPostFile(it, this.authorId ?: 0) },
+            images = this.images.map { uploadPostFileImage(it, this.authorId ?: 0) },
             comments = listOf(),
             likes = listOf(),
             reposts = listOf(),
