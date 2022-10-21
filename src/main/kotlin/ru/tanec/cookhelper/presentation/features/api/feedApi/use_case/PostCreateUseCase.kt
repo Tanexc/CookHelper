@@ -55,14 +55,17 @@ object PostCreateUseCase {
                 is PartData.FormItem -> {
                     when (pt.name) {
                         "token" -> {
+                            println("token")
                             token = pt.value
                         }
 
                         "text" -> {
+                            println("text")
                             text = pt.value
                         }
 
                         "label" -> {
+                            println("label")
                             label = pt.value
                         }
 
@@ -73,7 +76,7 @@ object PostCreateUseCase {
                 //TODO("attachment")
 
                 is PartData.FileItem -> {
-                    print("rererererererere")
+                    print("image")
                     images = images + listOf(pt)
                 }
 
@@ -88,6 +91,8 @@ object PostCreateUseCase {
             is State.Success -> data.data?.id
             else -> null
         }
+
+        println("asaasasasasas")
 
         return if ((authorId != null) and (text != null)) PostData(
             authorId,
