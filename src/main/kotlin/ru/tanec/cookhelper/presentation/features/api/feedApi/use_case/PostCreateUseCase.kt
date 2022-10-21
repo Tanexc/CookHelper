@@ -94,6 +94,8 @@ object PostCreateUseCase {
 
         println("asaasasasasas")
 
+        println("author id  $authorId")
+
         return if ((authorId != null) and (text != null)) PostData(
             authorId,
             text,
