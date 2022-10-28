@@ -6,6 +6,8 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.SECOND_DELIMITER
+import ru.tanec.cookhelper.core.constants.attachmentDataFloder
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Answers
@@ -20,7 +22,7 @@ class AnswerDaoImpl: AnswerDao {
         text=row[Answers.text],
         authorId =row[Answers.authorId],
         replyToId=row[Answers.replyToId],
-        attachments = row[Answers.attachments].split(ATTCH_DELIMITER).mapNotNull{it.toLongOrNull()},
+        attachments = row[Answers.attachments].split(ATTCH_DELIMITER).map{it.toFileData(attachmentDataFloder)}.filter {it.id != ""},
         timestamp = row[Answers.timestamp],
         likes = row[Answers.likes].split(SECOND_DELIMITER).mapNotNull{it.toLongOrNull()}
 

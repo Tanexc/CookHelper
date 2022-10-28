@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.core.constants.userDataFolder
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.database.dao.userDao.UserDaoImpl
 import ru.tanec.cookhelper.core.utils.HashTool
@@ -20,8 +22,18 @@ class UserRepositoryImpl(
     override val hashTool: HashTool = HashTool,
     override val validator: ValidatorImpl = ValidatorImpl
 ) : UserRepository {
-    override fun editChats(user: User): Flow<State<User?>> = flow {
-        dao.getById(user.id)?.let { dao.editUser(it.copy(chats=user.chats)) }
+
+    override fun edit(user: User): Flow<State<User?>> = flow {
+        emit(State.Processing())
+        try {
+
+            val data = dao.editUser(user)
+            emit(State.Success(data))
+
+
+        } catch (e: Exception) {
+            emit(State.Error(message=e.message?: "error in edit() of UserRepository"))
+        }
     }
 
     override fun register(
@@ -29,17 +41,22 @@ class UserRepositoryImpl(
     ): Flow<State<User?>> = flow {
         emit(State.Processing())
 
-        if (!nicknameAccessibility(user.nickname)) throw Exception("nickname rejected")
-        if (!emailAccessibility(user.email)) throw Exception("login rejected")
+        try {
 
-        val data = dao.addNew(
-            user.copy(registrationTimestamp = getTimeMillis(), token=generateToken(user.name, user.surname, user.registrationTimestamp?:0L, user.password.toString()))
-        )
+            if (!nicknameAccessibility(user.nickname)) throw Exception("nickname rejected")
+            if (!emailAccessibility(user.email)) throw Exception("login rejected")
+
+            val timestamp = getTimeMillis()
+            val token = generateToken(user.name, user.surname, timestamp, user.password.toString())
+
+            val data = dao.addNew(user.copy(registrationTimestamp = timestamp, token = token))
 
 
-        if (data != null) emit(State.Success(data.privateInfo(), status = UserStatus.SUCCESS))
-        else emit(State.Error(status=UserStatus.EXCEPTION))
-
+            if (data != null) emit(State.Success(data.privateInfo()))
+            else emit(State.Error())
+        } catch (e: Exception) {
+            emit(State.Error(message=e.message?:"error in register of UserRepository"))
+        }
 
     }
 
@@ -48,7 +65,7 @@ class UserRepositoryImpl(
 
         var user = dao.getByLogin(login)
 
-        if (user == null) emit(State.Error(status = UserStatus.USER_NOT_FOUND))
+        if (user == null) emit(State.Error(status = USER_NOT_FOUND))
         else if (hashTool.verifyHash(password, user.password)) {
             if (user.token == "") user.token = generateToken(
                 user.name,
@@ -57,8 +74,8 @@ class UserRepositoryImpl(
                 user.password.toString()
             )
             user = action(user)
-            emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
-        } else emit(State.Error(status = UserStatus.USER_NOT_FOUND))
+            emit(State.Success(user.privateInfo(), status = SUCCESS))
+        } else emit(State.Error(status = WRONG_CREDENTIALS))
 
     }
 
@@ -68,24 +85,25 @@ class UserRepositoryImpl(
     ): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.EXCEPTION))
+        if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
-            user.avatar.add(avatarPath); user = action(user); dao.editUser(user); emit(
-                State.Success(
-                    user.privateInfo(),
-                    status = UserStatus.SUCCESS
-                )
-            )
+            user.avatar = user.avatar + listOf(avatarPath.toFileData(userDataFolder))
+            user = action(user)
+            dao.editUser(user)
+            emit(State.Success(user.privateInfo()))
         }
     }
 
-    override fun deleteAvatar(token: String, avatarIndex: Int): Flow<State<User?>> = flow {
+    override fun deleteAvatar(token: String, avatarId: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
-            user.avatar.removeAt(avatarIndex); user =
-                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+
+            user.avatar = user.avatar.filter { it.id != avatarId}
+            user = action(user)
+            dao.editUser(user)
+            emit(State.Success(user.privateInfo()))
         }
     }
 
@@ -94,118 +112,72 @@ class UserRepositoryImpl(
         emit(State.Processing())
         val user = dao.getByToken(token)
         val requestedUser = dao.getById(id)
-        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
+        if (user == null) emit(State.Expired(message = "token expired", status = TOKEN_EXPIRED))
         else if (requestedUser == null) emit(
             State.Error(
                 message = "user not found",
-                status = UserStatus.USER_NOT_FOUND
+                status = USER_NOT_FOUND
             )
         )
         else if (requestedUser.id == user.id) emit(
             State.Success(
                 user.privateInfo(),
-                status = UserStatus.SUCCESS
+                status = SUCCESS
             )
-        ) else emit(State.Success(requestedUser.commonInfo(), status = UserStatus.SUCCESS))
+        ) else emit(State.Success(requestedUser.commonInfo(), status = SUCCESS))
 
     }
 
-    override fun getAll(): Flow<State<MutableList<User>>> = flow {
+    override fun getAll(): Flow<State<List<User>>> = flow {
         emit(State.Processing())
         try {
-            val userList = dao.getAll().map { it.smallInfo() }.toMutableList()
-            emit(State.Success(data = userList, status = UserStatus.SUCCESS))
+            val userList = dao.getAll().map { it.smallInfo() }
+            emit(State.Success(data = userList))
         } catch (e: Exception) {
-            emit(State.Error(status = UserStatus.EXCEPTION))
+            emit(State.Error(message=e.message?:"error in getAll() of UserRepository"))
         }
     }
 
-    override fun addRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
+    override fun getByNickname(nickname: String): Flow<State<List<User>?>> = flow {
         emit(State.Processing())
-        var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
-        else {
-            user.userRecipes.add(recipeId); user =
-                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
+        try {
+            val data = dao.getByNickname(nickname)
+            emit(State.Success(data = data))
+        } catch (e: Exception) {
+            emit(State.Error(message=e.message?:"error in getAll() of UserRepository"))
         }
-    }
-
-    override fun deleteRecipe(token: String, recipeId: Long): Flow<State<User?>> = flow {
-        emit(State.Processing())
-        var user = dao.getByToken(token)
-        if (user == null) emit(State.Expired(message = "token expired", status = UserStatus.TOKEN_EXPIRED))
-        else {
-            user.userRecipes.remove(recipeId); user =
-                action(user); dao.editUser(user); emit(State.Success(user.privateInfo(), status = UserStatus.SUCCESS))
-        }
-    }
-
-    override fun addPost(token: String, postId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun addProducts(token: String, products: MutableList<Long>): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteProducts(token: String, products: MutableList<Long>): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun starRecipe(token: String, recipeId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun starProduct(token: String, productId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun starPost(token: String, postId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun subscribe(token: String, userId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun addSubscriber(id: Long, userId: Long): Flow<State<User?>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun changePassword(token: String, password: String): Flow<State<User?>> {
-        TODO()
     }
 
     override fun recoverAccess(code: String, login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(login)
-        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
+        if (user == null) emit(State.Error(message = "user not found", status = USER_NOT_FOUND))
         else if (user.checkRecoveryCode(code)) emit(
             State.Success(
                 user,
-                status = UserStatus.SUCCESS
+                status = SUCCESS
             )
-        ) else emit(State.Error(message = "incorrect code", status = UserStatus.WRONG_CREDENTAILS))
+        ) else emit(State.Error(message = "incorrect code", status = WRONG_CREDENTIALS))
     }
 
     override fun recoveryCode(login: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(login)
-        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
+        if (user == null) emit(State.Error(message = "user not found", status = USER_NOT_FOUND))
         else {
             user.generateRecoveryCode()
             dao.editUser(user)
-            emit(State.Success(user, status = UserStatus.SUCCESS))
+            emit(State.Success(user, status = SUCCESS))
         }
     }
 
     override fun verify(code: String, email: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByLogin(email)
-        if (user == null) emit(State.Error(message = "user not found", status = UserStatus.USER_NOT_FOUND))
+        if (user == null) emit(State.Error(message = "user not found", status = USER_NOT_FOUND))
         else if (user.code == code) {
-            dao.editUser(user); emit(State.Success(user, status = UserStatus.SUCCESS))
-        } else emit(State.Error(message = "incorrect code", status = UserStatus.WRONG_CREDENTAILS))
+            dao.editUser(user); emit(State.Success(user, status = SUCCESS))
+        } else emit(State.Error(message = "incorrect code", status = WRONG_CREDENTIALS))
     }
 
     override fun validatePassword(password: String): Boolean =
@@ -240,14 +212,18 @@ class UserRepositoryImpl(
     override suspend fun getByToken(token: String): Flow<State<User?>> = flow {
         emit(State.Processing())
         val user = dao.getByToken(token)
-        if (user != null) emit(State.Success(user, status = UserStatus.SUCCESS))
-        else emit(State.Error(status=UserStatus.USER_NOT_FOUND))
+        if (user != null) emit(State.Success(user, status = SUCCESS))
+        else emit(State.Error(status=USER_NOT_FOUND))
     }
 
-    override suspend fun getById(id: Long): Flow<State<User?>> = flow {
+    override fun getById(id: Long): Flow<State<User?>> = flow {
         emit(State.Processing())
-        val user = dao.getById(id)?.commonInfo()
-        emit(State.Success(data=user))
+        try {
+            val user = dao.getById(id)?.commonInfo()
+            emit(State.Success(data = user))
+        } catch(e: Exception) {
+            emit(State.Error(message=e.message?: "error in getById() in UserRepository"))
+        }
 
     }
 

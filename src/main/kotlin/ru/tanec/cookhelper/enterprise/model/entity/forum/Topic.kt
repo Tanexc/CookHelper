@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.Attachment
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 
 @Serializable
 data class Topic(
@@ -10,7 +11,7 @@ data class Topic(
     val title: String,
     val problem: String,
     val answers: List<Long>,
-    val attachments: List<String>,
+    val attachments: List<FileData>,
     val timestamp: Long,
     val closed: Boolean
 )

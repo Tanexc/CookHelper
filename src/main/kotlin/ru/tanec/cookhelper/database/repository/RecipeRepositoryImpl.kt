@@ -4,8 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.SOME_ERROR
-import ru.tanec.cookhelper.core.constants.SUCCESS
-import ru.tanec.cookhelper.core.constants.status.RecipeStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDao
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
@@ -19,9 +18,9 @@ class RecipeRepositoryImpl(
         emit(State.Processing())
         try {
             val data = dao.insertRecipe(recipe)
-            emit(State.Success(message= SUCCESS, status=RecipeStatus.SUCCESS, data=data))
+            emit(State.Success(status = SUCCESS, data = data))
         } catch (e: Exception) {
-            emit(State.Error(message = e.message ?: SOME_ERROR, status = RecipeStatus.EXCEPTION))
+            emit(State.Error(message = e.message ?: SOME_ERROR, status = EXCEPTION))
         }
 
     }
@@ -29,8 +28,8 @@ class RecipeRepositoryImpl(
     override fun getById(id: Long): Flow<State<Recipe?>> = flow {
         emit(State.Processing())
         when (val recipe = dao.getById(id)) {
-            is Recipe -> emit(State.Success(recipe, status = RecipeStatus.SUCCESS))
-            else -> emit(State.Error(status = RecipeStatus.RECIPE_NOT_FOUND))
+            is Recipe -> emit(State.Success(recipe, status = SUCCESS))
+            else -> emit(State.Error(status = RECIPE_NOT_FOUND))
         }
 
     }
@@ -38,10 +37,10 @@ class RecipeRepositoryImpl(
     override fun getByTitle(title: String, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getByTitle(title, part, div), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.getByTitle(title, part, div), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
     }
 
@@ -49,10 +48,10 @@ class RecipeRepositoryImpl(
     override fun getAll(id: Long, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getAll(part, div), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.getAll(part, div), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
 
     }
@@ -60,40 +59,40 @@ class RecipeRepositoryImpl(
     override fun getByUser(userId: Long, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getByUser(userId, part, div), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.getByUser(userId, part, div), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
     }
 
     override fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getRecipeByIngredient(ingredient, part, div), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.getRecipeByIngredient(ingredient, part, div), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
     }
 
     override fun getRecipeByIngredients(ingredient: List<Long>, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getRecipeByIngredients(ingredient, part, div), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.getRecipeByIngredients(ingredient, part, div), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
     }
 
     override fun editRecipe(recipe: Recipe): Flow<State<Recipe>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.editRecipe(recipe), status = RecipeStatus.SUCCESS))
+            emit(State.Success(dao.editRecipe(recipe), status = SUCCESS))
 
         } catch (e: Exception) {
-            emit(State.Error(status = RecipeStatus.EXCEPTION))
+            emit(State.Error(status = EXCEPTION))
         }
     }
 

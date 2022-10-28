@@ -12,7 +12,7 @@ interface UserRepository {
     val hashTool: HashTool
     val validator: ValidatorImpl
 
-    fun editChats(
+    fun edit(
         user: User
     ): Flow<State<User?>>
     fun register(
@@ -31,71 +31,23 @@ interface UserRepository {
 
     fun deleteAvatar(
         token: String,
-        avatarIndex: Int
+        avatarId: String
     ): Flow<State<User?>>
 
+    suspend fun getByToken(token: String): Flow<State<User?>>
 
     fun getUser(
         token: String,
         id: Long
     ): Flow<State<User?>>
 
-    fun getAll(): Flow<State<MutableList<User>>>
+    fun getAll(): Flow<State<List<User>>>
 
-    fun addRecipe(
-        token: String,
-        recipeId: Long
-    ): Flow<State<User?>>
+    fun getById(id: Long): Flow<State<User?>>
 
-    fun deleteRecipe(
-        token: String,
-        recipeId: Long
-    ): Flow<State<User?>>
-
-    fun addPost(
-        token: String,
-        postId: Long
-    ): Flow<State<User?>>
-
-    fun addProducts(
-        token: String,
-        products: MutableList<Long>
-    ): Flow<State<User?>>
-
-    fun deleteProducts(
-        token: String,
-        products: MutableList<Long>
-    ): Flow<State<User?>>
-
-    fun starRecipe(
-        token: String,
-        recipeId: Long
-    ): Flow<State<User?>>
-
-    fun starProduct(
-        token: String,
-        productId: Long
-    ): Flow<State<User?>>
-
-    fun starPost(
-        token: String,
-        postId: Long
-    ): Flow<State<User?>>
-
-    fun subscribe(
-        token: String,
-        userId: Long
-    ): Flow<State<User?>>
-
-    fun addSubscriber(
-        id: Long,
-        userId: Long
-    ): Flow<State<User?>>
-
-    fun changePassword(
-        token: String,
-        password: String
-    ): Flow<State<User?>>
+    fun getByNickname(
+        nickname: String
+    ): Flow<State<List<User>?>>
 
     fun recoverAccess(
         code: String,
@@ -125,8 +77,4 @@ interface UserRepository {
     ): Boolean
 
     suspend fun action(user: User): User
-
-    suspend fun getByToken(token: String): Flow<State<User?>>
-
-    suspend fun getById(id: Long): Flow<State<User?>>
 }

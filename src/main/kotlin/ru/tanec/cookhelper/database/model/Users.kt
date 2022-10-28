@@ -14,6 +14,8 @@ object Users: Table() {
     val password = binary("password", length=256)
 
     val avatar = text("avatar")
+    val images = text("images")
+
     val lastSeen = long("lastSeen")
     val status = text("status")
 

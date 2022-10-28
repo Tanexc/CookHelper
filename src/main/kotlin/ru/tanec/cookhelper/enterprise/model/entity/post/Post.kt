@@ -9,7 +9,7 @@ data class Post(
     val authorId: Long?,
     val text: String = "",
     val label: String = "",
-    val attachments: List<String> = listOf(),
+    val attachments: List<FileData> = listOf(),
     val images: List<FileData> = listOf(),
 
     val likes: List<Long>,

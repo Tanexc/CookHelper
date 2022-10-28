@@ -1,6 +1,7 @@
 package ru.tanec.cookhelper.enterprise.model.entity.user
 
 import kotlinx.serialization.Serializable
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import kotlin.random.Random
 
 @Serializable
@@ -22,21 +23,24 @@ data class User(
     var recoveryCode: String = "",
     var token: String = "",
 
-    var avatar: MutableList<String> = mutableListOf(),
-    val fridge: MutableList<Long> = mutableListOf(),
-    val topics: MutableList<Long> = mutableListOf(),
-    val starredRecipes: MutableList<Long> = mutableListOf(),
-    val bannedRecipes: MutableList<Long> = mutableListOf(),
-    val starredIngredients: MutableList<Long> = mutableListOf(),
-    val bannedIngredients: MutableList<Long> = mutableListOf(),
-    val chats: MutableList<Long> = mutableListOf(),
-    val starredPosts: MutableList<Long> = mutableListOf(),
+    var avatar: List<FileData> = listOf(),
+    val images: List<FileData> = emptyList(),
 
-    val subscribers: MutableList<Long> = mutableListOf(),
-    val subscribes: MutableList<Long> = mutableListOf(),
 
-    val userRecipes: MutableList<Long> = mutableListOf(),
-    val userPosts: MutableList<Long> = mutableListOf(),
+    val fridge: List<Long> = listOf(),
+    val topics: List<Long> = listOf(),
+    val starredRecipes: List<Long> = listOf(),
+    val bannedRecipes: List<Long> = listOf(),
+    val starredIngredients: List<Long> = listOf(),
+    val bannedIngredients: List<Long> = listOf(),
+    val chats: List<Long> = listOf(),
+    val starredPosts: List<Long> = listOf(),
+
+    val subscribers: List<Long> = listOf(),
+    val subscribes: List<Long> = listOf(),
+
+    val userRecipes: List<Long> = listOf(),
+    val userPosts: List<Long> = listOf(),
     val registrationTimestamp: Long? = null
 
 
@@ -44,7 +48,7 @@ data class User(
 
     fun getPsw() = password
     fun generateRecoveryCode() {
-        recoveryCode = mutableListOf(
+        recoveryCode = listOf(
             Random.nextInt(0, 10),
             Random.nextInt(0, 10),
             Random.nextInt(0, 10),
@@ -105,7 +109,7 @@ data class User(
         id = this.id,
         name = this.name,
         surname = this.surname,
-        avatar = mutableListOf(this.avatar[this.avatar.size - 1]),
+        avatar = this.avatar.lastOrNull()?.let{listOf(it)}?: emptyList(),
         lastSeen = this.lastSeen,
     )
 

@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.database.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.constants.status.CommentStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.database.dao.commentDao.CommentDao
 import ru.tanec.cookhelper.database.dao.commentDao.CommentDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.comment.Comment
@@ -19,13 +19,13 @@ class CommentRepositoryImpl(
             val data: Comment? = dao.getById(id)
 
             if (data == null) {
-                emit(State.Error(status = CommentStatus.COMMENT_NOT_FOUND))
+                emit(State.Error(status = COMMENT_NOT_FOUND))
             }
 
-            emit(State.Success(status = CommentStatus.SUCCESS, data = data))
+            emit(State.Success(status = SUCCESS, data = data))
 
         } catch (e: Exception) {
-            emit(State.Error(status = CommentStatus.EXCEPTION, message = e.message ?: "error"))
+            emit(State.Error(message = e.message ?: "error"))
         }
 
     }
@@ -34,10 +34,10 @@ class CommentRepositoryImpl(
         emit(State.Processing())
         try {
             val data: List<Comment> = dao.getByIdList(list)
-            emit(State.Success(status = CommentStatus.SUCCESS, data = data))
+            emit(State.Success(data = data))
 
         } catch (e: Exception) {
-            emit(State.Error(status = CommentStatus.EXCEPTION, message = e.message ?: "error"))
+            emit(State.Error(message = e.message ?: "error"))
         }
 
     }
@@ -48,13 +48,13 @@ class CommentRepositoryImpl(
             val data: Comment? = dao.insert(comment)
 
             if (data == null) {
-                emit(State.Error(status = CommentStatus.PARAMETER_MISSED))
+                emit(State.Error(status = PARAMETER_MISSED))
             }
 
-            emit(State.Success(status = CommentStatus.SUCCESS, data = data))
+            emit(State.Success(data = data))
 
         } catch (e: Exception) {
-            emit(State.Error(status = CommentStatus.EXCEPTION, message = e.message ?: "error"))
+            emit(State.Error(message = e.message ?: "error"))
         }
 
     }

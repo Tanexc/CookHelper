@@ -19,7 +19,7 @@ class PostDaoImpl : PostDao {
         text = row[Posts.text],
         label = row[Posts.label],
         attachments = row[Posts.attachments].split(FILE_DELIMITER),
-        images = row[Posts.images].split(FILE_DELIMITER).map { FileData(id=it, link=FileController.createPostFileLink(it)) },
+        images = row[Posts.images].split(FILE_DELIMITER).map { it.toFile(feedDataFolder) },
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },

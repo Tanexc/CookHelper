@@ -4,6 +4,7 @@ import io.ktor.http.content.*
 import io.ktor.http.content.PartData.*
 import io.ktor.util.date.*
 import ru.tanec.cookhelper.core.constants.*
+import ru.tanec.cookhelper.core.utils.HashTool.uniqueString
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import java.io.File
 import java.nio.file.Files.createDirectory
@@ -11,108 +12,19 @@ import java.nio.file.Paths
 import kotlin.random.Random
 
 object FileController {
+    fun uploadFile(folder: String, file: FileItem): FileData {
+        val uniqueName = uniqueString(getTimeMillis().toString().reversed())
+        val type = file.originalFileName?.split(".")?.get(1)?: ""
 
-
-    fun uploadUserFile(file: FileItem, user: Long): String {
-        runCatching {
-            createDirectory(Paths.get(userDataFolder))
-        }
-        val uniqueName =
-            "${
-                (("1" + getTimeMillis().toString().reversed()).toLong() / 35333442.9 + user).toInt()
-            }${file.originalFileName}"
-        File("$userDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return uniqueName
-    }
-
-    fun uploadRecipeImage(file: FileItem, category: Long): String {
-        val uniqueName = "${
-            (("1" + getTimeMillis().toString().reversed()).toLong() / 38333410.9).toInt()
-        }_${category}_${file.originalFileName}"
-        runCatching {
-            createDirectory(Paths.get(recipeDataFolder))
-        }
-        File("$recipeDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return "$category/$uniqueName"
-    }
-
-    fun getUserFile(uniqueName: String, user: Long): File = File("$userDataFolder/$user/$uniqueName")
-
-    fun getRecipeImage(path: String): File? {
-        runCatching {
-            return File(recipeDataFolder)
-        }
-        return null
-    }
-
-    fun uploadPostFile(file: FileItem, authorId: Long): String {
-        val uniqueName = "${
-            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + authorId).toInt()
-        }_${authorId}_${file.originalFileName}"
-        runCatching {
-            createDirectory(Paths.get(feedDataFolder))
-        }
-        File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return uniqueName
-    }
-
-    fun uploadPostFileImage(file: FileItem, authorId: Long): FileData? {
-        if (file == null) {
-            return null
-        }
-        val uniqueName = "${
-            (("1" + getTimeMillis().toString().reversed()).toLong() / 35369442.9 + authorId).toInt()
-        }_${authorId}_${file.originalFileName}"
-        runCatching {
-            createDirectory(Paths.get(feedDataFolder))
-        }
-        File("$feedDataFolder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return FileData(uniqueName, createPostFileLink(uniqueName))
-    }
-
-    fun getPostFile(path: String): File? {
-
-        runCatching {
-            return File("$feedDataFolder/$path")
-        }
-        return null
-    }
-
-    fun uploadAttachmentFile(file: FileItem): String {
-        val uniqueName = "${file.hashCode()}" +
-                "${Random.nextInt(2098)}" +
-                "${getTimeMillis().toString().reversed().toLong() / 3536904.2}" +
-                "${file.originalFileName}"
-        runCatching {
-            createDirectory(Paths.get(attachmentDataFloder))
-        }
-        File("$attachmentDataFloder/$uniqueName").writeBytes(file.streamProvider().readBytes())
-        return uniqueName
-    }
-
-    fun getAttachmentFile(path: String): File? {
-        runCatching {
-            return File("$attachmentDataFloder/$path")
-        }
-        return null
-    }
-
-    fun createPostFileLink(path: String): String {
-        return "$apiDomen/$feedDataFolder/$path"
-    }
-
-    fun uploadFile(folder: String, file: FileItem): File {
-        val uniqueName = "${file.hashCode()}" +
-                "${Random.nextInt(2098)}" +
-                "${getTimeMillis().toString().reversed().toLong() / 3536904.2}" +
-                "${file.originalFileName}"
         runCatching {
             createDirectory(Paths.get(folder))
         }
-        return File(uniqueName, "$apiDomen/$folder/$uniqueName")
+
+        File("$folder/$uniqueName.$type").writeBytes(file.streamProvider().readBytes())
+        return FileData(uniqueName, "$apiDomen/$folder/$uniqueName.$type")
     }
 
-    fun String.toFile(folder: String): FileData = FileData(
+    fun String.toFileData(folder: String): FileData = FileData(
         id=this,
         link="$apiDomen/$folder/$this"
     )

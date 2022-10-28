@@ -1,6 +1,9 @@
 package ru.tanec.cookhelper.database.dao.userDao
 
 import org.jetbrains.exposed.sql.*
+import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
+import ru.tanec.cookhelper.core.constants.userDataFolder
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Users
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
@@ -14,7 +17,8 @@ class UserDaoImpl : UserDao {
         nickname = row[Users.nickname],
         email = row[Users.email],
         password = row[Users.password],
-        avatar = row[Users.avatar].split(" ").toMutableList(),
+        avatar = row[Users.avatar].split(FILE_DELIMITER).map{it.toFileData(userDataFolder)},
+        images = row[Users.images].split(FILE_DELIMITER).map{it.toFileData(userDataFolder)},
         lastSeen = row[Users.lastSeen],
         status = row[Users.status],
         deleted = row[Users.deleted],
@@ -23,26 +27,26 @@ class UserDaoImpl : UserDao {
         recoveryCode = row[Users.recoveryCode],
         token = row[Users.token],
 
-        fridge = row[Users.fridge].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        topics = row[Users.topics].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        starredRecipes = row[Users.starredRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        bannedRecipes = row[Users.bannedRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        starredIngredients = row[Users.starredIngredients].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        bannedIngredients = row[Users.bannedIngredients].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        chats = row[Users.chats].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        userRecipes = row[Users.userRecipes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        userPosts = row[Users.userPosts].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        subscribes = row[Users.subscribes].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
-        subscribers = row[Users.subscribers].split(" ").mapNotNull { it.toLongOrNull() }.toMutableList(),
+        fridge = row[Users.fridge].split(" ").mapNotNull { it.toLongOrNull() },
+        topics = row[Users.topics].split(" ").mapNotNull { it.toLongOrNull() },
+        starredRecipes = row[Users.starredRecipes].split(" ").mapNotNull { it.toLongOrNull() },
+        bannedRecipes = row[Users.bannedRecipes].split(" ").mapNotNull { it.toLongOrNull() },
+        starredIngredients = row[Users.starredIngredients].split(" ").mapNotNull { it.toLongOrNull() },
+        bannedIngredients = row[Users.bannedIngredients].split(" ").mapNotNull { it.toLongOrNull() },
+        chats = row[Users.chats].split(" ").mapNotNull { it.toLongOrNull() },
+        userRecipes = row[Users.userRecipes].split(" ").mapNotNull { it.toLongOrNull() },
+        userPosts = row[Users.userPosts].split(" ").mapNotNull { it.toLongOrNull() },
+        subscribes = row[Users.subscribes].split(" ").mapNotNull { it.toLongOrNull() },
+        subscribers = row[Users.subscribers].split(" ").mapNotNull { it.toLongOrNull() },
         registrationTimestamp = row[Users.registrationTimestamp]
 
     )
 
-    override suspend fun getAll(): MutableList<User> = dbQuery {
+    override suspend fun getAll(): List<User> = dbQuery {
         Users
             .selectAll()
             .map(::resultRowToUser)
-            .toMutableList()
+
     }
 
     override suspend fun getById(id: Long): User? = dbQuery {
@@ -139,7 +143,14 @@ class UserDaoImpl : UserDao {
         Users
             .select { Users.token eq token }
             .map(::resultRowToUser)
-            .toMutableList()
             .singleOrNull()
+    }
+
+    override suspend fun getByNickname(nickname: String): List<User> = dbQuery {
+
+        Users
+            .select { Users.nickname like nickname }
+            .map(::resultRowToUser)
+
     }
 }

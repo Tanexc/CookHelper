@@ -1,6 +1,7 @@
 package ru.tanec.cookhelper.enterprise.model.entity.chat
 
 import kotlinx.serialization.Serializable
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 
 @Serializable
 data class Chat(
@@ -8,7 +9,7 @@ data class Chat(
     val title: String?,
     val members: List<Long>,
     val messages: List<Long>,
-    val attachments: List<Long>,
-    val avatar: List<String> = listOf(),
+    val attachments: List<FileData>,
+    val avatar: List<FileData> = listOf(),
     val creationTimestamp: Long
 )
