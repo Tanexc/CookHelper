@@ -6,6 +6,5 @@ data class PostData(
     val authorId: Long?,
     val text: String? = "",
     val label: String? = "",
-    val attachment: List<PartData.FileItem>,
-    val images: List<PartData.FileItem>,
+    val attachment: List<PartData.FileItem>
 )

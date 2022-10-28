@@ -72,6 +72,7 @@ data class User(
         deleted = this.deleted,
         verified = this.verified,
         token = this.token,
+        images = this.images,
 
         fridge = this.fridge,
         topics = this.topics,
@@ -100,7 +101,8 @@ data class User(
                 status = this.status,
                 deleted = this.deleted,
                 userRecipes = this.userRecipes,
-                userPosts = this.userPosts
+                userPosts = this.userPosts,
+                images = this.images,
             )
         } else User(deleted = this.deleted)
     }

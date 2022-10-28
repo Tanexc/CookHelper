@@ -58,32 +58,33 @@ class UserDaoImpl : UserDao {
 
     override suspend fun addNew(user: User): User? = dbQuery {
         Users
-            .insert {
-                it[name] = user.name
-                it[surname] = user.surname
-                it[nickname] = user.nickname
-                it[email] = user.email
-                it[password] = user.getPsw()
-                it[avatar] = user.avatar.joinToString(" ")
-                it[lastSeen] = user.lastSeen
-                it[status] = user.status
-                it[deleted] = user.deleted
-                it[verified] = user.verified
-                it[code] = user.code
-                it[recoveryCode] = user.recoveryCode
-                it[token] = user.token
-                it[fridge] = user.fridge.joinToString(" ")
-                it[topics] = user.topics.joinToString(" ")
-                it[starredRecipes] = user.starredRecipes.joinToString(" ")
-                it[bannedRecipes] = user.bannedRecipes.joinToString(" ")
-                it[starredIngredients] = user.starredIngredients.joinToString(" ")
-                it[bannedIngredients] = user.bannedIngredients.joinToString(" ")
-                it[chats] = user.chats.joinToString(" ")
-                it[userRecipes] = user.userRecipes.joinToString(" ")
-                it[userPosts] = user.userPosts.joinToString(" ")
-                it[subscribes] = user.subscribes.joinToString(" ")
-                it[subscribers] = user.subscribers.joinToString(" ")
-                it[registrationTimestamp] = user.registrationTimestamp!!
+            .insert { row ->
+                row[name] = user.name
+                row[surname] = user.surname
+                row[nickname] = user.nickname
+                row[email] = user.email
+                row[password] = user.getPsw()
+                row[avatar] = user.avatar.joinToString(" ")
+                row[lastSeen] = user.lastSeen
+                row[status] = user.status
+                row[deleted] = user.deleted
+                row[verified] = user.verified
+                row[code] = user.code
+                row[recoveryCode] = user.recoveryCode
+                row[token] = user.token
+                row[fridge] = user.fridge.joinToString(" ")
+                row[topics] = user.topics.joinToString(" ")
+                row[starredRecipes] = user.starredRecipes.joinToString(" ")
+                row[bannedRecipes] = user.bannedRecipes.joinToString(" ")
+                row[starredIngredients] = user.starredIngredients.joinToString(" ")
+                row[bannedIngredients] = user.bannedIngredients.joinToString(" ")
+                row[chats] = user.chats.joinToString(" ")
+                row[userRecipes] = user.userRecipes.joinToString(" ")
+                row[userPosts] = user.userPosts.joinToString(" ")
+                row[subscribes] = user.subscribes.joinToString(" ")
+                row[subscribers] = user.subscribers.joinToString(" ")
+                row[registrationTimestamp] = user.registrationTimestamp!!
+                row[images] = user.images.joinToString(FILE_DELIMITER) { it.id }
             }
 
         Users
@@ -94,32 +95,33 @@ class UserDaoImpl : UserDao {
 
     override suspend fun editUser(user: User): User = dbQuery {
         Users
-            .update({ Users.id eq user.id }) {
-                it[id] = user.id
-                it[name] = user.name
-                it[surname] = user.surname
-                it[nickname] = user.nickname
-                it[email] = user.email
-                it[password] = user.getPsw()
-                it[avatar] = user.avatar.joinToString(" ")
-                it[lastSeen] = user.lastSeen
-                it[status] = user.status
-                it[deleted] = user.deleted
-                it[verified] = user.verified
-                it[code] = user.code
-                it[recoveryCode] = user.recoveryCode
-                it[token] = user.token
-                it[fridge] = user.fridge.joinToString(" ")
-                it[topics] = user.topics.joinToString(" ")
-                it[starredRecipes] = user.starredRecipes.joinToString(" ")
-                it[bannedRecipes] = user.bannedRecipes.joinToString(" ")
-                it[starredIngredients] = user.starredIngredients.joinToString(" ")
-                it[bannedIngredients] = user.bannedIngredients.joinToString(" ")
-                it[chats] = user.chats.joinToString(" ")
-                it[userRecipes] = user.userRecipes.joinToString(" ")
-                it[userPosts] = user.userPosts.joinToString(" ")
-                it[subscribes] = user.subscribes.joinToString(" ")
-                it[subscribers] = user.subscribers.joinToString(" ")
+            .update({ Users.id eq user.id }) { row ->
+                row[id] = user.id
+                row[name] = user.name
+                row[surname] = user.surname
+                row[nickname] = user.nickname
+                row[email] = user.email
+                row[password] = user.getPsw()
+                row[avatar] = user.avatar.joinToString(" ")
+                row[lastSeen] = user.lastSeen
+                row[status] = user.status
+                row[deleted] = user.deleted
+                row[verified] = user.verified
+                row[code] = user.code
+                row[recoveryCode] = user.recoveryCode
+                row[token] = user.token
+                row[fridge] = user.fridge.joinToString(" ")
+                row[topics] = user.topics.joinToString(" ")
+                row[starredRecipes] = user.starredRecipes.joinToString(" ")
+                row[bannedRecipes] = user.bannedRecipes.joinToString(" ")
+                row[starredIngredients] = user.starredIngredients.joinToString(" ")
+                row[bannedIngredients] = user.bannedIngredients.joinToString(" ")
+                row[chats] = user.chats.joinToString(" ")
+                row[userRecipes] = user.userRecipes.joinToString(" ")
+                row[userPosts] = user.userPosts.joinToString(" ")
+                row[subscribes] = user.subscribes.joinToString(" ")
+                row[subscribers] = user.subscribers.joinToString(" ")
+                row[images] = user.images.joinToString(FILE_DELIMITER) { it.id }
             }
         user
     }
