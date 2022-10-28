@@ -24,7 +24,9 @@ object JwtTool {
             .withClaim("arg2", surname)
             .withClaim("arg3", registered)
             .withClaim("arg4", passwordHash)
-            .withExpiresAt(Date(getTimeMillis() + 30*24*3600))
+            .withExpiresAt(Date(getTimeMillis() + 60*24*3600))
             .sign(Algorithm.HMAC256(config.property("jwt.secret").toString()))
     }
+
+    fun String.isNotExpired() = JWT.decode(this).expiresAt.time > getTimeMillis()
 }

@@ -10,7 +10,6 @@ data class Post(
     val text: String = "",
     val label: String = "",
     val attachments: List<FileData> = listOf(),
-    val images: List<FileData> = listOf(),
 
     val likes: List<Long>,
     val comments: List<String>,

@@ -15,5 +15,5 @@ data class MessageResponseData(
     val name: String,
     val nickname: String,
     val surname: String,
-    val avatar: String
+    val avatar: FileData
 )

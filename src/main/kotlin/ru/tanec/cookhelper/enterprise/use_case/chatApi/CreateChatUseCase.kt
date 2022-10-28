@@ -40,7 +40,7 @@ object CreateChatUseCase {
             for (userId in chat.members) {
                 state = userRepository.getById(userId).last()
                 if (state.data != null) {
-                    userRepository.editChats(state.data!!.copy(chats=(state.data!!.chats + mutableListOf(chat.id)) as MutableList<Long>))
+                    userRepository.edit(state.data!!.copy(chats=(state.data!!.chats + listOf(chat.id))))
                 }
             }
 

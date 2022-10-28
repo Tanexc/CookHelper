@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.recipe.Category
 
 class CategoryDaoImpl: CategoryDao {
 
-    fun resultRowToCategory(row: ResultRow): Category = Category(
+    private fun resultRowToCategory(row: ResultRow): Category = Category(
         id = row[Categories.id],
         title = row[Categories.title]
     )

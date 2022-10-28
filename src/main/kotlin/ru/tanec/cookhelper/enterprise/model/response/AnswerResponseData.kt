@@ -17,5 +17,5 @@ data class AnswerResponseData(
     val name: String,
     val nickname: String,
     val surname: String,
-    val avatar: String
+    val avatar: FileData
 )

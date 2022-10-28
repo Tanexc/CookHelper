@@ -6,10 +6,8 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.feedDataFolder
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
-import ru.tanec.cookhelper.core.constants.status.UserStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.core.utils.FileController.uploadFile
-import ru.tanec.cookhelper.core.utils.FileController.uploadPostFile
-import ru.tanec.cookhelper.core.utils.FileController.uploadPostFileImage
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -37,7 +35,7 @@ object PostCreateUseCase {
                     repository.insert(
                         post
                     ).last()
-                } else State.Error(status = UserStatus.USER_NOT_FOUND)
+                } else State.Error(status = USER_NOT_FOUND)
             }
         }
 
@@ -116,8 +114,7 @@ object PostCreateUseCase {
             authorId = this.authorId,
             text = this.text ?: "",
             label = this.label ?: "",
-            attachments = this.attachment.map { uploadFile(feedDataFolder, it).link },
-            images = if (this.images.isNotEmpty()) this.images.mapNotNull { uploadPostFileImage(it, this.authorId ?: 0) } else emptyList(),
+            attachments = this.attachment.map { uploadFile(feedDataFolder, it)},
             comments = listOf(),
             likes = listOf(),
             reposts = listOf(),

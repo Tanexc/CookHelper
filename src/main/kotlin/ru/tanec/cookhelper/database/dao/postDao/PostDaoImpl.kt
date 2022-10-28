@@ -1,10 +1,9 @@
 package ru.tanec.cookhelper.database.dao.postDao
 
 import org.jetbrains.exposed.sql.*
-import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
-import ru.tanec.cookhelper.core.constants.SECOND_DELIMITER
-import ru.tanec.cookhelper.core.constants.SEPORATOR
+import ru.tanec.cookhelper.core.constants.*
 import ru.tanec.cookhelper.core.utils.FileController
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
@@ -18,8 +17,7 @@ class PostDaoImpl : PostDao {
         authorId = row[Posts.authorId],
         text = row[Posts.text],
         label = row[Posts.label],
-        attachments = row[Posts.attachments].split(FILE_DELIMITER),
-        images = row[Posts.images].split(FILE_DELIMITER).map { it.toFile(feedDataFolder) },
+        attachments = row[Posts.attachments].split(ATTCH_DELIMITER).map {it.toFileData(feedDataFolder)},
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -62,8 +60,7 @@ class PostDaoImpl : PostDao {
                 row[authorId] = post.authorId?: 0
                 row[text] = post.text
                 row[label] = post.label
-                row[attachments] = post.attachments.joinToString(SEPORATOR)
-                row[images] = post.images.joinToString(FILE_DELIMITER) { it.id }
+                row[attachments] = post.attachments.joinToString(SEPORATOR) { it.id }
                 row[likes] = post.likes.joinToString(" ")
                 row[reposts] = post.reposts.joinToString(" ")
                 row[comments] = post.comments.joinToString(SECOND_DELIMITER)
@@ -80,14 +77,13 @@ class PostDaoImpl : PostDao {
 
     override suspend fun editRecipe(post: Post): Post = dbQuery {
         Posts
-            .update {
-                it[text] = post.text
-                it[label] = post.label
-                it[attachments] = post.attachments.joinToString(FILE_DELIMITER)
-                it[images] = post.images.joinToString(FILE_DELIMITER)
-                it[likes] = post.likes.joinToString(" ")
-                it[reposts] = post.reposts.joinToString(" ")
-                it[comments] = post.comments.joinToString(SECOND_DELIMITER)
+            .update { row ->
+                row[text] = post.text
+                row[label] = post.label
+                row[attachments] = post.attachments.joinToString(FILE_DELIMITER) { it.id }
+                row[likes] = post.likes.joinToString(" ")
+                row[reposts] = post.reposts.joinToString(" ")
+                row[comments] = post.comments.joinToString(SECOND_DELIMITER)
             }
         Posts
             .select { Posts.id eq post.id }

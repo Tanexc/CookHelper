@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import ru.tanec.cookhelper.core.constants.status.RecipeStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
@@ -37,18 +37,12 @@ fun recipeApiRoutes(
         //TODO
     }
 
-    route.get("/api/recipe/get/image/") {
-        try {
-            call.respondFile(GetRecipeImageUseCase(call.request.queryParameters))
-        } catch (_:Exception) {
-            call.respondFile(GetRecipeImageUseCase(Parameters.Empty))
-        }
-    }
+
     route.get("/api/recipe/post/like/") {
         try {
             call.respond(LikeRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
-            call.respond(ApiResponse<Recipe>(RecipeStatus.EXCEPTION, "exception", null))
+            call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
     }
 
@@ -56,7 +50,7 @@ fun recipeApiRoutes(
         try {
             call.respond(CommentRecipeUseCase(repository, userRepository, commentRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
-            call.respond(ApiResponse<Recipe>(RecipeStatus.EXCEPTION, "exception", null))
+            call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
     }
 
@@ -64,7 +58,7 @@ fun recipeApiRoutes(
         try {
             call.respond(RepostRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
-            call.respond(ApiResponse<Recipe>(RecipeStatus.EXCEPTION, "exception", null))
+            call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
     }
 

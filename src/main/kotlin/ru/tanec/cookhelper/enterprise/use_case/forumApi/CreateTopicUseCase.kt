@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.enterprise.use_case.forumApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
+import ru.tanec.cookhelper.core.constants.attachmentDataFloder
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
 import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.checkUserToken
@@ -10,7 +11,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
-import ru.tanec.cookhelper.enterprise.utls.TopicData
+import ru.tanec.cookhelper.enterprise.model.entity.forum.TopicData
 
 object CreateTopicUseCase {
     suspend operator fun invoke(
@@ -33,7 +34,7 @@ object CreateTopicUseCase {
                 }
 
                 is PartData.FileItem -> {
-                    val data = FileController.uploadAttachmentFile(param)
+                    val data = FileController.uploadFile(attachmentDataFloder, param)
                     topicData.attachment = topicData.attachment + listOf(data)
                 }
 

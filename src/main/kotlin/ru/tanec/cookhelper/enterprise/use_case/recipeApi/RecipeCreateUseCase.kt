@@ -3,9 +3,9 @@ package ru.tanec.cookhelper.enterprise.use_case.recipeApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.constants.status.RecipeStatus
-import ru.tanec.cookhelper.core.constants.status.UserStatus
-import ru.tanec.cookhelper.core.utils.FileController.uploadRecipeImage
+import ru.tanec.cookhelper.core.constants.recipeDataFolder
+import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.core.utils.FileController.uploadFile
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -22,7 +22,7 @@ object RecipeCreateUseCase {
 
         val state = when (val recipe = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {
-                State.Error(status = RecipeStatus.PARAMETER_MISSED)
+                State.Error(status = PARAMETER_MISSED)
             }
 
             else -> {
@@ -30,7 +30,7 @@ object RecipeCreateUseCase {
                 repository.insert(
                     recipe
                 ).last()
-                else State.Error(status=UserStatus.USER_NOT_FOUND)
+                else State.Error(status=USER_NOT_FOUND)
             }
         }
 
@@ -151,7 +151,7 @@ object RecipeCreateUseCase {
             carbohydrates = this.carbohydrates,
             time = this.time,
             title = this.title,
-            image = uploadRecipeImage(this.image, this.category),
+            image = uploadFile(recipeDataFolder, this.image),
             category = this.category,
             ingredients = this.ingredients,
             proteins = this.proteins

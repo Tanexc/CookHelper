@@ -2,6 +2,8 @@ package ru.tanec.cookhelper.database.dao.recipeDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.DELIMITER
+import ru.tanec.cookhelper.core.constants.recipeDataFolder
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Recipes
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
@@ -23,7 +25,7 @@ class RecipeDaoImpl : RecipeDao {
         fats = row[Recipes.fats],
         calories = row[Recipes.calories],
 
-        image = row[Recipes.image],
+        image = row[Recipes.image].toFileData(recipeDataFolder),
         comments = row[Recipes.comments].split(" ").mapNotNull { it.toLongOrNull() },
         reposts = row[Recipes.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Recipes.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -90,7 +92,7 @@ class RecipeDaoImpl : RecipeDao {
                 it[calories] = recipe.calories
                 it[fats] = recipe.fats
                 it[carbohydrates] = recipe.carbohydrates
-                it[image] = recipe.image
+                it[image] = recipe.image.id
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")
@@ -127,7 +129,7 @@ class RecipeDaoImpl : RecipeDao {
                 it[calories] = recipe.calories
                 it[fats] = recipe.fats
                 it[carbohydrates] = recipe.carbohydrates
-                it[image] = recipe.image
+                it[image] = recipe.image.id
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")

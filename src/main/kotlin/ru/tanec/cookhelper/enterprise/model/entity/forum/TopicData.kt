@@ -1,13 +1,14 @@
-package ru.tanec.cookhelper.enterprise.utls
+package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import io.ktor.util.date.*
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 
 data class TopicData(
     var authorId:Long? = null,
     var title: String? = null,
     var problem: String? = null,
-    var attachment: List<String> = emptyList(),
+    var attachment: List<FileData> = emptyList(),
 
     ) {
     fun asDomain(): Topic = Topic(

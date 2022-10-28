@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.recipe.Ingredient
 
 class IngredientDaoImpl: IngredientDao {
 
-    fun resultRowToIngredient(row: ResultRow): Ingredient = Ingredient(
+    private fun resultRowToIngredient(row: ResultRow): Ingredient = Ingredient(
         id = row[Ingredients.id],
         title = row[Ingredients.title]
     )

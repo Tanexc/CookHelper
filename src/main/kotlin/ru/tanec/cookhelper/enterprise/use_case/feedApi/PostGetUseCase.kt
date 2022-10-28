@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.enterprise.use_case.feedApi
 import io.ktor.http.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.constants.MISSED
-import ru.tanec.cookhelper.core.constants.status.PostStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
@@ -14,7 +14,7 @@ object PostGetUseCase {
         parameters: Parameters
     ): ApiResponse<List<Post>> {
         return when(val id = parameters["listId"]?.split("*")?.mapNotNull { it.toLongOrNull() }) {
-            null -> ApiResponse(PostStatus.PARAMETER_MISSED, MISSED, null)
+            null -> ApiResponse(PARAMETER_MISSED, MISSED, null)
             else -> {
                 val part = parameters["part"]?.toIntOrNull()
                 val div = parameters["div"]?.toIntOrNull()

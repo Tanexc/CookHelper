@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.chat.ChatData
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
-fun allNotNull(p: List<Any?>) = !p.contains(null)
+fun List<Any?>.allNotNull() = !this.contains(null)
 
 suspend fun List<PartData>.getChatOrNull(repo: UserRepository): Chat? {
     val data = ChatData()
@@ -22,10 +22,28 @@ suspend fun List<PartData>.getChatOrNull(repo: UserRepository): Chat? {
             "avatar" -> {
                 if (part is PartData.FileItem) {
                     val file = FileController.uploadFile(chatDataFolder, part)
-                    data.avatar = listOf(file.id)
+                    data.avatar = listOf(file)
                 }
             }
         }
     }
     return if (user == null) null else data.asDomain()
+}
+
+fun <T> List<T>.partOfDiv(part: Int?, div: Int?): List<T> {
+    if (part == null || div == null) {
+        return this
+    }
+    return when {
+        ((div * (part + 1) > this.size) and (div * part < this.size)) -> {
+            this.subList(div * part, this.size)
+        }
+
+        (div * (part + 1) <= this.size) -> {
+            this.subList(div * part, div * (part + 1))
+        }
+
+        else -> emptyList()
+    }
+
 }

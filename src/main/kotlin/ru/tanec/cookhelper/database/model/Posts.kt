@@ -11,7 +11,6 @@ object Posts: Table() {
     val authorId = long("authorId")
     val text = text("text")
     val attachments = text("attachments")
-    val images = text("images")
     val label = text("label")
     val likes = text("likes")
     val comments = text("comments")

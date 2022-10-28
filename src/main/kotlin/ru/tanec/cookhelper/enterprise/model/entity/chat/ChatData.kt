@@ -1,10 +1,11 @@
 package ru.tanec.cookhelper.enterprise.model.entity.chat
 
 import io.ktor.util.date.*
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 
 data class ChatData(
     var title: String? = null,
-    var avatar: List<String> = emptyList(),
+    var avatar: List<FileData> = emptyList(),
     var members: List<Long>? = null
     ) {
 

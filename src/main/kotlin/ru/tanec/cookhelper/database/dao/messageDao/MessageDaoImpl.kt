@@ -4,9 +4,9 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
+import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
-import ru.tanec.cookhelper.core.utils.FileController.toFile
+import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Messages
@@ -18,7 +18,7 @@ class MessageDaoImpl: MessageDao {
         id=row[Messages.id],
         authorId=row[Messages.authorId],
         text=row[Messages.text],
-        attachments=row[Messages.attachments].split(FILE_DELIMITER).map{it.toFile(folder= attachmentDataFloder)},
+        attachments=row[Messages.attachments].split(ATTCH_DELIMITER).map { it.toFileData(attachmentDataFloder)},
         replyToId=row[Messages.replyToId],
         timestamp=row[Messages.timestamp]
 
@@ -49,12 +49,12 @@ class MessageDaoImpl: MessageDao {
 
     override suspend fun insert(message: Message): Message? = dbQuery {
         Messages
-            .insert {
-                it[authorId] = authorId
-                it[text] = text
-                it[attachments] = attachments
-                it[replyToId] = replyToId
-                it[timestamp] = timestamp
+            .insert { row ->
+                row[authorId] = message.authorId
+                row[text] = message.text
+                row[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[replyToId] = message.replyToId
+                row[timestamp] = message.timestamp
             }
 
         Messages

@@ -4,8 +4,7 @@ import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.constants.INVALID_TOKEN
 import ru.tanec.cookhelper.core.constants.MISSED
-import ru.tanec.cookhelper.core.constants.status.RecipeStatus
-import ru.tanec.cookhelper.core.constants.status.UserStatus
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
@@ -37,16 +36,16 @@ object RepostRecipeUseCase {
             }
         }
 
-        if (id == null) return ApiResponse(RecipeStatus.PARAMETER_MISSED, MISSED, null)
-        if (token == null) return ApiResponse(RecipeStatus.PARAMETER_MISSED, INVALID_TOKEN, null)
+        if (id == null) return ApiResponse(PARAMETER_MISSED, MISSED, null)
+        if (token == null) return ApiResponse(PARAMETER_MISSED, INVALID_TOKEN, null)
 
         val data = recipeRepository.getById(id!!).last().data ?: return ApiResponse(
-            RecipeStatus.RECIPE_NOT_FOUND,
+            RECIPE_NOT_FOUND,
             "recipe not found",
             null
         )
         val user = userRepository.getByToken(token!!).last().data ?: return ApiResponse(
-            UserStatus.USER_NOT_FOUND,
+            USER_NOT_FOUND,
             INVALID_TOKEN,
             null
         )

@@ -18,5 +18,5 @@ interface PostDao {
 
     suspend fun deletePost(post: Post)
 
-    suspend fun getByList(id: List<Long>, part: Int?, div: Int?): List<Post>
+    suspend fun getByList(listId: List<Long>, part: Int?, div: Int?): List<Post>
 }

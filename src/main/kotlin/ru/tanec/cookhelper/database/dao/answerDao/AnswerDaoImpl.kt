@@ -61,13 +61,13 @@ class AnswerDaoImpl: AnswerDao {
 
     override suspend fun insert(answer: Answer): Answer? = dbQuery {
         Answers
-            .insert{
-                it[authorId] = answer.authorId
-                it[text] = answer.text
-                it[attachments] = answer.attachments.joinToString(ATTCH_DELIMITER)
-                it[replyToId] = answer.replyToId
-                it[timestamp] = answer.timestamp
-                it[likes] = answer.likes.joinToString(SECOND_DELIMITER)
+            .insert{ row ->
+                row[authorId] = answer.authorId
+                row[text] = answer.text
+                row[attachments] = answer.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[replyToId] = answer.replyToId
+                row[timestamp] = answer.timestamp
+                row[likes] = answer.likes.joinToString(SECOND_DELIMITER)
             }
         Answers
             .select {(Answers.timestamp eq answer.timestamp) and (Answers.authorId eq answer.authorId)}
