@@ -2,12 +2,10 @@ package ru.tanec.cookhelper.database.dao.postDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.*
-import ru.tanec.cookhelper.core.utils.FileController
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 
 class PostDaoImpl : PostDao {
@@ -17,7 +15,7 @@ class PostDaoImpl : PostDao {
         authorId = row[Posts.authorId],
         text = row[Posts.text],
         label = row[Posts.label],
-        attachments = row[Posts.attachments].split(ATTCH_DELIMITER).map {it.toFileData(feedDataFolder)},
+        attachments = row[Posts.attachments].split(ATTCH_DELIMITER).map { it.toFileData(feedDataFolder) },
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -57,7 +55,7 @@ class PostDaoImpl : PostDao {
     override suspend fun insertPost(post: Post): Post = dbQuery {
         Posts
             .insert { row ->
-                row[authorId] = post.authorId?: 0
+                row[authorId] = post.authorId ?: 0
                 row[text] = post.text
                 row[label] = post.label
                 row[attachments] = post.attachments.joinToString(SEPORATOR) { it.id }
@@ -68,10 +66,14 @@ class PostDaoImpl : PostDao {
 
             }
 
-        Posts
+        val data = Posts
             .select { Posts.timestamp eq post.timestamp }
             .map(::resultRowToPost)
-            .singleOrNull() ?: post
+            .singleOrNull()
+
+
+        data?.copy(comments = data.comments.filter { it != "" }, attachments = data.attachments.filter { it.id != "" })?: post
+
 
     }
 
@@ -93,12 +95,12 @@ class PostDaoImpl : PostDao {
 
     override suspend fun deletePost(post: Post) {
         Posts
-            .deleteWhere { (Posts.id eq post.id) and (Posts.authorId eq post.authorId!!)  }
+            .deleteWhere { (Posts.id eq post.id) and (Posts.authorId eq post.authorId!!) }
     }
 
     override suspend fun getByList(listId: List<Long>, part: Int?, div: Int?): List<Post> {
         val data: MutableList<Post> = mutableListOf()
-        for (id: Long in if (part != null && div != null ) listId.partOfDiv(part, div) else listId) {
+        for (id: Long in if (part != null && div != null) listId.partOfDiv(part, div) else listId) {
             getById(id)?.let { data.add(it) }
         }
         return data.toList()

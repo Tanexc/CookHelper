@@ -21,9 +21,6 @@ object PostCreateUseCase {
         parameters: List<PartData>
     ): ApiResponse<Post> {
 
-        //TODO("send more info about user")
-
-        //TODO fix comment when sending response
 
         val state = when (val post = fromMultipart(parameters, userRepository)?.asDomain()) {
             null -> {
@@ -48,8 +45,7 @@ object PostCreateUseCase {
         val authorId: Long?
         var text: String? = null
         var label: String? = null
-        val attachment: List<PartData.FileItem> = listOf()
-        var images: List<PartData.FileItem> = listOf()
+        var attachments: List<PartData.FileItem> = listOf()
 
         partList.forEach { pt ->
             when (pt) {
@@ -74,11 +70,9 @@ object PostCreateUseCase {
                     }
                 }
 
-                //TODO("attachment")
-
                 is PartData.FileItem -> {
                     print("image")
-                    images = images + listOf(pt)
+                    attachments = attachments + listOf(pt)
                 }
 
                 else -> {}
@@ -93,16 +87,12 @@ object PostCreateUseCase {
             else -> null
         }
 
-        println(images.toString())
-
-        println("author id  $authorId")
 
         return if ((authorId != null) and (text != null)) PostData(
             authorId,
             text,
             label,
-            attachment,
-            images
+            attachments
         ) else null
 
 
@@ -115,9 +105,9 @@ object PostCreateUseCase {
             text = this.text ?: "",
             label = this.label ?: "",
             attachments = this.attachment.map { uploadFile(feedDataFolder, it)},
-            comments = listOf(),
-            likes = listOf(),
-            reposts = listOf(),
+            comments = emptyList(),
+            likes = emptyList(),
+            reposts = emptyList(),
             timestamp = getTimeMillis()
         )
     }
