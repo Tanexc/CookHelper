@@ -33,10 +33,6 @@ fun userApiRoutes(
         call.respond(LoginUseCase(repository, params))
     }
 
-    route.post("/api/user/post/avatar/") {
-        call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
-    }
-
     route.get("/api/user/get/email-availability/") {
         val params = call.request.queryParameters
         call.respond(EmailAvailabilityUserUseCase(repository, params))
