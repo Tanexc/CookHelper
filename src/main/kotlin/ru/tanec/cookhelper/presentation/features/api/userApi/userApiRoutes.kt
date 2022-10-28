@@ -48,5 +48,9 @@ fun userApiRoutes(
         //TODO
     }
 
+    route.post("/api/user/post/avatar/") {
+        call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
+    }
+
 }
 
