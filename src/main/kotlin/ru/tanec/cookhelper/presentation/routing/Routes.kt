@@ -6,7 +6,7 @@ import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categoryApiRoutes
-import ru.tanec.cookhelper.presentation.features.api.chatApi.routing.chatApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.chatApi.chatApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRoutes

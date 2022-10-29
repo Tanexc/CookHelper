@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.presentation.features.api.chatApi.routing
+package ru.tanec.cookhelper.presentation.features.api.chatApi
 
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -18,11 +18,11 @@ fun chatApiRoutes(
     messageRepository: MessageRepository
     ) {
 
-    route.post("/api/chat/post/create") {
+    route.post("/api/chat/post/create/") {
         call.respond(CreateChatUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
     }
 
-    route.get("/api/chat/get/by-id") {
+    route.get("/api/chat/get/by-id/") {
         call.respond(GetChatUseCase(repository, userRepository, messageRepository, call.request.queryParameters))
     }
 
