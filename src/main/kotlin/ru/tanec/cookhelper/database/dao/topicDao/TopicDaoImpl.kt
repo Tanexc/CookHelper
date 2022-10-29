@@ -3,6 +3,8 @@ package ru.tanec.cookhelper.database.dao.topicDao
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.feedDataFolder
+import ru.tanec.cookhelper.core.constants.forumDataFolder
+import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Topics
@@ -16,7 +18,9 @@ class TopicDaoImpl: TopicDao {
         title= row[Topics.title],
         problem = row[Topics.problem],
         answers = row[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
-        attachments = row[Topics.attachments].split(ATTCH_DELIMITER).map {it.toFileData(feedDataFolder)},
+        attachments = row[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{ if (it !="") it.toFileData(
+            forumDataFolder
+        ) else null},
         timestamp = row[Topics.timestamp],
         closed = row[Topics.closed]
 

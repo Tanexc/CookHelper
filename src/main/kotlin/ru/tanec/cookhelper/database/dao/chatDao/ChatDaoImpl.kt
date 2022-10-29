@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.chatDataFolder
+import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Chats
@@ -15,7 +16,7 @@ class ChatDaoImpl: ChatDao {
         id=row[Chats.id],
         title= row[Chats.title].ifEmpty { null },
         members=row[Chats.members].split(" ").mapNotNull { it.toLongOrNull() },
-        attachments=row[Chats.attachments].split(ATTCH_DELIMITER).map {it.toFileData(chatDataFolder)},
+        attachments=row[Chats.attachments].split(ATTCH_DELIMITER).mapNotNull{ if (it !="") it.toFileData(chatDataFolder) else null},
         avatar=row[Chats.avatar].split(FILE_DELIMITER).map {it.toFileData(chatDataFolder)},
         creationTimestamp=row[Chats.creationTimestamp],
         messages=row[Chats.messages].split(" ").mapNotNull {it.toLongOrNull()}

@@ -1,9 +1,11 @@
 package ru.tanec.cookhelper.core.di
 
 import io.ktor.server.websocket.*
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import ru.tanec.cookhelper.database.repository.*
+import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
@@ -12,6 +14,7 @@ val socketModule = module {
     singleOf(::ChatConnectionController)
     singleOf(::TopicConnectionController)
     single { mutableMapOf<Long, MutableList<DefaultWebSocketServerSession>>() }
+    single { MutableSharedFlow<User>() }
 }
 
 val apiRepositoryModule = module {

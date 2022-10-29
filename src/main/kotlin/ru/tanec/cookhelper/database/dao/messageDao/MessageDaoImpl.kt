@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
+import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
@@ -18,7 +19,9 @@ class MessageDaoImpl: MessageDao {
         id=row[Messages.id],
         authorId=row[Messages.authorId],
         text=row[Messages.text],
-        attachments=row[Messages.attachments].split(ATTCH_DELIMITER).map { it.toFileData(attachmentDataFloder)},
+        attachments=row[Messages.attachments].split(ATTCH_DELIMITER).mapNotNull{ if (it !="") it.toFileData(
+            attachmentDataFloder
+        ) else null},
         replyToId=row[Messages.replyToId],
         timestamp=row[Messages.timestamp]
 

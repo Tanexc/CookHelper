@@ -15,7 +15,9 @@ class PostDaoImpl : PostDao {
         authorId = row[Posts.authorId],
         text = row[Posts.text],
         label = row[Posts.label],
-        attachments = row[Posts.attachments].split(ATTCH_DELIMITER).map { it.toFileData(feedDataFolder) },
+        attachments = row[Posts.attachments]
+            .split(ATTCH_DELIMITER)
+            .mapNotNull { if (it != "") it.toFileData(feedDataFolder) else null },
         comments = row[Posts.comments].split(" "),
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
@@ -72,7 +74,8 @@ class PostDaoImpl : PostDao {
             .singleOrNull()
 
 
-        data?.copy(comments = data.comments.filter { it != "" }, attachments = data.attachments.filter { it.id != "" })?: post
+        data?.copy(comments = data.comments.filter { it != "" }, attachments = data.attachments.filter { it.id != "" })
+            ?: post
 
 
     }
