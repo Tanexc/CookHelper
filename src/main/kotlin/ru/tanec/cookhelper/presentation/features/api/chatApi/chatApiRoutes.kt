@@ -9,7 +9,8 @@ import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.CreateChatUseCase
-import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatUseCase
+import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByListUseCase
+import ru.tanec.cookhelper.enterprise.use_case.messageApi.GetMessagesUseCase
 
 fun chatApiRoutes(
     route: Routing,
@@ -22,8 +23,12 @@ fun chatApiRoutes(
         call.respond(CreateChatUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
     }
 
-    route.get("/api/chat/get/by-id/") {
-        call.respond(GetChatUseCase(repository, userRepository, messageRepository, call.request.queryParameters))
+    route.get("/api/chat/get/by-list-id/") {
+        call.respond(GetChatByListUseCase(repository, userRepository, call.request.queryParameters))
+    }
+
+    route.get("/api/chat/get/messages") {
+        call.respond(GetMessagesUseCase(messageRepository, userRepository, repository, call.request.queryParameters))
     }
 
 }

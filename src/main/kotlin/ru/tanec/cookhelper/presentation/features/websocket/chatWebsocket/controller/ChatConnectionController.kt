@@ -71,6 +71,10 @@ class ChatConnectionController(
             avatar=user.avatar[0]
         )
 
+        val chat = chatDao.getById(chatId)
+
+        chat?.let {chatDao.edit(it.copy(messages = it.messages + listOf(message.id)))}
+
         for (receiver: DefaultWebSocketServerSession in data[chatId]?: listOf()) {
             receiver.sendSerialized(response)
         }

@@ -1,4 +1,4 @@
-package ru.tanec.cookhelper.enterprise.use_case.chatApi
+package ru.tanec.cookhelper.enterprise.use_case.messageApi
 
 import io.ktor.http.*
 import kotlinx.coroutines.flow.last
@@ -7,18 +7,18 @@ import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.core.utils.checkUserToken
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
-object GetChatUseCase {
+object GetMessagesUseCase {
+
     suspend operator fun invoke(
-        repository: ChatRepository,
+        repository: MessageRepository,
         userRepository: UserRepository,
-        messageRepository: MessageRepository,
+        chatRepository: ChatRepository,
         parameters: Parameters
-    ): ApiResponse<ChatResponseData?> {
+    ): ApiResponse<List<Message>?> {
         try {
 
             val token = parameters["token"]?.filter { it != '"' } ?: return ApiResponse(
@@ -26,7 +26,13 @@ object GetChatUseCase {
                 message = REQUIRED("token"),
                 data = null
             )
-            val id = parameters["id"]?.filter { it != '"' }?.toLongOrNull() ?: return ApiResponse(
+            val ids = parameters["listId"]?.filter { it != '"' }?.split("*")?.mapNotNull{it.toLongOrNull()} ?: return ApiResponse(
+                status = PARAMETER_MISSED,
+                message = REQUIRED("id"),
+                data = null
+            )
+
+            val chatId = parameters["chatId"]?.filter { it != '"' }?.toLongOrNull() ?: return ApiResponse(
                 status = PARAMETER_MISSED,
                 message = REQUIRED("id"),
                 data = null
@@ -38,29 +44,31 @@ object GetChatUseCase {
                 data = null
             )
 
-            val chat = repository.getChatById(id).last().data ?: return ApiResponse(
+            val chat = chatRepository.getChatById(chatId).last().data ?: return ApiResponse(
                 status = CHAT_NOT_FOUND,
                 message = "error",
                 data = null
             )
 
-            return if (user.id in chat.members) {
-                val listMes: List<Message> = messageRepository.getByIdList(chat.messages, 1, 2).last().data?: emptyList()
-                ApiResponse(
-                    data = ChatResponseData(
-                        id = chat.id,
-                        title = chat.title,
-                        members = chat.members,
-                        messages = listMes,
-                        attachments = chat.attachments,
-                        avatar = chat.avatar,
-                        creationTimestamp = chat.creationTimestamp
-                    ), status = SUCCESS, message = "success"
+            if (!chat.members.contains(user.id)) {
+                return ApiResponse(
+                    status = PERMISSION_DENIED,
+                    message = "error",
+                    data = null
                 )
-            } else {
-                ApiResponse(data = null, status = PERMISSION_DENIED, message = "permission denied")
             }
 
+            val messages = repository.getByIdList(ids, null, null).last().data?: return ApiResponse(
+                status = MESSAGE_NOT_FOUND,
+                message = "failed to get messages",
+                data = null
+            )
+
+            return ApiResponse(
+                status = SUCCESS,
+                message = "success",
+                data = messages.filter { it.id in chat.messages }
+            )
 
         } catch (e: Exception) {
             return ApiResponse(
