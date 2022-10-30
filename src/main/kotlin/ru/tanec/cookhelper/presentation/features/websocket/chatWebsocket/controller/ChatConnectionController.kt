@@ -9,6 +9,7 @@ import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.ANSWER_NOT_ADDED
 import ru.tanec.cookhelper.core.constants.status.CHAT_NOT_FOUND
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
+import ru.tanec.cookhelper.core.constants.status.USER_TOKEN_INVALID
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDao
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDaoImpl
 import ru.tanec.cookhelper.database.dao.messageDao.MessageDao
@@ -39,14 +40,26 @@ class ChatConnectionController(
             true -> emit(State.Error(data = null, status = PARAMETER_MISSED))
             false -> {
                 if (token != null) {
-                    val user = userDao.getByToken(token)
+                    val user = userDao.getByToken(token)?: emit(
+                        State.Error(
+                            data=null,
+                            status= USER_TOKEN_INVALID
+                        )
+                    )
                     val chat = chatDao.getById(id)
-                    if (chat != null) emit(State.Success(data = chat)) else emit(
+
+                    if (chat != null) {
+
+                        data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf()
+
+                        emit(State.Success(data = chat))
+                    } else emit(
                         State.Error(
                             data = null,
                             status = CHAT_NOT_FOUND
                         )
                     )
+
                 } else emit(State.Error(data = null, status = PARAMETER_MISSED))
             }
         }
