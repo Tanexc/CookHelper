@@ -13,6 +13,10 @@ import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRo
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.routing.userApiRoutes
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.routing.chatWebsocketRoutes
+import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
+import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
+import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.routing.topicWebsocketRoutes
 import java.io.File
 
 fun Application.apiRoutes() {
@@ -28,6 +32,9 @@ fun Application.apiRoutes() {
         val chatRepository: ChatRepository by inject()
         val messageRepository: MessageRepository by inject()
 
+        val topicConnectionController: TopicConnectionController by inject()
+        val chatConnectionController: ChatConnectionController by inject()
+
         userApiRoutes(this, userRepository)
         recipeApiRoutes(this, recipeRepository, userRepository, commentRepository)
         feedApiRoutes(this, postRepository, userRepository)
@@ -36,6 +43,9 @@ fun Application.apiRoutes() {
         commentApiRoutes(this, commentRepository)
         forumApiRoutes(this, topicRepository, userRepository)
         chatApiRoutes(this, chatRepository, userRepository, messageRepository)
+
+        topicWebsocketRoutes(this, topicConnectionController)
+        chatWebsocketRoutes(this, chatConnectionController)
 
         static("/static") {
             resources("static")

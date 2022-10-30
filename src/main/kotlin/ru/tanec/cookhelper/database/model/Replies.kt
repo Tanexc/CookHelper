@@ -2,7 +2,7 @@ package ru.tanec.cookhelper.database.model
 
 import org.jetbrains.exposed.sql.Table
 
-object Answers: Table() {
+object Replies: Table() {
     val id = long("id")
 
     override val primaryKey = PrimaryKey(id)
@@ -12,5 +12,7 @@ object Answers: Table() {
     val attachments = text("attachments")
     val replyToId = long("replyToId")
     val timestamp = long("timestamp")
-    val likes = text("likes")
+    val ratingPositive = text("ratingPositive")
+    val ratingNegative = text("ratingNegative")
+    val replies = text("replies")
 }

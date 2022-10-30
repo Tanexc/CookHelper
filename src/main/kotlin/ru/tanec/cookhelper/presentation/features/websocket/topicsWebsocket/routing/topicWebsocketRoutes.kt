@@ -1,14 +1,11 @@
-package ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket
+package ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.routing
 
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.flow.forEach
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
-import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveAnswerData
-import ru.tanec.cookhelper.enterprise.model.response.WebsocketResponse
+import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveReplyData
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
 
 fun topicWebsocketRoutes(
@@ -29,7 +26,7 @@ fun topicWebsocketRoutes(
                     try {
                         for (frame in incoming) {
 
-                            val data: ForumReceiveAnswerData = this.receiveDeserialized()
+                            val data: ForumReceiveReplyData = this.receiveDeserialized()
                             when (val answer = controller.receiveMessage(data, user!!)) {
                                 is State.Success -> {
                                     controller.sendMessage(

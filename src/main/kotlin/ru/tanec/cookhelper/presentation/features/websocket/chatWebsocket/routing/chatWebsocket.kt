@@ -1,17 +1,14 @@
-package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket
+package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.routing
 
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.channels.ReceiveChannel
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
-import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveAnswerData
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
-import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
 
-suspend fun chatWebsocket(
+fun chatWebsocketRoutes(
     route: Routing,
     controller: ChatConnectionController
 ) {

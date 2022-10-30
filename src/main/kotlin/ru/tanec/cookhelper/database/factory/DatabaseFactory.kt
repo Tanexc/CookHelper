@@ -23,7 +23,7 @@ object DatabaseFactory {
             SchemaUtils.create(Attachments)
             SchemaUtils.create(Messages)
             SchemaUtils.create(Chats)
-            SchemaUtils.create(Answers)
+            SchemaUtils.create(Replies)
         }
     }
 

@@ -7,22 +7,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
-import ru.tanec.cookhelper.database.dao.answerDao.AnswerDao
-import ru.tanec.cookhelper.database.dao.answerDao.AnswerDaoImpl
+import ru.tanec.cookhelper.database.dao.answerDao.ReplyDao
+import ru.tanec.cookhelper.database.dao.answerDao.ReplyDaoImpl
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDaoImpl
 import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.database.dao.userDao.UserDaoImpl
-import ru.tanec.cookhelper.enterprise.model.entity.forum.Answer
+import ru.tanec.cookhelper.enterprise.model.entity.forum.Reply
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
-import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveAnswerData
-import ru.tanec.cookhelper.enterprise.model.response.AnswerResponseData
+import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveReplyData
+import ru.tanec.cookhelper.enterprise.model.response.ReplyResponseData
 
 class TopicConnectionController {
     val data: MutableMap<Long, MutableList<DefaultWebSocketServerSession>> = mutableMapOf()
     val topicDao: TopicDao = TopicDaoImpl()
-    val answerDao: AnswerDao = AnswerDaoImpl()
+    val replyDao: ReplyDao = ReplyDaoImpl()
     val userDao: UserDao = UserDaoImpl()
 
     suspend fun connect(
@@ -61,23 +61,21 @@ class TopicConnectionController {
     }
 
     suspend fun sendMessage(
-        answer: Answer,
+        reply: Reply,
         user: User,
         topicId: Long
     ) {
 
-        val response = AnswerResponseData(
-            id=answer.id,
-            authorId=user.id,
-            text=answer.text,
-            attachments=answer.attachments,
-            replyToId=answer.replyToId,
-            timestamp=answer.timestamp,
-            likes=answer.likes,
-            name=user.name,
-            nickname=user.nickname,
-            surname=user.surname,
-            avatar=user.avatar[0]
+        val response = ReplyResponseData(
+            id=reply.id,
+            author=user.smallInfo(),
+            text=reply.text,
+            attachments=reply.attachments,
+            replyToId=reply.replyToId,
+            timestamp=reply.timestamp,
+            ratingNegative = reply.ratingNegative,
+            ratingPositive = reply.ratingPositive,
+            replies = reply.replies.mapNotNull{replyDao.getById(it)}
         )
 
         for (receiver: DefaultWebSocketServerSession in data[topicId]?: listOf()) {
@@ -88,10 +86,10 @@ class TopicConnectionController {
     }
 
     suspend fun receiveMessage(
-        data: ForumReceiveAnswerData,
+        data: ForumReceiveReplyData,
         user: User
-    ): State<Answer?> {
-        val processedData = answerDao.insert(data.asDomain(user.id, listOf(), getTimeMillis()))?: return State.Error(status=ANSWER_NOT_ADDED)
+    ): State<Reply?> {
+        val processedData = replyDao.insert(data.asDomain(user.id, listOf(), listOf(), getTimeMillis()))?: return State.Error(status=ANSWER_NOT_ADDED)
         return State.Success(data = processedData, status=SUCCESS)
 
     }
