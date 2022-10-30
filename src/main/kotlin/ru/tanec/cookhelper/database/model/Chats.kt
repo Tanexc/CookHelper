@@ -8,7 +8,7 @@ object Chats: Table() {
     override val primaryKey = PrimaryKey(id)
 
     val avatar = text("avatar")
-    val title = text("title")
+    val title = text("title").nullable()
     val members = text("members")
     val messages = text("messages")
     val attachments = text("attachments")
