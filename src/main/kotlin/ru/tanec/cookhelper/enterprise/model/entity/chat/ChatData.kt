@@ -11,7 +11,7 @@ data class ChatData(
 
     fun asDomain(): Chat? {
 
-        return if (title != null && members != null) Chat(
+        return if (members != null) Chat(
             id = 0,
             title = title,
             avatar = avatar,

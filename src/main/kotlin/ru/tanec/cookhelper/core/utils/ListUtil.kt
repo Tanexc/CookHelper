@@ -15,6 +15,7 @@ suspend fun List<PartData>.getChatOrNull(repo: UserRepository): Chat? {
     this.forEach { part ->
         println(if (part is PartData.FormItem) part.value else null)
         when (part.name) {
+            "title" -> data.title = if (part is PartData.FormItem) part.value.filter{it!='"'} else null
             "token" -> user = if (part is PartData.FormItem) checkUserToken(repo, part.value.filter{it!='"'}) else null
             "members" -> data.members =
                 if (part is PartData.FormItem) part.value.filter{it!='"'}.split("*").mapNotNull { it.toLongOrNull() }
