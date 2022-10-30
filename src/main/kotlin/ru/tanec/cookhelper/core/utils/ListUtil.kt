@@ -28,6 +28,7 @@ suspend fun List<PartData>.getChatOrNull(repo: UserRepository): Chat? {
             }
         }
     }
+    println("COCK $user")
     return if (user == null) null else data.asDomain()
 }
 
