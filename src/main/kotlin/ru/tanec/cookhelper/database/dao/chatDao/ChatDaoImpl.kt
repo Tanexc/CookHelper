@@ -14,7 +14,7 @@ class ChatDaoImpl : ChatDao {
 
     private fun resultRowToChat(row: ResultRow): Chat = Chat(
         id = row[Chats.id],
-        title = row[Chats.title].ifEmpty { null },
+        title = row[Chats.title]?.ifEmpty { null },
         members = row[Chats.members].split(" ").mapNotNull { it.toLongOrNull() },
         attachments = row[Chats.attachments].split(ATTCH_DELIMITER)
             .mapNotNull { if (it != "") it.toFileData(chatDataFolder) else null },
