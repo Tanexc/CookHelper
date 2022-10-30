@@ -21,18 +21,22 @@ object CreateChatUseCase {
         parameters: List<PartData>
     ): ApiResponse<Chat?> {
         try {
-            val chat = parameters.getChatOrNull(userRepository)?: return ApiResponse(
+            var chat = parameters.getChatOrNull(userRepository)?: return ApiResponse(
                 status = PARAMETER_MISSED,
                 message = "error",
                 data = null
             )
 
-            when(repository.insert(chat).last()) {
+            when(val r = repository.insert(chat).last()) {
                 is State.Error -> return ApiResponse(
                     status = CHAT_NOT_CREATED,
                     message = "error",
                     data = null
                 )
+                is State.Success -> {
+                    r.data?.let {chat = r.data}
+                }
+
                 else -> {}
             }
 
