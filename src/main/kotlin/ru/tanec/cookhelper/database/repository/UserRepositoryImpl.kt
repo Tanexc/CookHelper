@@ -210,7 +210,6 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getByToken(token: String): Flow<State<User?>> = flow {
-        emit(State.Processing())
         val user = dao.getByToken(token)
         if (user != null) emit(State.Success(user, status = SUCCESS))
         else emit(State.Error(status=USER_NOT_FOUND))

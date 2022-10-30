@@ -12,7 +12,7 @@ import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRout
 import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
-import ru.tanec.cookhelper.presentation.features.api.userApi.routing.userApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.routing.chatWebsocketRoutes
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
