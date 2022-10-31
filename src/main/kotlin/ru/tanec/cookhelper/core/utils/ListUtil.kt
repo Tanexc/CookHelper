@@ -51,3 +51,12 @@ fun <T> List<T>.partOfDiv(part: Int?, div: Int?): List<T> {
     }
 
 }
+
+fun <T> List<T>.getPage(limit: Int, offset: Int): List<T> {
+    return when(limit * (offset + 1) >= this.size) {
+        true -> this.subList(limit * offset, this.size)
+        else -> {
+            this.subList(limit * offset, limit * (offset + 1))
+        }
+    }
+}

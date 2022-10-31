@@ -21,6 +21,17 @@ class MessageRepositoryImpl(override val dao: MessageDao = MessageDaoImpl()) : M
         }
     }
 
+    override fun getByOffset(listId: List<Long>, offset: Int, limit: Int): Flow<State<List<Message>?>> = flow {
+        emit(State.Processing())
+        try {
+
+            emit(State.Success(dao.getByOffset(listId, offset, limit)))
+
+        } catch (e: Exception) {
+            emit(State.Error(message=e.message?: "exception in getByIdList() of MessageRepository"))
+        }
+    }
+
     override fun getById(id: Long): Flow<State<Message?>> = flow {
         emit(State.Processing())
         try {

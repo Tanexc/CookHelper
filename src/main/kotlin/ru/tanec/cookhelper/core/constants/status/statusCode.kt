@@ -33,6 +33,7 @@ const val TOPIC_NOT_CREATED: Int = 404
 const val MESSAGE_NOT_FOUND: Int = 501
 const val MESSAGE_NOT_CREATED: Int = 504
 
+
 const val COMMENT_NOT_FOUND: Int = 801
 const val COMMENT_DELETED: Int = 802
 

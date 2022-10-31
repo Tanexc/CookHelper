@@ -26,9 +26,15 @@ object GetMessagesUseCase {
                 message = REQUIRED("token"),
                 data = null
             )
-            val ids = parameters["listId"]?.filter { it != '"' }?.split("*")?.mapNotNull{it.toLongOrNull()} ?: return ApiResponse(
+            val offset = parameters["offset"]?.filter { it != '"' }?.toIntOrNull() ?: return ApiResponse(
                 status = PARAMETER_MISSED,
-                message = REQUIRED("id"),
+                message = REQUIRED("offset"),
+                data = null
+            )
+
+            val limit = parameters["limit"]?.filter { it != '"' }?.toIntOrNull() ?: return ApiResponse(
+                status = PARAMETER_MISSED,
+                message = REQUIRED("limit"),
                 data = null
             )
 
@@ -58,7 +64,7 @@ object GetMessagesUseCase {
                 )
             }
 
-            val messages = repository.getByIdList(ids, null, null).last().data?: return ApiResponse(
+            val messages = repository.getByOffset(chat.messages, limit, offset).last().data?: return ApiResponse(
                 status = MESSAGE_NOT_FOUND,
                 message = "failed to get messages",
                 data = null
@@ -67,7 +73,7 @@ object GetMessagesUseCase {
             return ApiResponse(
                 status = SUCCESS,
                 message = "success",
-                data = messages.filter { it.id in chat.messages }
+                data = messages
             )
 
         } catch (e: Exception) {

@@ -38,11 +38,11 @@ object GetChatByListUseCase {
             data = null
         )
 
-        val part = parameters["part"]?.filter { it != '"' }?.toIntOrNull()
+        val limit = parameters["limit"]?.filter { it != '"' }?.toIntOrNull()
 
-        val div = parameters["div"]?.filter { it != '"' }?.toIntOrNull()
+        val offset = parameters["offset"]?.filter { it != '"' }?.toIntOrNull()
 
-        val chats = repository.getChatByIdList(ids, part, div).last().data
+        val chats = repository.getChatByIdList(ids, limit, offset).last().data
 
         chats?.filter { it.members.contains(user.id) }
 

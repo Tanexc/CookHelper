@@ -6,10 +6,7 @@ import io.ktor.util.date.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.constants.status.ANSWER_NOT_ADDED
-import ru.tanec.cookhelper.core.constants.status.CHAT_NOT_FOUND
-import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
-import ru.tanec.cookhelper.core.constants.status.USER_TOKEN_INVALID
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDao
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDaoImpl
 import ru.tanec.cookhelper.database.dao.messageDao.MessageDao
@@ -17,9 +14,11 @@ import ru.tanec.cookhelper.database.dao.messageDao.MessageDaoImpl
 import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.database.dao.userDao.UserDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
+import ru.tanec.cookhelper.enterprise.model.entity.chat.ChatData
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
+import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
 import ru.tanec.cookhelper.enterprise.model.response.MessageResponseData
 
 class ChatConnectionController(
@@ -31,7 +30,7 @@ class ChatConnectionController(
     fun connect(
         session: DefaultWebSocketServerSession,
         parameters: Parameters
-    ): Flow<State<Chat?>> = flow {
+    ): Flow<State<ChatResponseData?>> = flow {
 
         val id = parameters["id"]?.toLongOrNull()
         val token = parameters["token"]
@@ -52,8 +51,13 @@ class ChatConnectionController(
 
                         data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf(session)
 
+                        var chatData: ChatResponseData = chat.asResponseData()
 
-                        emit(State.Success(data = chat, addition = user))
+                        val messages = chatDao.getChatMessages(chat.id,0, 200)?.let { messageDao.getByListId(it) }?: emptyList()
+
+                        chatData = chatData.copy(messages=messages)
+
+                        emit(State.Success(data = chatData, addition = user))
                     } else emit(
                         State.Error(
                             data = null,
@@ -99,8 +103,8 @@ class ChatConnectionController(
         data: ChatReceiveMessageData,
         user: User
     ): State<Message?> {
-        val processedData = messageDao.insert(data.asDomain(user.id, getTimeMillis()))?: return State.Error(status= ANSWER_NOT_ADDED)
-        return State.Success(data = processedData, status= ru.tanec.cookhelper.core.constants.status.SUCCESS)
+        val processedData = messageDao.insert(data.asDomain(user.id, getTimeMillis()))?: return State.Error(status=MESSAGE_NOT_CREATED)
+        return State.Success(data = processedData, status=SUCCESS)
 
     }
 

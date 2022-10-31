@@ -8,6 +8,7 @@ import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Messages
@@ -64,5 +65,13 @@ class MessageDaoImpl: MessageDao {
             .select {(Messages.timestamp eq message.timestamp) and (Messages.authorId eq message.authorId)}
             .map(::resultRowToMessage)
             .singleOrNull()
+    }
+
+    override suspend fun getByOffset(listId: List<Long>, offset: Int, limit: Int): List<Message> {
+        val data = mutableListOf<Message>()
+        for (id in listId) {
+            getById(id)?.let { data.add(it) }
+        }
+        return data.toList().getPage(limit, offset)
     }
 }

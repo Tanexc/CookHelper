@@ -27,7 +27,7 @@ fun chatApiRoutes(
         call.respond(GetChatByListUseCase(repository, userRepository, call.request.queryParameters))
     }
 
-    route.get("/api/chat/get/messages") {
+    route.get("/api/chat/get/messages/") {
         call.respond(GetMessagesUseCase(messageRepository, userRepository, repository, call.request.queryParameters))
     }
 

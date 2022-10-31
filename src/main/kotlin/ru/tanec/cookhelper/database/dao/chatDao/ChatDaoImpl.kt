@@ -6,6 +6,7 @@ import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.chatDataFolder
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Chats
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
@@ -51,12 +52,12 @@ class ChatDaoImpl : ChatDao {
             .singleOrNull()
     }
 
-    override suspend fun getByList(listId: List<Long>, part: Int?, div: Int?): List<Chat> {
+    override suspend fun getByList(listId: List<Long>, limit: Int?, offset: Int?): List<Chat> {
         val data = mutableListOf<Chat>()
         for (id in listId) {
             getById(id)?.let { data.add(it) }
         }
-        return data.toList()
+        return if (limit != null && offset != null) data.toList().getPage(limit, offset) else data.toList()
     }
 
     override suspend fun edit(chat: Chat): Chat? = dbQuery {
@@ -72,5 +73,12 @@ class ChatDaoImpl : ChatDao {
             .select { Chats.id eq chat.id }
             .map(::resultRowToChat)
             .singleOrNull()
+    }
+
+    override suspend fun getChatMessages(id: Long, offset: Int, limit: Int): List<Long>? = dbQuery {
+        Chats
+            .select {Chats.id eq id}
+            .map(::resultRowToChat)
+            .singleOrNull()?.messages?.getPage(limit, offset)
     }
 }

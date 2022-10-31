@@ -10,4 +10,8 @@ interface MessageDao {
     suspend fun getByListId(listId: List<Long>, part: Int?, div: Int?): List<Message>
 
     suspend fun insert(message: Message): Message?
+
+    suspend fun getByOffset(listId: List<Long>, offset: Int, limit: Int): List<Message>
+
+
 }

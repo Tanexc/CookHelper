@@ -23,10 +23,10 @@ class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl()) : ChatReposi
 
     }
 
-    override fun getChatByIdList(listId: List<Long>, part: Int?, div: Int?): Flow<State<List<Chat>?>> = flow {
+    override fun getChatByIdList(listId: List<Long>, limit: Int?, offset: Int?): Flow<State<List<Chat>?>> = flow {
         try {
             emit(State.Processing())
-            val chat = dao.getByList(listId, part, div)
+            val chat = dao.getByList(listId, limit, offset)
             emit(State.Success(data = chat))
         } catch (e: Exception) {
             emit(State.Error(message=e.message?:"exception in getChatByIdList() of ChatRepository"))
