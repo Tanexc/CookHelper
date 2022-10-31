@@ -52,7 +52,7 @@ class ChatConnectionController(
 
                         data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf()
 
-                        emit(State.Success(data = chat))
+                        emit(State.Success(data = chat, addition = user))
                     } else emit(
                         State.Error(
                             data = null,
