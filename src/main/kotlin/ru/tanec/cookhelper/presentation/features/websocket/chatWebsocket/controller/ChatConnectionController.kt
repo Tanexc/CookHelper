@@ -81,7 +81,7 @@ class ChatConnectionController(
             name=user.name,
             nickname=user.nickname,
             surname=user.surname,
-            avatar=user.avatar[0]
+            avatar=if (user.avatar.isNotEmpty()) user.avatar[0] else null
         )
 
         val chat = chatDao.getById(chatId)
