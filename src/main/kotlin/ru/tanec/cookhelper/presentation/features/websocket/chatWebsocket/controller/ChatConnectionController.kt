@@ -74,15 +74,11 @@ class ChatConnectionController(
     ) {
         val response = MessageResponseData(
             id=message.id,
-            authorId=user.id,
+            author=user.smallInfo(),
             text=message.text,
             attachments=message.attachments,
             replyToId=message.replyToId,
             timestamp=message.timestamp,
-            name=user.name,
-            nickname=user.nickname,
-            surname=user.surname,
-            avatar=if (user.avatar.isNotEmpty()) user.avatar[0] else null
         )
 
         val chat = chatDao.getById(chatId)
