@@ -30,6 +30,8 @@ fun chatWebsocketRoutes(
                     try {
                         for (frame in incoming) {
 
+                            frame as? Frame.Text?: continue
+
                             val data: ChatReceiveMessageData = this.receiveDeserialized()
 
                             when (val messageData = controller.receiveMessage(data, user!!)) {
@@ -46,6 +48,7 @@ fun chatWebsocketRoutes(
 
                         }
                     } finally {
+                        print(it.status)
                         controller.disconnect(this, it.data!!.id)
                         this.close()
                     }
