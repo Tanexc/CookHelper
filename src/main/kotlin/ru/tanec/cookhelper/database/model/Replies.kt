@@ -1,9 +1,10 @@
 package ru.tanec.cookhelper.database.model
 
 import org.jetbrains.exposed.sql.Table
+import ru.tanec.cookhelper.database.model.Attachments.autoIncrement
 
 object Replies: Table() {
-    val id = long("id")
+    val id = long("id").autoIncrement()
 
     override val primaryKey = PrimaryKey(id)
 
