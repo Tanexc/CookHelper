@@ -25,6 +25,8 @@ fun chatWebsocketRoutes(
             if (it is State.Success) {
                 user = it.addition as User?
 
+                println(user)
+
                 if (user != null) {
 
                     try {
