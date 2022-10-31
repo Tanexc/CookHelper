@@ -50,10 +50,8 @@ class ChatConnectionController(
 
                     if (chat != null) {
 
-                        data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf()
+                        data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf(session)
 
-                        println(data)
-                        println(data[id])
 
                         emit(State.Success(data = chat, addition = user))
                     } else emit(
