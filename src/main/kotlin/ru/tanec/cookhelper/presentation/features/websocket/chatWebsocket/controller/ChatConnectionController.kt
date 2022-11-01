@@ -30,7 +30,7 @@ class ChatConnectionController(
     fun connect(
         session: DefaultWebSocketServerSession,
         parameters: Parameters
-    ): Flow<State<ChatResponseData?>> = flow {
+    ): Flow<State<Chat?>> = flow {
 
         val id = parameters["id"]?.toLongOrNull()
         val token = parameters["token"]
@@ -40,12 +40,12 @@ class ChatConnectionController(
         when (id == null || token == null) {
             true -> emit(State.Error(status = PARAMETER_MISSED))
             false ->
-                if (user == null) emit(State.Error(status = USER_TOKEN_INVALID))
+                if (user == null) emit(State.Error(data=chat, status = USER_TOKEN_INVALID))
                 else if (chat == null) emit(State.Error(status = CHAT_NOT_FOUND))
                 else if (!chat.members.contains(user.id)) emit(State.Error(status = PERMISSION_DENIED))
                 else {
                     data[id] = (data[id]?.plus(listOf(session)))?.toMutableList() ?: mutableListOf(session)
-                    emit(State.Success(data = null, addition = user))
+                    emit(State.Success(data = chat, addition = user))
                 }
         }
     }
@@ -75,8 +75,10 @@ class ChatConnectionController(
 
     }
 
-    fun disconnect(session: DefaultWebSocketServerSession, id: Long): Boolean {
-        return data[id]?.remove(session) ?: return true
+    fun disconnect(session: DefaultWebSocketServerSession, id: Long?): Boolean {
+        if (id != null) {
+            return data[id]?.remove(session) ?: return true
+        } else return true
     }
 
     suspend fun receiveMessage(

@@ -40,7 +40,7 @@ fun topicWebsocketRoutes(
 
                         }
                     } finally {
-                        controller.disconnect(this, it.data!!.id)
+                        controller.disconnect(this, it.data?.id)
                         this.close()
                     }
                 }

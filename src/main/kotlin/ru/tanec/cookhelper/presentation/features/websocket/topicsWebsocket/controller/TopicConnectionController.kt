@@ -37,14 +37,14 @@ class TopicConnectionController {
         val topic = topicDao.getById(id ?: -1)
 
         when (id == null || token == null) {
-            true -> emit(State.Error(data=null, status=PARAMETER_MISSED))
+            true -> emit(State.Error(data=topic, status=PARAMETER_MISSED))
             false -> {
                 if (user == null) emit(State.Error(status = USER_TOKEN_INVALID))
                 else if (topic == null) emit(State.Error(status = TOPIC_NOT_FOUND))
                 else {
                     if (!user.topics.contains(topic.id)) userDao.editUser(user.copy(topics = user.topics.plus(topic.id)))
                     data[id] = (data[id]?.plus(listOf(session)))?.toMutableList() ?: mutableListOf(session)
-                    emit(State.Success(data = null, addition = user))
+                    emit(State.Success(data = topic, addition = user))
                 }
             }
 
@@ -53,8 +53,10 @@ class TopicConnectionController {
 
     }
 
-    fun disconnect(session: DefaultWebSocketServerSession, id: Long): Boolean {
-           return data[id]?.remove(session)?: return true
+    fun disconnect(session: DefaultWebSocketServerSession, id: Long?): Boolean {
+        if (id != null) {
+            return data[id]?.remove(session) ?: return true
+        } else return true
     }
 
     suspend fun sendMessage(
