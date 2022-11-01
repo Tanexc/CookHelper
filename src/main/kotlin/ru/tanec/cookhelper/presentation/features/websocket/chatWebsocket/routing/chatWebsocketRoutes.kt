@@ -32,6 +32,7 @@ fun chatWebsocketRoutes(
 
                             when (val messageData = controller.receiveMessage(data, user!!)) {
                                 is State.Success -> {
+                                    println("message sent")
                                     controller.sendMessage(
                                         message = messageData.data!!,
                                         user = user!!,
