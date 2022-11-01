@@ -38,7 +38,7 @@ object GetMessagesUseCase {
                 data = null
             )
 
-            val chatId = parameters["chatId"]?.filter { it != '"' }?.toLongOrNull() ?: return ApiResponse(
+            val chatId = parameters["id"]?.filter { it != '"' }?.toLongOrNull() ?: return ApiResponse(
                 status = PARAMETER_MISSED,
                 message = REQUIRED("id"),
                 data = null
