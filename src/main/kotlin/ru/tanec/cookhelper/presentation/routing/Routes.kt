@@ -69,10 +69,5 @@ fun Application.apiRoutes() {
                 files("chat")
             }
         }
-
-        static("/build") {
-            staticRootFolder = File("build")
-            files("build")
-        }
     }
 }
