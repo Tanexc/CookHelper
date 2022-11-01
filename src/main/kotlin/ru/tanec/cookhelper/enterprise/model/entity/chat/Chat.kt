@@ -2,7 +2,9 @@ package ru.tanec.cookhelper.enterprise.model.entity.chat
 
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
+import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
+import ru.tanec.cookhelper.enterprise.model.response.MessageResponseData
 
 @Serializable
 data class Chat(
@@ -14,13 +16,19 @@ data class Chat(
     val avatar: List<FileData> = listOf(),
     val creationTimestamp: Long
 ) {
-    fun asResponseData(): ChatResponseData = ChatResponseData(
-        id=id,
-        title=title,
-        members=members,
-        messages= listOf(),
-        attachments=attachments,
-        avatar=avatar,
-        creationTimestamp=creationTimestamp
+    fun asResponseData(
+        member: User,
+        lastMessage: Message?,
+        newMessagesCount: Int,
+        messages: List<MessageResponseData>
+    ): ChatResponseData = ChatResponseData(
+        id = id,
+        title = title ?: "${member.name} ${member.surname}",
+        members = members,
+        messages = messages,
+        images = avatar,
+        creationTimestamp = creationTimestamp,
+        lastMessage = lastMessage,
+        newMessagesCount = newMessagesCount,
     )
 }

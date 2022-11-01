@@ -14,4 +14,5 @@ interface MessageDao {
     suspend fun getByOffset(listId: List<Long>, offset: Int, limit: Int): List<Message>
 
 
+    suspend fun edit(message: Message): Int
 }

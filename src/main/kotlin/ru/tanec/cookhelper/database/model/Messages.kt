@@ -12,4 +12,5 @@ object Messages: Table() {
     val attachments = text("attachments")
     val replyToId = long("replyToId")
     val timestamp = long("timestamp")
+    val views = text("views")
 }

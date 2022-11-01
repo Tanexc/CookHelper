@@ -82,7 +82,7 @@ class PostDaoImpl : PostDao {
 
     override suspend fun editRecipe(post: Post): Post = dbQuery {
         Posts
-            .update { row ->
+            .update({Posts.id eq post.id}) { row ->
                 row[text] = post.text
                 row[label] = post.label
                 row[attachments] = post.attachments.joinToString(FILE_DELIMITER) { it.id }

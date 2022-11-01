@@ -4,7 +4,6 @@ import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.chatDataFolder
-import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
@@ -75,7 +74,7 @@ class ChatDaoImpl : ChatDao {
             .singleOrNull()
     }
 
-    override suspend fun getChatMessages(id: Long, offset: Int, limit: Int): List<Long>? = dbQuery {
+    override suspend fun getChatMessages(id: Long, offset: Int?, limit: Int?): List<Long>? = dbQuery {
         Chats
             .select {Chats.id eq id}
             .map(::resultRowToChat)

@@ -6,10 +6,12 @@ import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.CHAT_NOT_FOUND
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDao
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDaoImpl
+import ru.tanec.cookhelper.database.dao.messageDao.MessageDao
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
+import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 
-class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl()) : ChatRepository {
+class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl(), override val messageDao: MessageDao) : ChatRepository {
     override fun getChatById(id: Long): Flow<State<Chat?>> = flow {
        try {
             emit(State.Processing())
@@ -33,9 +35,11 @@ class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl()) : ChatReposi
         }
     }
 
-    override suspend fun getChatMessages(id: Long, offset: Int, limit: Int): List<Long>? {
+    override suspend fun getChatMessages(id: Long, offset: Int?, limit: Int?): List<Long>? {
         return dao.getChatMessages(id, offset, limit)
     }
+
+    override suspend fun getMessages(messagesId: List<Long>): List<Message> = messageDao.getByListId(messagesId)
 
     override fun insert(chat: Chat): Flow<State<Chat?>> = flow {
         try {

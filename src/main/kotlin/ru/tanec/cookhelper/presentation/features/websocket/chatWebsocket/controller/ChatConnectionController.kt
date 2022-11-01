@@ -14,11 +14,9 @@ import ru.tanec.cookhelper.database.dao.messageDao.MessageDaoImpl
 import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.database.dao.userDao.UserDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
-import ru.tanec.cookhelper.enterprise.model.entity.chat.ChatData
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
-import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
 import ru.tanec.cookhelper.enterprise.model.response.MessageResponseData
 
 class ChatConnectionController(
@@ -40,7 +38,7 @@ class ChatConnectionController(
         when (id == null || token == null) {
             true -> emit(State.Error(status = PARAMETER_MISSED))
             false ->
-                if (user == null) emit(State.Error(data=chat, status = USER_TOKEN_INVALID))
+                if (user == null) emit(State.Error(data = chat, status = USER_TOKEN_INVALID))
                 else if (chat == null) emit(State.Error(status = CHAT_NOT_FOUND))
                 else if (!chat.members.contains(user.id)) emit(State.Error(status = PERMISSION_DENIED))
                 else {
@@ -63,6 +61,7 @@ class ChatConnectionController(
             attachments = message.attachments,
             replyToId = message.replyToId,
             timestamp = message.timestamp,
+            views = (message.views + (chatDao.getById(chatId)?.members ?: listOf())).toSet().toList()
         )
 
         val chat = chatDao.getById(chatId)

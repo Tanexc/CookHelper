@@ -48,11 +48,21 @@ object GetChatByIdUseCase {
             data=null
         )
 
-        val chatData: ChatResponseData = chat.asResponseData()
-
         val messages = repository.getChatMessages(chat.id, 0, 200)?.let { messageRepository.getByListId(it) } ?: emptyList()
 
-        return ApiResponse(status = SUCCESS, message="success", chatData.copy(messages=messages))
+        val allMessages = messageRepository.getByListId(chat.messages)
+
+        val members = chat.members.toMutableList()
+        members.remove(user.id)
+
+        val chatData: ChatResponseData = chat.asResponseData(
+            messages=messages.sortedBy { it.timestamp }.map { it.asResponseData(userRepository.getById(it.authorId).last().data ?: user)},
+            lastMessage = messages.maxByOrNull { it.timestamp },
+            member = userRepository.getById(members.firstOrNull()?: user.id).last().data?.smallInfo()?:user.smallInfo(),
+            newMessagesCount = allMessages.filter { !it.views.contains(user.id) }.size
+        )
+
+        return ApiResponse(status = SUCCESS, message="success", chatData)
 
     }
 }

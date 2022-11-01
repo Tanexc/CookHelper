@@ -1,12 +1,8 @@
 package ru.tanec.cookhelper.database.dao.messageDao
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
-import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.core.utils.partOfDiv
@@ -24,7 +20,8 @@ class MessageDaoImpl: MessageDao {
             attachmentDataFloder
         ) else null},
         replyToId=row[Messages.replyToId],
-        timestamp=row[Messages.timestamp]
+        timestamp=row[Messages.timestamp],
+        views = row[Messages.views].split(" ").mapNotNull { it.toLongOrNull() }
 
     )
 
@@ -59,6 +56,7 @@ class MessageDaoImpl: MessageDao {
                 row[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.id }
                 row[replyToId] = message.replyToId
                 row[timestamp] = message.timestamp
+                row[views] = message.views.joinToString(" ")
             }
 
         Messages
@@ -73,5 +71,14 @@ class MessageDaoImpl: MessageDao {
             getById(id)?.let { data.add(it) }
         }
         return data.toList().getPage(limit, offset)
+    }
+
+    override suspend fun edit(message: Message) = dbQuery {
+        Messages
+            .update({ Messages.id eq message.id }) {
+                it[views] = message.views.joinToString(" ")
+                it[text] = message.text
+                it[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+            }
     }
 }

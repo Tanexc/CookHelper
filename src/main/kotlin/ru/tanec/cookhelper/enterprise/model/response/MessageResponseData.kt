@@ -12,5 +12,6 @@ data class MessageResponseData(
     val attachments: List<FileData>,
     val replyToId: Long,
     val timestamp: Long,
-    val author: User
+    val author: User,
+    val views: List<Long>
 )

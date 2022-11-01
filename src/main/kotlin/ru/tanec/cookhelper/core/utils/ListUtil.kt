@@ -51,7 +51,8 @@ fun <T> List<T>.partOfDiv(part: Int?, div: Int?): List<T> {
 
 }
 
-fun <T> List<T>.getPage(limit: Int, offset: Int): List<T> {
+fun <T> List<T>.getPage(limit: Int?, offset: Int?): List<T> {
+    if (limit == null || offset == null ) return this
     return when(limit * (offset + 1) >= this.size) {
         true -> this.reversed().subList(limit * offset, this.size)
         else -> {

@@ -8,7 +8,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 data class ChatReceiveMessageData(
     val text: String,
     val attachments: List<FileData>,
-    val replyTo: Long
+    val replyToId: Long
 ) {
     fun asDomain(
         authorId: Long,
@@ -18,8 +18,8 @@ data class ChatReceiveMessageData(
         text = text,
         attachments = attachments,
         authorId = authorId,
-        replyToId = replyTo,
-        timestamp = timestamp
-
+        replyToId = replyToId,
+        timestamp = timestamp,
+        views = listOf(authorId)
     )
 }
