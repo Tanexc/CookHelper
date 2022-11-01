@@ -7,11 +7,12 @@ import ru.tanec.cookhelper.core.constants.status.CHAT_NOT_FOUND
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDao
 import ru.tanec.cookhelper.database.dao.chatDao.ChatDaoImpl
 import ru.tanec.cookhelper.database.dao.messageDao.MessageDao
+import ru.tanec.cookhelper.database.dao.messageDao.MessageDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 
-class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl(), override val messageDao: MessageDao) : ChatRepository {
+class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl(), override val messageDao: MessageDao = MessageDaoImpl()) : ChatRepository {
     override fun getChatById(id: Long): Flow<State<Chat?>> = flow {
        try {
             emit(State.Processing())
