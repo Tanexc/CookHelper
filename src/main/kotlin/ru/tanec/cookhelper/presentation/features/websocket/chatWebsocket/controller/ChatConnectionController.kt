@@ -51,13 +51,7 @@ class ChatConnectionController(
 
                         data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf(session)
 
-                        var chatData: ChatResponseData = chat.asResponseData()
-
-                        val messages = chatDao.getChatMessages(chat.id,0, 200)?.let { messageDao.getByListId(it) }?: emptyList()
-
-                        chatData = chatData.copy(messages=messages)
-
-                        emit(State.Success(data = chatData, addition = user))
+                        emit(State.Success(data = null, addition = user))
                     } else emit(
                         State.Error(
                             data = null,

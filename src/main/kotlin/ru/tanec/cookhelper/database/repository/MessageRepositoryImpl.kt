@@ -61,4 +61,8 @@ class MessageRepositoryImpl(override val dao: MessageDao = MessageDaoImpl()) : M
             emit(State.Error(message=e.message?: "exception in insert() of MessageRepository"))
         }
     }
+
+    override suspend fun getByListId(listId: List<Long>): List<Message> {
+        return dao.getByListId(listId)
+    }
 }

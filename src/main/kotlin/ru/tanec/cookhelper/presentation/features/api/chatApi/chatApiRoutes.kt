@@ -9,6 +9,7 @@ import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.CreateChatUseCase
+import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByIdUseCase
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByListUseCase
 import ru.tanec.cookhelper.enterprise.use_case.messageApi.GetMessagesUseCase
 
@@ -29,6 +30,10 @@ fun chatApiRoutes(
 
     route.get("/api/chat/get/messages/") {
         call.respond(GetMessagesUseCase(messageRepository, userRepository, repository, call.request.queryParameters))
+    }
+
+    route.get("/api/chat/get/by-id/") {
+        call.respond(GetChatByIdUseCase(repository, userRepository, messageRepository, call.request.queryParameters))
     }
 
 }

@@ -17,4 +17,5 @@ interface MessageRepository {
     fun getById(id: Long): Flow<State<Message?>>
 
     fun insert(message: Message): Flow<State<Message?>>
+    abstract suspend fun getByListId(listId: List<Long>): List<Message>
 }

@@ -15,4 +15,5 @@ interface ChatRepository {
     fun editChat(chat: Chat): Flow<State<Chat?>>
 
     fun getChatByIdList(listId: List<Long>, limit: Int?, offset: Int?): Flow<State<List<Chat>?>>
+    suspend fun getChatMessages(id: Long, offset: Int, limit: Int): List<Long>?
 }

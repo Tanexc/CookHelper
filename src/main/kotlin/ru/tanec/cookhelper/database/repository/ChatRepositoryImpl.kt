@@ -33,6 +33,10 @@ class ChatRepositoryImpl(override val dao: ChatDao = ChatDaoImpl()) : ChatReposi
         }
     }
 
+    override suspend fun getChatMessages(id: Long, offset: Int, limit: Int): List<Long>? {
+        return dao.getChatMessages(id, offset, limit)
+    }
+
     override fun insert(chat: Chat): Flow<State<Chat?>> = flow {
         try {
             emit(State.Processing())
