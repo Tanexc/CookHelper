@@ -52,5 +52,7 @@ fun userApiRoutes(
         call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
     }
 
+    //route.get("/api/user/get/")
+
 }
 

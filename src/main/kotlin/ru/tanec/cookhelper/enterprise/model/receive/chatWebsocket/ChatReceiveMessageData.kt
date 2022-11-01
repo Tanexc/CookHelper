@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.chat.Message
 @Serializable
 data class ChatReceiveMessageData(
     val text: String,
-    val attachment: List<FileData>,
+    val attachments: List<FileData>,
     val replyTo: Long
 ) {
     fun asDomain(
@@ -16,7 +16,7 @@ data class ChatReceiveMessageData(
     ): Message = Message(
         id = 0,
         text = text,
-        attachments = attachment,
+        attachments = attachments,
         authorId = authorId,
         replyToId = replyTo,
         timestamp = timestamp
