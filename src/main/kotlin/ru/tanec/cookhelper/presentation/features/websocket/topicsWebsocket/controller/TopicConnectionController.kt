@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.core.utils.checkUserToken
 import ru.tanec.cookhelper.database.dao.answerDao.ReplyDao
 import ru.tanec.cookhelper.database.dao.answerDao.ReplyDaoImpl
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
@@ -29,25 +30,21 @@ class TopicConnectionController {
         session: DefaultWebSocketServerSession,
         parameters: Parameters
     ): Flow<State<Topic?>> = flow {
-        emit(State.Processing())
 
         val id = parameters["id"]?.toLongOrNull()
         val token = parameters["token"]
+        val user = userDao.getByToken(token ?: "")
+        val topic = topicDao.getById(id ?: -1)
 
-        when (id == null) {
+        when (id == null || token == null) {
             true -> emit(State.Error(data=null, status=PARAMETER_MISSED))
-            else -> {
-                val topic = topicDao.getById(id)
-                if (token == null) {
-                    emit(State.Error(data=null, status=PARAMETER_MISSED))
-                } else if (topic == null) {
-                    emit(State.Error(data=null, status=TOPIC_NOT_FOUND))
-                } else {
-                    val sessionData = data[id]?: mutableListOf()
-                    sessionData.add(session)
-                    data[id] = sessionData
-                    val user = userDao.getByToken(token)
-                    emit(State.Success(data=topic, addition=user, status=SUCCESS))
+            false -> {
+                if (user == null) emit(State.Error(status = USER_TOKEN_INVALID))
+                else if (topic == null) emit(State.Error(status = TOPIC_NOT_FOUND))
+                else {
+                    if (!user.topics.contains(topic.id)) userDao.editUser(user.copy(topics = user.topics.plus(topic.id)))
+                    data[id] = (data[id]?.plus(listOf(session)))?.toMutableList() ?: mutableListOf(session)
+                    emit(State.Success(data = null, addition = user))
                 }
             }
 

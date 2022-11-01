@@ -8,7 +8,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.user.User
 @Serializable
 data class ReplyResponseData(
     val id: Long,
-    val author: User,
+    val author: User?,
     val text: String,
     val attachments: List<FileData>,
     val replyToId: Long,

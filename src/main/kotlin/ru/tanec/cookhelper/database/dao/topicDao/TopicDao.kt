@@ -13,5 +13,6 @@ interface TopicDao {
     suspend fun insert(topic: Topic): Topic?
 
     suspend fun editTopic(topic: Topic): Topic?
+    suspend fun getTopicMessages(id: Long, offset: Int, limit: Int): List<Long>?
 
 }

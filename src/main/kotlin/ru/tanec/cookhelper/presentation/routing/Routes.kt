@@ -9,7 +9,7 @@ import ru.tanec.cookhelper.presentation.features.api.categoryApi.routing.categor
 import ru.tanec.cookhelper.presentation.features.api.chatApi.chatApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.commentApi.routing.commentApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.feedApi.routing.feedApiRoutes
-import ru.tanec.cookhelper.presentation.features.api.forumApi.routing.forumApiRoutes
+import ru.tanec.cookhelper.presentation.features.api.forumApi.forumApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.ingredientApi.routing.ingredientApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.recipeApi.routing.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes

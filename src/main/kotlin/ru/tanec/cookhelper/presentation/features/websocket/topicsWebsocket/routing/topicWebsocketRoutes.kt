@@ -17,7 +17,6 @@ fun topicWebsocketRoutes(
         val flow = controller.connect(this, call.parameters)
         var user: User?
         flow.collect {
-            this.sendSerialized(it.asWebsocketResponse())
             if (it is State.Success) {
                 user = it.addition as User?
 

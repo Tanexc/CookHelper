@@ -2,6 +2,8 @@ package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
+import ru.tanec.cookhelper.enterprise.model.entity.user.User
+import ru.tanec.cookhelper.enterprise.model.response.ReplyResponseData
 
 @Serializable
 data class Reply(
@@ -14,4 +16,16 @@ data class Reply(
     val ratingNegative: List<Long>,
     val authorId: Long,
     val replies: List<Long>
-)
+) {
+    fun asResponseData(user: User?, repliesList: List<Reply>) = ReplyResponseData(
+        id=id,
+        text=text,
+        attachments=attachments,
+        replyToId=replyToId,
+        timestamp=timestamp,
+        ratingNegative=ratingNegative,
+        ratingPositive=ratingPositive,
+        author=user?.smallInfo(),
+        replies = repliesList
+    )
+}

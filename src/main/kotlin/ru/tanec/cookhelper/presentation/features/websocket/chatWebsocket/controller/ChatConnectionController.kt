@@ -34,36 +34,22 @@ class ChatConnectionController(
 
         val id = parameters["id"]?.toLongOrNull()
         val token = parameters["token"]
+        val user = userDao.getByToken(token ?: "")
+        val chat = chatDao.getById(id ?: -1)
 
-        when (id == null) {
-            true -> emit(State.Error(data = null, status = PARAMETER_MISSED))
-            false -> {
-                if (token != null) {
-                    val user = userDao.getByToken(token)?: emit(
-                        State.Error(
-                            data=null,
-                            status= USER_TOKEN_INVALID
-                        )
-                    )
-                    val chat = chatDao.getById(id)
-
-                    if (chat != null) {
-
-                        data[id] = (data[id]?.plus(listOf(session)))?.toMutableList()?: mutableListOf(session)
-
-                        emit(State.Success(data = null, addition = user))
-                    } else emit(
-                        State.Error(
-                            data = null,
-                            status = CHAT_NOT_FOUND
-                        )
-                    )
-
-                } else emit(State.Error(data = null, status = PARAMETER_MISSED))
-            }
+        when (id == null || token == null) {
+            true -> emit(State.Error(status = PARAMETER_MISSED))
+            false ->
+                if (user == null) emit(State.Error(status = USER_TOKEN_INVALID))
+                else if (chat == null) emit(State.Error(status = CHAT_NOT_FOUND))
+                else if (!chat.members.contains(user.id)) emit(State.Error(status = PERMISSION_DENIED))
+                else {
+                    data[id] = (data[id]?.plus(listOf(session)))?.toMutableList() ?: mutableListOf(session)
+                    emit(State.Success(data = null, addition = user))
+                }
         }
-
     }
+
 
     suspend fun sendMessage(
         user: User,
@@ -71,34 +57,35 @@ class ChatConnectionController(
         message: Message
     ) {
         val response = MessageResponseData(
-            id=message.id,
-            author=user.smallInfo(),
-            text=message.text,
-            attachments=message.attachments,
-            replyToId=message.replyToId,
-            timestamp=message.timestamp,
+            id = message.id,
+            author = user.smallInfo(),
+            text = message.text,
+            attachments = message.attachments,
+            replyToId = message.replyToId,
+            timestamp = message.timestamp,
         )
 
         val chat = chatDao.getById(chatId)
 
-        chat?.let {chatDao.edit(it.copy(messages = it.messages + listOf(message.id)))}
+        chat?.let { chatDao.edit(it.copy(messages = it.messages + listOf(message.id))) }
 
-        for (receiver: DefaultWebSocketServerSession in data[chatId]?: listOf()) {
+        for (receiver: DefaultWebSocketServerSession in data[chatId] ?: listOf()) {
             receiver.sendSerialized(response)
         }
 
     }
 
     fun disconnect(session: DefaultWebSocketServerSession, id: Long): Boolean {
-        return data[id]?.remove(session)?: return true
+        return data[id]?.remove(session) ?: return true
     }
 
     suspend fun receiveMessage(
         data: ChatReceiveMessageData,
         user: User
     ): State<Message?> {
-        val processedData = messageDao.insert(data.asDomain(user.id, getTimeMillis()))?: return State.Error(status=MESSAGE_NOT_CREATED)
-        return State.Success(data = processedData, status=SUCCESS)
+        val processedData = messageDao.insert(data.asDomain(user.id, getTimeMillis()))
+            ?: return State.Error(status = MESSAGE_NOT_CREATED)
+        return State.Success(data = processedData, status = SUCCESS)
 
     }
 

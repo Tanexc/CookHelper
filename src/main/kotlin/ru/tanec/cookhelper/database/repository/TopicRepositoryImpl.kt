@@ -4,13 +4,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.database.dao.answerDao.ReplyDao
+import ru.tanec.cookhelper.database.dao.answerDao.ReplyDaoImpl
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDaoImpl
 import ru.tanec.cookhelper.database.model.Topics
+import ru.tanec.cookhelper.enterprise.model.entity.forum.Reply
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 
-class TopicRepositoryImpl(override val dao: TopicDao = TopicDaoImpl()) : TopicRepository {
+class TopicRepositoryImpl(
+    override val dao: TopicDao = TopicDaoImpl(),
+    override val replyDao: ReplyDao = ReplyDaoImpl()
+) : TopicRepository {
     override fun insert(topic: Topic): Flow<State<Topic?>> = flow {
         try {
             emit(State.Processing())
@@ -69,10 +75,16 @@ class TopicRepositoryImpl(override val dao: TopicDao = TopicDaoImpl()) : TopicRe
             for (id in listId) {
                 dao.getById(id)?.let { data.add(it) }
             }
-            emit(State.Success(data=data))
+            emit(State.Success(data = data))
         } catch (e: Exception) {
             emit(State.Error(message = e.message ?: "Exception in getByListId() of TopicRepository"))
         }
     }
+
+    override suspend fun getTopicReplies(id: Long, offset: Int, limit: Int): List<Reply> =
+        replyDao.getByListId(dao.getTopicMessages(id, offset, limit) ?: emptyList())
+
+    override suspend fun getReplies(ids: List<Long>): List<Reply> = replyDao.getByListId(ids)
+
 
 }

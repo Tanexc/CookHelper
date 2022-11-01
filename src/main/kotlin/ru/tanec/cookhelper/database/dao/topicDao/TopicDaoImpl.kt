@@ -6,6 +6,7 @@ import ru.tanec.cookhelper.core.constants.feedDataFolder
 import ru.tanec.cookhelper.core.constants.forumDataFolder
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Topics
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
@@ -76,5 +77,12 @@ class TopicDaoImpl: TopicDao {
             .select {Topics.id eq topic.id}
             .map(::resultRowToTopic)
             .singleOrNull()
+    }
+
+    override suspend fun getTopicMessages(id: Long, offset: Int, limit: Int): List<Long>? = dbQuery {
+        Topics
+            .select{Topics.id eq id}
+            .map(::resultRowToTopic)
+            .singleOrNull()?.answers?.getPage(limit, offset)
     }
 }
