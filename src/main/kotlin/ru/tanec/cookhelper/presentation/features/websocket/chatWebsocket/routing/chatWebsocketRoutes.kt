@@ -5,12 +5,8 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.descriptors.PrimitiveKind
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
@@ -34,20 +30,19 @@ fun chatWebsocketRoutes(
                 if (user != null) {
 
                     try {
-                        withContext(Dispatchers.IO) {
-                            incoming.receiveAsFlow().filterIsInstance<ChatReceiveMessageData>().collect { data ->
-                                when (val messageData = controller.receiveMessage(data, user!!)) {
-                                    is State.Success -> {
-                                        println("message sent")
-                                        controller.sendMessage(
-                                            message = messageData.data!!,
-                                            user = user!!,
-                                            chatId = it.data!!.id
-                                        )
-                                    }
-
-                                    else -> cancel()
+                        var process = true
+                        while (process) {
+                            val data: ChatReceiveMessageData = receiveDeserialized()
+                            when (val messageData = controller.receiveMessage(data, user!!)) {
+                                is State.Success -> {
+                                    controller.sendMessage(
+                                        message = messageData.data!!,
+                                        user = user!!,
+                                        chatId = it.data!!.id
+                                    )
                                 }
+
+                                else -> process = false
                             }
                         }
                     } finally {
