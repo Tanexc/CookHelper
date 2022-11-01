@@ -3,6 +3,11 @@ package ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.routin
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.serialization.descriptors.PrimitiveKind
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
@@ -26,10 +31,7 @@ fun chatWebsocketRoutes(
                 if (user != null) {
 
                     try {
-                        for (frame in incoming) {
-
-                            val data: ChatReceiveMessageData = this.receiveDeserialized()
-
+                        incoming.receiveAsFlow().filterIsInstance<ChatReceiveMessageData>().collect { data ->
                             when (val messageData = controller.receiveMessage(data, user!!)) {
                                 is State.Success -> {
                                     println("message sent")
@@ -40,9 +42,8 @@ fun chatWebsocketRoutes(
                                     )
                                 }
 
-                                else -> break
+                                else -> cancel()
                             }
-
                         }
                     } finally {
                         controller.disconnect(this, it.data?.id)
