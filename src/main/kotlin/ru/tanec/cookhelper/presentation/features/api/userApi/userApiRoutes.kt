@@ -43,12 +43,16 @@ fun Routing.userApiRoutes() {
         call.respond(NicknameAvailabilityUserUseCase(userRepository, params))
     }
 
-    post("/api/user/post/fridge/") {
+    post("/api/user/post/fridge/insert/") {
         call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
     }
 
-    get("/api/user/get/fridge/") {
+    post("/api/user/post/fridge/remove/") {
         call.respond(RemoveFromFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
+    }
+
+    get ("api/user/get/fridge/") {
+        call.respond(GetFridgeUseCase(userRepository, ingredientRepository, call.request.queryParameters))
     }
 
     post("/api/user/post/avatar/") {

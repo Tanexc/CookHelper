@@ -37,4 +37,13 @@ class IngredientRepositoryImpl(
             emit(State.Error())
         }
     }
+
+    override fun getByListId(listId: List<Long>, offset: Int, limit: Int): Flow<State<List<Ingredient>>> = flow {
+        emit(State.Processing())
+        try {
+            emit(State.Success( data = dao.getByListId(listId, offset, limit)))
+        } catch (_: Exception) {
+            emit(State.Error())
+        }
+    }
 }

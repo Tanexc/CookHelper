@@ -6,8 +6,10 @@ interface IngredientDao {
 
     suspend fun getAll(): List<Ingredient>
 
-    suspend fun getAll(part: Int, div: Int): List<Ingredient>
+    suspend fun getAll(offset: Int, limit: Int): List<Ingredient>
 
     suspend fun getById(id: Long): Ingredient?
+
+    suspend fun getByListId(listId: List<Long>, offset: Int, limit: Int): List<Ingredient>
 
 }

@@ -15,4 +15,6 @@ interface IngredientRepository {
 
     fun getById(id: Long): Flow<State<Ingredient?>>
 
+    fun getByListId(listId: List<Long>, offset: Int, limit: Int): Flow<State<List<Ingredient>>>
+
 }
