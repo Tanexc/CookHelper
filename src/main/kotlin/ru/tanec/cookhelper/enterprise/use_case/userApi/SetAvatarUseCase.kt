@@ -36,12 +36,10 @@ object SetAvatarUseCase {
             }
         }
 
-        println(avatar?.contentType?.contentSubtype)
-
         val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>(status= USER_NOT_FOUND).asApiResponse()
 
         val fileList =
-            avatar?.let { listOf(FileController.uploadFile(userDataFolder, it, it.contentType!!.contentType)) }
+            avatar?.let { listOf(FileController.uploadFile(userDataFolder, it, "${it.contentType!!.contentType}/${it.contentType!!.contentSubtype}")) }
                 ?: listOf()
 
         return repository.edit(user.copy(avatar = user.avatar + fileList)).last().asApiResponse()
