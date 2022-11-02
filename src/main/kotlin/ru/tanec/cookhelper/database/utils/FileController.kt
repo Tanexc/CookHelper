@@ -19,11 +19,11 @@ object FileController {
     private val dao = FileDataDaoImpl()
 
     suspend fun uploadFile(folder: String, file: FileItem, type: String): FileData {
-        val uniqueName = "${uniqueString(getTimeMillis().toString().reversed())}.${EXTENTIONS[type]}"
+        val uniqueName = "$type${uniqueString(getTimeMillis().toString().reversed())}.${EXTENTIONS[type]}"
 
         runCatching { createDirectory(Paths.get(folder)) }
 
-        if (EXTENTIONS[type] == null) return FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName.${EXTENTIONS[type]}", type)
+        if (EXTENTIONS[type] == null) return FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName", type)
 
         File("$folder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return dao.insert(FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName.${EXTENTIONS[type]}", type))

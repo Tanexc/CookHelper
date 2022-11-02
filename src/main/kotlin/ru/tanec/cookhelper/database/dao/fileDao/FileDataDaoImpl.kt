@@ -43,6 +43,7 @@ class FileDataDaoImpl: FIleDataDao {
     override suspend fun insert(data: FileData): FileData = dbQuery {
         FileDatas
             .insert{
+                it[id]
                 it[name] = data.name
                 it[link] = data.link
                 it[type] = data.type
