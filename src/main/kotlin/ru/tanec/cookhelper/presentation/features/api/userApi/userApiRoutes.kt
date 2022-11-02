@@ -5,54 +5,64 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.core.constants.MISSED
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
+import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
+import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.userApi.*
 
-fun userApiRoutes(
-    route: Routing,
-    repository: UserRepository
-) {
+fun Routing.userApiRoutes() {
 
-    route.post("/api/user/post/reg/") {
+    val userRepository: UserRepository by inject()
+    val recipeRepository: RecipeRepository by inject()
+    val ingredientRepository: IngredientRepository by inject()
+
+    post("/api/user/post/reg/") {
         try {
             val data = call.receiveMultipart().readAllParts()
-            call.respond(RegistrationUseCase(repository, data))
+            call.respond(RegistrationUseCase(userRepository, data))
         } catch (e: Exception) {
             call.respond(ApiResponse<User>(104, MISSED, null))
         }
-
     }
 
-    route.post("/api/user/post/auth/") {
+    post("/api/user/post/auth/") {
         val params = call.receiveMultipart().readAllParts()
-        call.respond(LoginUseCase(repository, params))
+        call.respond(LoginUseCase(userRepository, params))
     }
 
-    route.get("/api/user/get/email-availability/") {
+    get("/api/user/get/email-availability/") {
         val params = call.request.queryParameters
-        call.respond(EmailAvailabilityUserUseCase(repository, params))
+        call.respond(EmailAvailabilityUserUseCase(userRepository, params))
     }
-    route.get("/api/user/get/nickname-availability/") {
+    get("/api/user/get/nickname-availability/") {
         val params = call.request.queryParameters
-        call.respond(NicknameAvailabilityUserUseCase(repository, params))
+        call.respond(NicknameAvailabilityUserUseCase(userRepository, params))
     }
 
-    route.post("/api/user/post/fridge/") {
-        //TODO
+    post("/api/user/post/fridge/") {
+        call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
     }
 
-    route.get("/api/user/get/fridge/") {
-        //TODO
+    get("/api/user/get/fridge/") {
+        call.respond(DeleteFromFridgeUseCase())
     }
 
-    route.post("/api/user/post/avatar/") {
-        call.respond(SetAvatarUseCase(repository, call.receiveMultipart().readAllParts()))
+    post("/api/user/post/avatar/") {
+        call.respond(SetAvatarUseCase(userRepository, call.receiveMultipart().readAllParts()))
     }
 
-    //route.get("/api/user/get/")
+    post("/api/user/post/image/") {
+        call.respond(AddUserImageUseCase(userRepository, call.receiveMultipart().readAllParts()))
+    }
+
+    get("/api/user/get/fridge/recipe/") {
+        call.respond(GetFridgeRecipeUseCase(recipeRepository, userRepository, call.request.queryParameters))
+    }
+
 
 }
 

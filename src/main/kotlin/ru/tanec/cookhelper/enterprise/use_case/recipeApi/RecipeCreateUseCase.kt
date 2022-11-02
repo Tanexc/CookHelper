@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.recipeDataFolder
 import ru.tanec.cookhelper.core.constants.status.*
-import ru.tanec.cookhelper.core.utils.FileController.uploadFile
+import ru.tanec.cookhelper.database.utils.FileController.uploadFile
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -27,10 +27,10 @@ object RecipeCreateUseCase {
 
             else -> {
                 if (recipe.authorId != null)
-                repository.insert(
-                    recipe
-                ).last()
-                else State.Error(status=USER_NOT_FOUND)
+                    repository.insert(
+                        recipe
+                    ).last()
+                else State.Error(status = USER_NOT_FOUND)
             }
         }
 
@@ -113,8 +113,10 @@ object RecipeCreateUseCase {
                 }
             else if (pt is PartData.FileItem) when (pt.name) {
                 "image" -> {
-                    image = pt
-                    _params -= 1
+                    if (pt.contentType != null) {
+                        image = pt
+                        _params -= 1
+                    }
                 }
             }
 
@@ -142,7 +144,7 @@ object RecipeCreateUseCase {
         }
     }
 
-    private fun RecipeData.asDomain(): Recipe {
+    private suspend fun RecipeData.asDomain(): Recipe {
         return Recipe(
             authorId = this.authorId,
             calories = this.calories,
@@ -151,7 +153,7 @@ object RecipeCreateUseCase {
             carbohydrates = this.carbohydrates,
             time = this.time,
             title = this.title,
-            image = uploadFile(recipeDataFolder, this.image),
+            image = uploadFile(recipeDataFolder, this.image, this.image.contentType!!.contentType),
             category = this.category,
             ingredients = this.ingredients,
             proteins = this.proteins

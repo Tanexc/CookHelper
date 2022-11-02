@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -15,48 +16,47 @@ import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.recipeApi.*
 
 
-fun recipeApiRoutes(
-    route: Routing,
-    repository: RecipeRepository,
-    userRepository: UserRepository,
-    commentRepository: CommentRepository
-) {
+fun Routing.recipeApiRoutes() {
 
-    route.post("/api/recipe/post/create/") {
-        call.respond(RecipeCreateUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
+    val userRepository: UserRepository by inject()
+    val recipeRepository: RecipeRepository by inject()
+    val commentRepository: CommentRepository by inject()
 
-    }
-
-    route.get("/api/recipe/get/") {
-
-        call.respond(GetRecipeUseCase(repository, call.request.queryParameters))
+    post("/api/recipe/post/create/") {
+        call.respond(RecipeCreateUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
 
     }
 
-    route.get("/api/recipe/get/by-ingredients/") {
+    get("/api/recipe/get/") {
+
+        call.respond(GetRecipeUseCase(recipeRepository, call.request.queryParameters))
+
+    }
+
+    get("/api/recipe/get/by-ingredients/") {
         //TODO
     }
 
 
-    route.get("/api/recipe/post/like/") {
+    get("/api/recipe/post/like/") {
         try {
-            call.respond(LikeRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
+            call.respond(LikeRecipeUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
     }
 
-    route.get("/api/recipe/post/comment/") {
+    get("/api/recipe/post/comment/") {
         try {
-            call.respond(CommentRecipeUseCase(repository, userRepository, commentRepository, call.receiveMultipart().readAllParts()))
+            call.respond(CommentRecipeUseCase(recipeRepository, userRepository, commentRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
     }
 
-    route.get("/api/recipe/post/repost/") {
+    get("/api/recipe/post/repost/") {
         try {
-            call.respond(RepostRecipeUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
+            call.respond(RepostRecipeUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }

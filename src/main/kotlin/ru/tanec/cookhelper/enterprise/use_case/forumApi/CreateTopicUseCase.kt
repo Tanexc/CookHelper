@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
-import ru.tanec.cookhelper.core.utils.FileController
+import ru.tanec.cookhelper.database.utils.FileController
 import ru.tanec.cookhelper.core.utils.checkUserToken
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -34,8 +34,10 @@ object CreateTopicUseCase {
                 }
 
                 is PartData.FileItem -> {
-                    val data = FileController.uploadFile(attachmentDataFloder, param)
-                    topicData.attachment = topicData.attachment + listOf(data)
+                    if (param.contentType != null) {
+                        val data = FileController.uploadFile(attachmentDataFloder, param, param.contentType!!.contentType)
+                        topicData.attachment = topicData.attachment + listOf(data)
+                    }
                 }
 
                 else -> {}

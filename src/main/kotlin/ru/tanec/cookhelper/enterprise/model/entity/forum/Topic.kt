@@ -1,7 +1,6 @@
 package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import kotlinx.serialization.Serializable
-import ru.tanec.cookhelper.enterprise.model.entity.attachment.Attachment
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 

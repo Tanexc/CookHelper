@@ -7,7 +7,7 @@ import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.feedDataFolder
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
 import ru.tanec.cookhelper.core.constants.status.*
-import ru.tanec.cookhelper.core.utils.FileController.uploadFile
+import ru.tanec.cookhelper.database.utils.FileController.uploadFile
 import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
@@ -71,8 +71,8 @@ object PostCreateUseCase {
                 }
 
                 is PartData.FileItem -> {
-                    print("image")
-                    attachments = attachments + listOf(pt)
+
+                    if (pt.contentType != null) attachments = attachments + listOf(pt)
                 }
 
                 else -> {}
@@ -98,13 +98,13 @@ object PostCreateUseCase {
 
     }
 
-    private fun PostData.asDomain(): Post {
+    private suspend fun PostData.asDomain(): Post {
 
         return Post(
             authorId = this.authorId,
             text = this.text ?: "",
             label = this.label ?: "",
-            attachments = this.attachment.map { uploadFile(feedDataFolder, it)},
+            attachments = this.attachment.map { uploadFile(feedDataFolder, it, it.contentType?.contentType?: "")},
             comments = emptyList(),
             likes = emptyList(),
             reposts = emptyList(),

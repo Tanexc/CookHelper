@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.database.dao.messageDao
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
@@ -16,13 +16,21 @@ class MessageDaoImpl: MessageDao {
         id=row[Messages.id],
         authorId=row[Messages.authorId],
         text=row[Messages.text],
-        attachments=row[Messages.attachments].split(ATTCH_DELIMITER).mapNotNull{ if (it !="") it.toFileData(
-            attachmentDataFloder
-        ) else null},
+        attachments=row[Messages.attachments].split(ATTCH_DELIMITER).mapNotNull{ toFileData(it)},
         replyToId=row[Messages.replyToId],
         timestamp=row[Messages.timestamp],
         views = row[Messages.views].split(" ").mapNotNull { it.toLongOrNull() }
 
+    )
+
+    private fun ResultRow.toMessage(): Message = Message(
+        id=this[Messages.id],
+        authorId=this[Messages.authorId],
+        text=this[Messages.text],
+        attachments=this[Messages.attachments].split(ATTCH_DELIMITER).mapNotNull{ toFileData(it)},
+        replyToId=this[Messages.replyToId],
+        timestamp=this[Messages.timestamp],
+        views = this[Messages.views].split(" ").mapNotNull { it.toLongOrNull() }
     )
 
     override suspend fun getById(id: Long): Message? = dbQuery {
@@ -53,11 +61,11 @@ class MessageDaoImpl: MessageDao {
             .insert { row ->
                 row[authorId] = message.authorId
                 row[text] = message.text
-                row[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[replyToId] = message.replyToId
                 row[timestamp] = message.timestamp
                 row[views] = message.views.joinToString(" ")
-            }
+            }.resultedValues?.get(0)
 
         Messages
             .select {(Messages.timestamp eq message.timestamp) and (Messages.authorId eq message.authorId)}
@@ -75,10 +83,10 @@ class MessageDaoImpl: MessageDao {
 
     override suspend fun edit(message: Message) = dbQuery {
         Messages
-            .update({ Messages.id eq message.id }) {
-                it[views] = message.views.joinToString(" ")
-                it[text] = message.text
-                it[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+            .update({ Messages.id eq message.id }) { row ->
+                row[views] = message.views.joinToString(" ")
+                row[text] = message.text
+                row[attachments] = message.attachments.joinToString(ATTCH_DELIMITER) { it.name }
             }
     }
 }

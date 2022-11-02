@@ -9,6 +9,7 @@ import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDao
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
+import java.time.ZoneOffset
 
 
 class RecipeRepositoryImpl(
@@ -66,20 +67,20 @@ class RecipeRepositoryImpl(
         }
     }
 
-    override fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
+    override fun getRecipeByIngredient(ingredient: Long, offset: Int, limit: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getRecipeByIngredient(ingredient, part, div), status = SUCCESS))
+            emit(State.Success(dao.getRecipeByIngredient(ingredient, offset, limit), status = SUCCESS))
 
         } catch (e: Exception) {
             emit(State.Error(status = EXCEPTION))
         }
     }
 
-    override fun getRecipeByIngredients(ingredient: List<Long>, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
+    override fun getRecipeByIngredients(ingredient: List<Long>, offset: Int, limit: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getRecipeByIngredients(ingredient, part, div), status = SUCCESS))
+            emit(State.Success(dao.getRecipeByIngredients(ingredient, offset, limit), status = SUCCESS))
 
         } catch (e: Exception) {
             emit(State.Error(status = EXCEPTION))

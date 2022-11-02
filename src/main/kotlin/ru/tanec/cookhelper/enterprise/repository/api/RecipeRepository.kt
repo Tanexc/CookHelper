@@ -13,13 +13,14 @@ interface RecipeRepository {
     fun getById(id: Long): Flow<State<Recipe?>>
 
     fun getAll(id: Long, part: Int, div: Int): Flow<State<List<Recipe>>>
+
     fun getByUser(userId: Long, part: Int, div: Int): Flow<State<List<Recipe>>>
 
-    fun getByTitle(title: String, part: Int, div: Int): Flow<State<List<Recipe>>>
+    fun getByTitle(title: String, offset: Int, limit: Int): Flow<State<List<Recipe>>> // TODO(offset, limit)
 
     fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): Flow<State<List<Recipe>>>
 
-    fun getRecipeByIngredients(ingredient: List<Long>, part: Int, div: Int): Flow<State<List<Recipe>>>
+    fun getRecipeByIngredients(ingredient: List<Long>, offset: Int, limit: Int): Flow<State<List<Recipe>>>
 
     fun editRecipe(recipe: Recipe): Flow<State<Recipe>>
 }

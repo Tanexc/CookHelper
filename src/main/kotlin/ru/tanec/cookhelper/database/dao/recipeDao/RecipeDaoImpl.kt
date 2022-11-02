@@ -2,14 +2,17 @@ package ru.tanec.cookhelper.database.dao.recipeDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.DELIMITER
-import ru.tanec.cookhelper.core.constants.recipeDataFolder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.core.utils.filterMap
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
+import ru.tanec.cookhelper.core.utils.getPage
+import ru.tanec.cookhelper.core.utils.intersectionMoreThan
+import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Recipes
+import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 
 class RecipeDaoImpl : RecipeDao {
-
     private fun resultRowToRecipe(row: ResultRow) = Recipe(
         id = row[Recipes.id],
 
@@ -25,32 +28,43 @@ class RecipeDaoImpl : RecipeDao {
         fats = row[Recipes.fats],
         calories = row[Recipes.calories],
 
-        image = row[Recipes.image].toFileData(recipeDataFolder),
+        image = toFileData(row[Recipes.image]) ?: FileData(-1, "notFound", "notFound", "notFound"),
         comments = row[Recipes.comments].split(" ").mapNotNull { it.toLongOrNull() },
         reposts = row[Recipes.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Recipes.likes].split(" ").mapNotNull { it.toLongOrNull() },
         timestamp = row[Recipes.timestamp]
+    )
 
-        )
+    private fun ResultRow.toRecipe() = Recipe(
+        id = this[Recipes.id],
 
-    // part - index of list divided on pieces with length div
-    private fun <T> List<T>.partOfDiv(part: Int, div: Int): List<T> {
-        return if ((div * (part + 1) > this.size) and (div * part < this.size)) {
-            this.subList(div * part, this.size)
-        } else if (div * (part + 1) <= this.size) {
-            this.subList(div * part, div * (part + 1))
-        } else {
-            listOf()
-        }
+        authorId = this[Recipes.authorId],
+        title = this[Recipes.title],
+        cookSteps = this[Recipes.cookSteps].split(DELIMITER),
+        time = this[Recipes.time],
+        ingredients = this[Recipes.ingredients].split(" ").mapNotNull { it.toLongOrNull() },
+        category = this[Recipes.category],
 
-    }
+        proteins = this[Recipes.proteins],
+        carbohydrates = this[Recipes.carbohydrates],
+        fats = this[Recipes.fats],
+        calories = this[Recipes.calories],
 
-    override suspend fun getAll(part: Int, div: Int): List<Recipe> = dbQuery {
+        image = toFileData(this[Recipes.image]) ?: FileData(-1, "notFound", "notFound", "notFound"),
+        comments = this[Recipes.comments].split(" ").mapNotNull { it.toLongOrNull() },
+        reposts = this[Recipes.reposts].split(" ").mapNotNull { it.toLongOrNull() },
+        likes = this[Recipes.likes].split(" ").mapNotNull { it.toLongOrNull() },
+        timestamp = this[Recipes.timestamp]
+    )
+
+    //TODO(change offset and limit)
+
+    override suspend fun getAll(offset: Int, limit: Int): List<Recipe> = dbQuery {
         val data = Recipes
             .selectAll()
             .map(::resultRowToRecipe)
 
-        data.partOfDiv(part, div)
+        data.getPage(offset, limit)
     }
 
     override suspend fun getAll(): List<Recipe> = dbQuery {
@@ -61,23 +75,23 @@ class RecipeDaoImpl : RecipeDao {
 
     override suspend fun getById(id: Long): Recipe? = dbQuery {
         Recipes
-            .select{ Recipes.id eq id}
+            .select { Recipes.id eq id }
             .map(::resultRowToRecipe)
             .singleOrNull()
     }
 
-    override suspend fun getByUser(userId: Long, part: Int, div: Int): List<Recipe> = dbQuery {
+    override suspend fun getByUser(userId: Long, offset: Int, limit: Int): List<Recipe> = dbQuery {
         Recipes
-            .select{ Recipes.authorId eq userId}
+            .select { Recipes.authorId eq userId }
             .map(::resultRowToRecipe)
-            .partOfDiv(part, div)
+            .partOfDiv(offset, limit)
     }
 
-    override suspend fun getByTitle(title: String, part: Int, div: Int): List<Recipe> = dbQuery {
+    override suspend fun getByTitle(title: String, offset: Int, limit: Int): List<Recipe> = dbQuery {
         Recipes
-            .select{ Recipes.title like title}
+            .select { Recipes.title like title }
             .map(::resultRowToRecipe)
-            .partOfDiv(part, div)
+            .partOfDiv(offset, limit)
     }
 
     override suspend fun insertRecipe(recipe: Recipe): Recipe = dbQuery {
@@ -85,14 +99,14 @@ class RecipeDaoImpl : RecipeDao {
             .insert {
                 it[title] = recipe.title
                 it[cookSteps] = recipe.cookSteps.joinToString(DELIMITER)
-                it[authorId] = recipe.authorId?: 0
+                it[authorId] = recipe.authorId ?: 0
                 it[time] = recipe.time
                 it[ingredients] = recipe.ingredients.joinToString(" ")
                 it[proteins] = recipe.proteins
                 it[calories] = recipe.calories
                 it[fats] = recipe.fats
                 it[carbohydrates] = recipe.carbohydrates
-                it[image] = recipe.image.id
+                it[image] = recipe.image.name
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")
@@ -100,36 +114,46 @@ class RecipeDaoImpl : RecipeDao {
                 it[timestamp] = recipe.timestamp
             }
         Recipes
-            .select{ Recipes.timestamp eq recipe.timestamp}
+            .select { Recipes.timestamp eq recipe.timestamp }
             .map(::resultRowToRecipe)
             .single()
     }
 
-    override suspend fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): List<Recipe> = dbQuery {
+    override suspend fun getRecipeByIngredient(ingredient: Long, offset: Int, limit: Int): List<Recipe> = dbQuery {
         Recipes
-            .select{(Recipes.ingredients.like("$ingredient ")) or (Recipes.ingredients.like(" $ingredient"))}
+            .select { (Recipes.ingredients.like("$ingredient ")) or (Recipes.ingredients.like(" $ingredient")) }
             .map(::resultRowToRecipe)
-            .partOfDiv(part, div)
+            .getPage(limit, offset)
     }
 
-    override suspend fun getRecipeByIngredients(ingredient: List<Long>, part: Int, div: Int): List<Recipe> = dbQuery {
-        val data = getAll()
-        data.mapNotNull { if (it.ingredients.intersect(ingredient).isNotEmpty()) it else null }
-    }
+    override suspend fun getRecipeByIngredients(ingredient: List<Long>, offset: Int, limit: Int): List<Recipe> =
+        dbQuery {
+            Recipes
+                .selectAll()
+                .sortedBy { it.toRecipe().ingredients.size }
+                .filterMap(predicate =
+                { recipe ->
+                    recipe.ingredients.intersectionMoreThan(ingredient, 0.33)
+                })
+                { row ->
+                    row.toRecipe()
+                }
+                .sortedBy { it.ingredients.intersect(ingredient.toSet()).size }
+                .getPage(limit, offset)
+        }
 
     override suspend fun editRecipe(recipe: Recipe): Recipe = dbQuery {
         Recipes
-            .update({ Recipes.id eq recipe.id}) {
+            .update({ Recipes.id eq recipe.id }) {
                 it[title] = recipe.title
                 it[cookSteps] = recipe.cookSteps.joinToString(DELIMITER)
-                it[authorId] = recipe.authorId?: 0
                 it[time] = recipe.time
                 it[ingredients] = recipe.ingredients.joinToString(" ")
                 it[proteins] = recipe.proteins
                 it[calories] = recipe.calories
                 it[fats] = recipe.fats
                 it[carbohydrates] = recipe.carbohydrates
-                it[image] = recipe.image.id
+                it[image] = recipe.image.name
                 it[comments] = recipe.comments.joinToString(" ")
                 it[likes] = recipe.comments.joinToString(" ")
                 it[reposts] = recipe.reposts.joinToString(" ")

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.core.constants.userDataFolder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.dao.userDao.UserDao
 import ru.tanec.cookhelper.database.dao.userDao.UserDaoImpl
 import ru.tanec.cookhelper.core.utils.HashTool
@@ -87,7 +87,7 @@ class UserRepositoryImpl(
         var user = dao.getByToken(token)
         if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
-            user.avatar = user.avatar + listOf(avatarPath.toFileData(userDataFolder))
+            user.avatar = user.avatar + (toFileData(avatarPath)?.let{listOf(it)}?: emptyList())
             user = action(user)
             dao.editUser(user)
             emit(State.Success(user.privateInfo()))
@@ -100,7 +100,7 @@ class UserRepositoryImpl(
         if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
 
-            user.avatar = user.avatar.filter { it.id != avatarId}
+            user.avatar = user.avatar.filter { it.name != avatarId}
             user = action(user)
             dao.editUser(user)
             emit(State.Success(user.privateInfo()))

@@ -2,7 +2,7 @@ package ru.tanec.cookhelper.database.dao.postDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.*
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Posts
@@ -15,13 +15,24 @@ class PostDaoImpl : PostDao {
         authorId = row[Posts.authorId],
         text = row[Posts.text],
         label = row[Posts.label],
-        attachments = row[Posts.attachments]
-            .split(ATTCH_DELIMITER)
-            .mapNotNull { if (it != "") it.toFileData(feedDataFolder) else null },
-        comments = row[Posts.comments].split(" "),
+        attachments = row[Posts.attachments].split(ATTCH_DELIMITER).mapNotNull { toFileData(it) },
+        comments = row[Posts.comments].split(" ").filter { it.isNotBlank()},
         reposts = row[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
         likes = row[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
         timestamp = row[Posts.timestamp]
+
+    )
+
+    private fun ResultRow.toPost(): Post = Post(
+        id = this[Posts.id],
+        authorId = this[Posts.authorId],
+        text = this[Posts.text],
+        label = this[Posts.label],
+        attachments = this[Posts.attachments].split(ATTCH_DELIMITER).mapNotNull { toFileData(it) },
+        comments = this[Posts.comments].split(" ").filter { it.isNotBlank()},
+        reposts = this[Posts.reposts].split(" ").mapNotNull { it.toLongOrNull() },
+        likes = this[Posts.likes].split(" ").mapNotNull { it.toLongOrNull() },
+        timestamp = this[Posts.timestamp]
 
     )
 
@@ -60,22 +71,12 @@ class PostDaoImpl : PostDao {
                 row[authorId] = post.authorId ?: 0
                 row[text] = post.text
                 row[label] = post.label
-                row[attachments] = post.attachments.joinToString(SEPORATOR) { it.id }
+                row[attachments] = post.attachments.joinToString(SEPORATOR) { it.name }
                 row[likes] = post.likes.joinToString(" ")
                 row[reposts] = post.reposts.joinToString(" ")
                 row[comments] = post.comments.joinToString(SECOND_DELIMITER)
                 row[timestamp] = post.timestamp
-
-            }
-
-        val data = Posts
-            .select { Posts.timestamp eq post.timestamp }
-            .map(::resultRowToPost)
-            .singleOrNull()
-
-
-        data?.copy(comments = data.comments.filter { it != "" }, attachments = data.attachments.filter { it.id != "" })
-            ?: post
+            }.resultedValues?.get(0)?.toPost()?: post
 
 
     }
@@ -85,7 +86,7 @@ class PostDaoImpl : PostDao {
             .update({Posts.id eq post.id}) { row ->
                 row[text] = post.text
                 row[label] = post.label
-                row[attachments] = post.attachments.joinToString(FILE_DELIMITER) { it.id }
+                row[attachments] = post.attachments.joinToString(FILE_DELIMITER) { it.name }
                 row[likes] = post.likes.joinToString(" ")
                 row[reposts] = post.reposts.joinToString(" ")
                 row[comments] = post.comments.joinToString(SECOND_DELIMITER)

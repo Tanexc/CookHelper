@@ -4,20 +4,20 @@ import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.userDataFolder
-import ru.tanec.cookhelper.database.utils.FileController
 import ru.tanec.cookhelper.core.utils.checkUserToken
+import ru.tanec.cookhelper.database.utils.FileController
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
-object SetAvatarUseCase {
+object AddUserImageUseCase {
     suspend operator fun invoke(
         repository: UserRepository,
         parameters: List<PartData>,
     ): ApiResponse<User?> {
 
         var token: String? = null
-        var avatar: PartData.FileItem? = null
+        var image: PartData.FileItem? = null
 
         parameters.forEach {
             when (it) {
@@ -27,7 +27,7 @@ object SetAvatarUseCase {
 
                 is PartData.FileItem -> {
                     if (it.contentType != null) {
-                        avatar = it
+                        image = it
                     }
                 }
 
@@ -38,10 +38,10 @@ object SetAvatarUseCase {
         val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>().asApiResponse()
 
         val fileList =
-            avatar?.let { listOf(FileController.uploadFile(userDataFolder, it, it.contentType!!.contentType)) }
+            image?.let { listOf(FileController.uploadFile(userDataFolder, it, it.contentType!!.contentType)) }
                 ?: listOf()
 
-        return repository.edit(user.copy(avatar = user.avatar + fileList)).last().asApiResponse()
+        return repository.edit(user.copy(images = user.images + fileList)).last().asApiResponse()
 
 
     }

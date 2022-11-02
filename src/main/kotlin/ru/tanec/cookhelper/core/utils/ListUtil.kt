@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.core.utils
 
 import io.ktor.http.content.*
 import ru.tanec.cookhelper.core.constants.chatDataFolder
+import ru.tanec.cookhelper.database.utils.FileController
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
 import ru.tanec.cookhelper.enterprise.model.entity.chat.ChatData
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
@@ -22,8 +23,9 @@ suspend fun List<PartData>.getChatOrNull(repo: UserRepository): Chat? {
                     .toList() else emptyList()
 
             "avatar" -> {
-                if (part is PartData.FileItem) {
-                    val file = FileController.uploadFile(chatDataFolder, part)
+                if ((part is PartData.FileItem) && (part.contentType != null)) {
+
+                    val file = FileController.uploadFile(chatDataFolder, part, part.contentType!!.contentType)
                     data.avatar = listOf(file)
                 }
             }
@@ -59,4 +61,12 @@ fun <T> List<T>.getPage(limit: Int?, offset: Int?): List<T> {
             this.reversed().subList(limit * offset, limit * (offset + 1))
         }
     }
+}
+
+//TODO fun that checks percent of intersection
+
+fun <T> List<T>.intersectionMoreThan(list: List<T>, fraction: Double): Boolean = (this.size / this.intersect(list.toSet()).size.toDouble()) > fraction
+
+inline fun <T, R> List<T>.filterMap(predicate: (R) -> Boolean, transform: (T) -> R): List<R> {
+    return this.mapNotNull { if (predicate(transform(it))) transform(it) else null }
 }

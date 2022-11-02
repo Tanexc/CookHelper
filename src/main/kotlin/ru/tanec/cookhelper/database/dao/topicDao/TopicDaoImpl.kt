@@ -2,10 +2,8 @@ package ru.tanec.cookhelper.database.dao.topicDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
-import ru.tanec.cookhelper.core.constants.feedDataFolder
 import ru.tanec.cookhelper.core.constants.forumDataFolder
-import ru.tanec.cookhelper.core.constants.userDataFolder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Topics
@@ -19,12 +17,20 @@ class TopicDaoImpl: TopicDao {
         title= row[Topics.title],
         problem = row[Topics.problem],
         answers = row[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
-        attachments = row[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{ if (it !="") it.toFileData(
-            forumDataFolder
-        ) else null},
+        attachments = row[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{toFileData(it)},
         timestamp = row[Topics.timestamp],
         closed = row[Topics.closed]
+    )
 
+    private fun ResultRow.toTopic() = Topic(
+        id = this[Topics.id],
+        authorId = this[Topics.authorId],
+        title= this[Topics.title],
+        problem = this[Topics.problem],
+        answers = this[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
+        attachments = this[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{toFileData(it)},
+        timestamp = this[Topics.timestamp],
+        closed = this[Topics.closed]
     )
 
     override suspend fun getById(id: Long): Topic? = dbQuery {
@@ -55,9 +61,9 @@ class TopicDaoImpl: TopicDao {
                 row[title] = topic.title
                 row[answers] = topic.answers.joinToString(" ")
                 row[timestamp] = topic.timestamp
-                row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[closed] = topic.closed
-            }
+            }.resultedValues?.get(0)?.toTopic()
 
         Topics
             .select { (Topics.problem eq topic.problem) and (Topics.timestamp eq topic.timestamp)}
@@ -69,7 +75,7 @@ class TopicDaoImpl: TopicDao {
         Topics
             .update {row ->
                 row[answers] = topic.answers.joinToString(" ")
-                row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[closed] = topic.closed
             }
 

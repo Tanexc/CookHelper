@@ -20,7 +20,7 @@ object DatabaseFactory {
             SchemaUtils.create(Ingredients)
             SchemaUtils.create(Comments)
             SchemaUtils.create(Topics)
-            SchemaUtils.create(Attachments)
+            SchemaUtils.create(FileDatas)
             SchemaUtils.create(Messages)
             SchemaUtils.create(Chats)
             SchemaUtils.create(Replies)

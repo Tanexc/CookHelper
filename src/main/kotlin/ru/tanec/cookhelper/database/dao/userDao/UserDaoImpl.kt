@@ -3,7 +3,7 @@ package ru.tanec.cookhelper.database.dao.userDao
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.userDataFolder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Users
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
@@ -17,8 +17,8 @@ class UserDaoImpl : UserDao {
         nickname = row[Users.nickname],
         email = row[Users.email],
         password = row[Users.password],
-        avatar = row[Users.avatar].split(FILE_DELIMITER).mapNotNull{ if (it !="") it.toFileData(userDataFolder) else null},
-        images = row[Users.images].split(FILE_DELIMITER).mapNotNull{ if (it !="") it.toFileData(userDataFolder) else null},
+        avatar = row[Users.avatar].split(FILE_DELIMITER).mapNotNull{ toFileData(it)},
+        images = row[Users.images].split(FILE_DELIMITER).mapNotNull{ toFileData(it)},
         lastSeen = row[Users.lastSeen],
         status = row[Users.status],
         deleted = row[Users.deleted],
@@ -84,7 +84,7 @@ class UserDaoImpl : UserDao {
                 row[subscribes] = user.subscribes.joinToString(" ")
                 row[subscribers] = user.subscribers.joinToString(" ")
                 row[registrationTimestamp] = user.registrationTimestamp!!
-                row[images] = user.images.joinToString(FILE_DELIMITER) { it.id }
+                row[images] = user.images.joinToString(FILE_DELIMITER) { it.name }
             }
 
         Users
@@ -121,7 +121,7 @@ class UserDaoImpl : UserDao {
                 row[userPosts] = user.userPosts.joinToString(" ")
                 row[subscribes] = user.subscribes.joinToString(" ")
                 row[subscribers] = user.subscribers.joinToString(" ")
-                row[images] = user.images.joinToString(FILE_DELIMITER) { it.id }
+                row[images] = user.images.joinToString(FILE_DELIMITER) { it.name }
             }
         user
     }

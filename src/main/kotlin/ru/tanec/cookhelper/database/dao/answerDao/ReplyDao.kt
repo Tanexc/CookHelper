@@ -10,4 +10,6 @@ interface ReplyDao {
     suspend fun getByListId(listId: List<Long>, part: Int, div: Int): List<Reply>
 
     suspend fun insert(reply: Reply): Reply?
+
+    suspend fun edit(reply: Reply): Reply?
 }

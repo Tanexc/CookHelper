@@ -1,12 +1,9 @@
 package ru.tanec.cookhelper.database.dao.answerDao
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
 import ru.tanec.cookhelper.core.constants.attachmentDataFloder
-import ru.tanec.cookhelper.core.utils.FileController.toFileData
+import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.partOfDiv
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
 import ru.tanec.cookhelper.database.model.Replies
@@ -19,7 +16,7 @@ class ReplyDaoImpl: ReplyDao {
         text=row[Replies.text],
         authorId =row[Replies.authorId],
         replyToId=row[Replies.replyToId],
-        attachments = row[Replies.attachments].split(ATTCH_DELIMITER).map{it.toFileData(attachmentDataFloder)}.filter {it.id != ""},
+        attachments = row[Replies.attachments].split(ATTCH_DELIMITER).mapNotNull{toFileData(it)},
         timestamp = row[Replies.timestamp],
         replies = row[Replies.replies].split(" ").mapNotNull{ it.toLongOrNull()},
         ratingPositive = row[Replies.ratingPositive].split(" ").mapNotNull{ it.toLongOrNull()},
@@ -62,7 +59,7 @@ class ReplyDaoImpl: ReplyDao {
             .insert{ row ->
                 row[authorId] = reply.authorId
                 row[text] = reply.text
-                row[attachments] = reply.attachments.joinToString(ATTCH_DELIMITER) { it.id }
+                row[attachments] = reply.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[replyToId] = reply.replyToId
                 row[timestamp] = reply.timestamp
                 row[replies] = reply.replies.joinToString(" ")
@@ -71,6 +68,21 @@ class ReplyDaoImpl: ReplyDao {
             }
         Replies
             .select {(Replies.timestamp eq reply.timestamp) and (Replies.authorId eq reply.authorId)}
+            .map(::resultRowToAnswer)
+            .singleOrNull()
+    }
+
+    override suspend fun edit(reply: Reply): Reply? = dbQuery {
+        Replies
+            .update({ Replies.id eq reply.id }){ row ->
+                row[text] = reply.text
+                row[attachments] = reply.attachments.joinToString(ATTCH_DELIMITER) { it.name }
+                row[replies] = reply.replies.joinToString(" ")
+                row[ratingNegative] = reply.ratingNegative.joinToString(" ")
+                row[ratingPositive] = reply.ratingPositive.joinToString(" ")
+            }
+        Replies
+            .select {Replies.id eq reply.id}
             .map(::resultRowToAnswer)
             .singleOrNull()
     }
