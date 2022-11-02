@@ -23,7 +23,7 @@ fun Application.apiRoutes() {
     routing {
 
         val topicConnectionController: TopicConnectionController by inject()
-        val chatConnectionController: ChatConnectionController by inject()
+
 
         userApiRoutes()
         recipeApiRoutes()
@@ -34,8 +34,8 @@ fun Application.apiRoutes() {
         forumApiRoutes()
         chatApiRoutes()
 
-        topicWebsocketRoutes(this, topicConnectionController)
-        chatWebsocketRoutes(this, chatConnectionController)
+        topicWebsocketRoutes()
+        chatWebsocketRoutes()
 
         static("/static") {
             resources("static")

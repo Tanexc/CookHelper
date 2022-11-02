@@ -3,17 +3,17 @@ package ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.rout
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.topicWebsocket.ForumReceiveReplyData
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
 
-fun topicWebsocketRoutes(
-    route: Routing,
-    controller: TopicConnectionController
-) {
+fun Routing.topicWebsocketRoutes() {
 
-    route.webSocket("/websocket/topic/") {
+    val controller: TopicConnectionController by inject()
+
+    webSocket("/websocket/topic/") {
         val flow = controller.connect(this, call.parameters)
         var user: User?
         flow.collect {

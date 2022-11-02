@@ -7,17 +7,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
+import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.receive.chatWebsocket.ChatReceiveMessageData
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 
-fun chatWebsocketRoutes(
-    route: Routing,
-    controller: ChatConnectionController
-) {
+fun Routing.chatWebsocketRoutes() {
 
-    route.webSocket("/websocket/chat/") {
+    val controller: ChatConnectionController by inject()
+
+    webSocket("/websocket/chat/") {
 
         val flow = controller.connect(this, call.parameters)
         var user: User?
