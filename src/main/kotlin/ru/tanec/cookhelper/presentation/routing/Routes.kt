@@ -22,9 +22,6 @@ import java.io.File
 fun Application.apiRoutes() {
     routing {
 
-        val topicConnectionController: TopicConnectionController by inject()
-
-
         userApiRoutes()
         recipeApiRoutes()
         feedApiRoutes()
