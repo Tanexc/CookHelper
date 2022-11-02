@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.enterprise.use_case.userApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
+import ru.tanec.cookhelper.core.constants.status.USER_NOT_FOUND
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.database.utils.FileController
 import ru.tanec.cookhelper.core.utils.checkUserToken
@@ -35,7 +36,7 @@ object SetAvatarUseCase {
             }
         }
 
-        val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>().asApiResponse()
+        val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>(status= USER_NOT_FOUND).asApiResponse()
 
         val fileList =
             avatar?.let { listOf(FileController.uploadFile(userDataFolder, it, it.contentType!!.contentType)) }
