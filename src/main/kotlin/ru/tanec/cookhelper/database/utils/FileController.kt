@@ -19,7 +19,7 @@ object FileController {
     private val dao = FileDataDaoImpl()
 
     suspend fun uploadFile(folder: String, file: FileItem, type: String): FileData {
-        val uniqueName = "$type${uniqueString(getTimeMillis().toString().reversed())}.${EXTENTIONS[type]}"
+        val uniqueName = "${EXTENTIONS[type]}${uniqueString(getTimeMillis().toString().reversed())}.${EXTENTIONS[type]}"
 
         runCatching { createDirectory(Paths.get(folder)) }
 
