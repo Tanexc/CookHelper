@@ -48,7 +48,7 @@ fun Routing.userApiRoutes() {
     }
 
     get("/api/user/get/fridge/") {
-        call.respond(DeleteFromFridgeUseCase())
+        call.respond(RemoveFromFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
     }
 
     post("/api/user/post/avatar/") {

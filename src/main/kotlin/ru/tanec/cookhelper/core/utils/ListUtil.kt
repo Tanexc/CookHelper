@@ -70,3 +70,9 @@ fun <T> List<T>.intersectionMoreThan(list: List<T>, fraction: Double): Boolean =
 inline fun <T, R> List<T>.filterMap(predicate: (R) -> Boolean, transform: (T) -> R): List<R> {
     return this.mapNotNull { if (predicate(transform(it))) transform(it) else null }
 }
+
+fun <T> List<T>.without(list: List<T>): List<T> {
+    val data = this.toMutableList()
+    data.removeAll(list)
+    return data.toList()
+}
