@@ -28,7 +28,7 @@ In this repository you can find server part of our project.
 
 - [Exposed](https://github.com/JetBrains/Exposed) is an ORM Framework that helps to use the database.
 
-- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for asynchronous work
+- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for asynchronous work.
 
 - [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) to emit values from data layer reactively.
 
