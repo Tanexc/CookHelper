@@ -18,7 +18,7 @@ interface RecipeRepository {
 
     fun getByTitle(title: String, offset: Int, limit: Int): Flow<State<List<Recipe>>> // TODO(offset, limit)
 
-    fun getRecipeByIngredient(ingredient: Long, part: Int, div: Int): Flow<State<List<Recipe>>>
+    fun getRecipeByIngredient(ingredient: Long, offset: Int, limit: Int): Flow<State<List<Recipe>>>
 
     fun getRecipeByIngredients(ingredient: List<Long>, offset: Int, limit: Int): Flow<State<List<Recipe>>>
 

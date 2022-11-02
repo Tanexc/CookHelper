@@ -10,9 +10,10 @@ object Topics: Table() {
 
     val authorId = long("authorId")
     val title = text("title")
-    val problem = text("problem")
-    val answers = text("answers")
+    val text = text("text")
+    val replies = text("replies")
     val timestamp = long("timestamp")
     val closed = bool("closed")
     val attachments = text("attachments")
+    val tags = text("tags")
 }

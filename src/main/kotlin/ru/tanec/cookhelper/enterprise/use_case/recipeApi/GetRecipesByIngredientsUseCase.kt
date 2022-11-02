@@ -7,14 +7,12 @@ import ru.tanec.cookhelper.core.constants.status.USER_TOKEN_INVALID
 import ru.tanec.cookhelper.core.utils.checkUserToken
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
-import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 
 object GetRecipesByIngredientsUseCase {
     suspend operator fun invoke(
         repository: RecipeRepository,
-        ingredientRepository: IngredientRepository,
         userRepository: UserRepository,
         parameters: Parameters
     ): ApiResponse<List<Recipe>?> {
@@ -32,7 +30,8 @@ object GetRecipesByIngredientsUseCase {
             message = "error",
             data = null
         )
-        val user = checkUserToken(userRepository, token)?: return ApiResponse(
+
+        checkUserToken(userRepository, token)?: return ApiResponse(
             status = USER_TOKEN_INVALID,
             message = "error",
             data = null

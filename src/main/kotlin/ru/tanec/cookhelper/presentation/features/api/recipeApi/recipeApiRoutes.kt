@@ -1,13 +1,12 @@
-package ru.tanec.cookhelper.presentation.features.api.recipeApi.routing
+package ru.tanec.cookhelper.presentation.features.api.recipeApi
 
-import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.core.constants.status.EXCEPTION
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
@@ -34,7 +33,7 @@ fun Routing.recipeApiRoutes() {
     }
 
     get("/api/recipe/get/by-ingredients/") {
-        //TODO
+        call.respond(GetRecipesByIngredientsUseCase(recipeRepository, userRepository, call.request.queryParameters))
     }
 
 

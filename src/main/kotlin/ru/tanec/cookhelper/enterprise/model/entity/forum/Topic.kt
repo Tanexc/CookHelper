@@ -2,6 +2,8 @@ package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
+import ru.tanec.cookhelper.enterprise.model.entity.user.User
+import ru.tanec.cookhelper.enterprise.model.response.ReplyResponseData
 import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 
 @Serializable
@@ -9,20 +11,22 @@ data class Topic(
     val id: Long,
     val authorId: Long,
     val title: String,
-    val problem: String,
-    val answers: List<Long>,
+    val text: String,
+    val replies: List<Long>,
     val attachments: List<FileData>,
+    val tags: List<String>,
     val timestamp: Long,
     val closed: Boolean
 ) {
-    fun asResponseData(): TopicResponseData = TopicResponseData(
+    fun asResponseData(author: User, replies: List<ReplyResponseData>): TopicResponseData = TopicResponseData(
         id= id,
-        authorId=authorId,
+        author=author,
         title=title,
-        problem=problem,
-        replies = emptyList(),
+        text=text,
+        replies = replies,
         attachments = attachments,
         timestamp=timestamp,
-        closed=closed
+        closed=closed,
+        tags=tags
     )
 }

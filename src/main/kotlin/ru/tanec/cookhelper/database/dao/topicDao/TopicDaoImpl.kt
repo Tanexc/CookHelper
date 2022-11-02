@@ -2,7 +2,7 @@ package ru.tanec.cookhelper.database.dao.topicDao
 
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.ATTCH_DELIMITER
-import ru.tanec.cookhelper.core.constants.forumDataFolder
+import ru.tanec.cookhelper.core.constants.DELIMITER
 import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.factory.DatabaseFactory.dbQuery
@@ -15,22 +15,24 @@ class TopicDaoImpl: TopicDao {
         id = row[Topics.id],
         authorId = row[Topics.authorId],
         title= row[Topics.title],
-        problem = row[Topics.problem],
-        answers = row[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
+        text = row[Topics.text],
+        replies = row[Topics.replies].split(" ").mapNotNull { it.toLongOrNull()},
         attachments = row[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{toFileData(it)},
         timestamp = row[Topics.timestamp],
-        closed = row[Topics.closed]
+        closed = row[Topics.closed],
+        tags=row[Topics.tags].split(DELIMITER)
     )
 
     private fun ResultRow.toTopic() = Topic(
         id = this[Topics.id],
         authorId = this[Topics.authorId],
         title= this[Topics.title],
-        problem = this[Topics.problem],
-        answers = this[Topics.answers].split(" ").mapNotNull { it.toLongOrNull()},
+        text = this[Topics.text],
+        replies = this[Topics.replies].split(" ").mapNotNull { it.toLongOrNull()},
         attachments = this[Topics.attachments].split(ATTCH_DELIMITER).mapNotNull{toFileData(it)},
         timestamp = this[Topics.timestamp],
-        closed = this[Topics.closed]
+        closed = this[Topics.closed],
+        tags = this[Topics.tags].split(DELIMITER)
     )
 
     override suspend fun getById(id: Long): Topic? = dbQuery {
@@ -47,9 +49,9 @@ class TopicDaoImpl: TopicDao {
             .map(::resultRowToTopic)
     }
 
-    override suspend fun getByProblem(problem: String): List<Topic> = dbQuery {
+    override suspend fun getByText(text: String): List<Topic> = dbQuery {
         Topics
-            .select { Topics.problem like problem}
+            .select { Topics.text like text}
             .map(::resultRowToTopic)
     }
 
@@ -57,24 +59,20 @@ class TopicDaoImpl: TopicDao {
         Topics
             .insert { row ->
                 row[authorId] = topic.authorId
-                row[problem] = topic.problem
+                row[text] = topic.text
                 row[title] = topic.title
-                row[answers] = topic.answers.joinToString(" ")
+                row[replies] = topic.replies.joinToString(" ")
                 row[timestamp] = topic.timestamp
                 row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[closed] = topic.closed
+                row[tags] = topic.tags.joinToString(DELIMITER)
             }.resultedValues?.get(0)?.toTopic()
-
-        Topics
-            .select { (Topics.problem eq topic.problem) and (Topics.timestamp eq topic.timestamp)}
-            .map(::resultRowToTopic)
-            .singleOrNull()
     }
 
     override suspend fun editTopic(topic: Topic): Topic? = dbQuery {
         Topics
             .update {row ->
-                row[answers] = topic.answers.joinToString(" ")
+                row[replies] = topic.replies.joinToString(" ")
                 row[attachments] = topic.attachments.joinToString(ATTCH_DELIMITER) { it.name }
                 row[closed] = topic.closed
             }
@@ -89,6 +87,6 @@ class TopicDaoImpl: TopicDao {
         Topics
             .select{Topics.id eq id}
             .map(::resultRowToTopic)
-            .singleOrNull()?.answers?.getPage(limit, offset)
+            .singleOrNull()?.replies?.getPage(limit, offset)
     }
 }

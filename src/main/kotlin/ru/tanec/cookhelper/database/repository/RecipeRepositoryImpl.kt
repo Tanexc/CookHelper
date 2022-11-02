@@ -9,7 +9,6 @@ import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDao
 import ru.tanec.cookhelper.database.dao.recipeDao.RecipeDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
-import java.time.ZoneOffset
 
 
 class RecipeRepositoryImpl(
@@ -35,10 +34,10 @@ class RecipeRepositoryImpl(
 
     }
 
-    override fun getByTitle(title: String, part: Int, div: Int): Flow<State<List<Recipe>>> = flow {
+    override fun getByTitle(title: String, offset: Int, limit: Int): Flow<State<List<Recipe>>> = flow {
         emit(State.Processing())
         try {
-            emit(State.Success(dao.getByTitle(title, part, div), status = SUCCESS))
+            emit(State.Success(dao.getByTitle(title, offset, limit), status = SUCCESS))
 
         } catch (e: Exception) {
             emit(State.Error(status = EXCEPTION))

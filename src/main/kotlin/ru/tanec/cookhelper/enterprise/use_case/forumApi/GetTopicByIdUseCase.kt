@@ -39,8 +39,6 @@ object GetTopicByIdUseCase {
             data = null
         )
 
-        val topicData: TopicResponseData = topic.asResponseData()
-
         val replies = repository.getTopicReplies(topic.id, 0, 200).map {
             it.asResponseData(
                 userRepository.getById(it.authorId).last().data,
@@ -48,6 +46,8 @@ object GetTopicByIdUseCase {
             )
         }
 
-        return ApiResponse(status = SUCCESS, message = "success", topicData.copy(replies = replies))
+        val topicData: TopicResponseData = topic.asResponseData(userRepository.getById(topic.authorId).last().data?.smallInfo()?: user.smallInfo(), replies)
+
+        return ApiResponse(status = SUCCESS, message = "success", topicData)
     }
 }

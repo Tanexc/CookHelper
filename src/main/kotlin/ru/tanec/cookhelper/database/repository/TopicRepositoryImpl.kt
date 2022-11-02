@@ -8,7 +8,6 @@ import ru.tanec.cookhelper.database.dao.answerDao.ReplyDao
 import ru.tanec.cookhelper.database.dao.answerDao.ReplyDaoImpl
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDaoImpl
-import ru.tanec.cookhelper.database.model.Topics
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Reply
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
@@ -34,7 +33,7 @@ class TopicRepositoryImpl(
     override fun getByProblem(problem: String): Flow<State<List<Topic>>> = flow {
         try {
             emit(State.Processing())
-            emit(State.Success(status = SUCCESS, data = dao.getByProblem(problem)))
+            emit(State.Success(status = SUCCESS, data = dao.getByText(problem)))
         } catch (e: Exception) {
             emit(
                 State.Error(

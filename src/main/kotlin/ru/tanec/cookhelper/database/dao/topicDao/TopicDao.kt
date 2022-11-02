@@ -8,7 +8,7 @@ interface TopicDao {
 
     suspend fun getByTitle(title: String): List<Topic>
 
-    suspend fun getByProblem(problem: String): List<Topic>
+    suspend fun getByText(text: String): List<Topic>
 
     suspend fun insert(topic: Topic): Topic?
 

@@ -2,24 +2,25 @@ package ru.tanec.cookhelper.enterprise.model.entity.forum
 
 import io.ktor.util.date.*
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
-import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
 
 data class TopicData(
     var authorId:Long? = null,
     var title: String? = null,
     var problem: String? = null,
     var attachment: List<FileData> = emptyList(),
+    var tags: List<String> = emptyList()
 
     ) {
     fun asDomain(): Topic = Topic(
         id=0,
         authorId=authorId?: 0,
         title=title?:"",
-        problem=problem?: "",
-        answers= emptyList(),
+        text=problem?: "",
+        replies= emptyList(),
         attachments = attachment,
         timestamp = getTimeMillis(),
-        closed=false
+        closed=false,
+        tags = tags
     )
 
     fun equipped(): Boolean {

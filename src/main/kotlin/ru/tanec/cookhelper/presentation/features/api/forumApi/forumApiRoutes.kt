@@ -29,7 +29,7 @@ fun Routing.forumApiRoutes() {
     }
 
     get("api/forum/get/topic/by-list/") {
-        call.respond(GetTopicByListId(topicRepository, userRepository, call.request.queryParameters))
+        call.respond(GetTopicByListId(topicRepository, call.request.queryParameters))
     }
 
     get("api/forum/get/topic/by-id/") {
