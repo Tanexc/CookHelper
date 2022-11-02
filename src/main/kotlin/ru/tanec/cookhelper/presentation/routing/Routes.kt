@@ -22,16 +22,6 @@ import java.io.File
 fun Application.apiRoutes() {
     routing {
 
-
-        val postRepository: PostRepository by inject()
-
-
-        val userRepository: UserRepository by inject()
-        val commentRepository: CommentRepository by inject()
-        val topicRepository: TopicRepository by inject()
-        val chatRepository: ChatRepository by inject()
-        val messageRepository: MessageRepository by inject()
-
         val topicConnectionController: TopicConnectionController by inject()
         val chatConnectionController: ChatConnectionController by inject()
 
@@ -41,8 +31,8 @@ fun Application.apiRoutes() {
         categoryApiRoutes()
         ingredientApiRoutes()
         commentApiRoutes()
-        forumApiRoutes(this, topicRepository, userRepository)
-        chatApiRoutes(this, chatRepository, userRepository, messageRepository)
+        forumApiRoutes()
+        chatApiRoutes()
 
         topicWebsocketRoutes(this, topicConnectionController)
         chatWebsocketRoutes(this, chatConnectionController)

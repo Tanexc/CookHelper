@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
@@ -13,27 +14,27 @@ import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByIdUseCase
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByListUseCase
 import ru.tanec.cookhelper.enterprise.use_case.messageApi.GetMessagesUseCase
 
-fun chatApiRoutes(
-    route: Routing,
-    repository: ChatRepository,
-    userRepository: UserRepository,
-    messageRepository: MessageRepository
-    ) {
+fun Routing.chatApiRoutes() {
 
-    route.post("/api/chat/post/create/") {
-        call.respond(CreateChatUseCase(repository, userRepository, call.receiveMultipart().readAllParts()))
+    val chatRepository: ChatRepository by inject()
+    val messageRepository: MessageRepository by inject()
+    val userRepository: UserRepository by inject()
+
+
+    post("/api/chat/post/create/") {
+        call.respond(CreateChatUseCase(chatRepository, userRepository, call.receiveMultipart().readAllParts()))
     }
 
-    route.get("/api/chat/get/by-list-id/") {
-        call.respond(GetChatByListUseCase(repository, userRepository, call.request.queryParameters))
+    get("/api/chat/get/by-list-id/") {
+        call.respond(GetChatByListUseCase(chatRepository, userRepository, call.request.queryParameters))
     }
 
-    route.get("/api/chat/get/messages/") {
-        call.respond(GetMessagesUseCase(messageRepository, userRepository, repository, call.request.queryParameters))
+    get("/api/chat/get/messages/") {
+        call.respond(GetMessagesUseCase(messageRepository, userRepository, chatRepository, call.request.queryParameters))
     }
 
-    route.get("/api/chat/get/by-id/") {
-        call.respond(GetChatByIdUseCase(repository, userRepository, messageRepository, call.request.queryParameters))
+    get("/api/chat/get/by-id/") {
+        call.respond(GetChatByIdUseCase(chatRepository, userRepository, messageRepository, call.request.queryParameters))
     }
 
 }
