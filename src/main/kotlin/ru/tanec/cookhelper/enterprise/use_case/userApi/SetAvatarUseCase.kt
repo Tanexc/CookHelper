@@ -36,6 +36,8 @@ object SetAvatarUseCase {
             }
         }
 
+        println(avatar?.contentType?.contentSubtype)
+
         val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>(status= USER_NOT_FOUND).asApiResponse()
 
         val fileList =
