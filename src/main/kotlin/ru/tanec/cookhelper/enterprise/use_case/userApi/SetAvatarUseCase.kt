@@ -23,7 +23,7 @@ object SetAvatarUseCase {
         parameters.forEach {
             when (it) {
                 is PartData.FormItem -> {
-                    token = if (it.value == "token") it.value else null
+                    token = if (it.name == "token") it.value else null
                 }
 
                 is PartData.FileItem -> {
