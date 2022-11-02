@@ -13,6 +13,7 @@ import ru.tanec.cookhelper.presentation.features.api.recipeApi.recipeApiRoutes
 import ru.tanec.cookhelper.presentation.features.api.userApi.userApiRoutes
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.routing.chatWebsocketRoutes
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.routing.topicWebsocketRoutes
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.userWebsocketRoutes
 import java.io.File
 
 fun Application.apiRoutes() {
@@ -29,6 +30,7 @@ fun Application.apiRoutes() {
 
         topicWebsocketRoutes()
         chatWebsocketRoutes()
+        userWebsocketRoutes()
 
         static("/static") {
             resources("static")

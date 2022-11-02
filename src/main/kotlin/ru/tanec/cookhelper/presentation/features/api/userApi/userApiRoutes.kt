@@ -13,12 +13,14 @@ import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.userApi.*
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 fun Routing.userApiRoutes() {
 
     val userRepository: UserRepository by inject()
     val recipeRepository: RecipeRepository by inject()
     val ingredientRepository: IngredientRepository by inject()
+    val userWebsocketConnectionController: UserWebsocketConnectionController by inject()
 
     post("/api/user/post/reg/") {
         try {
@@ -44,7 +46,7 @@ fun Routing.userApiRoutes() {
     }
 
     post("/api/user/post/fridge/insert/") {
-        call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
+        call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository,  call.receiveMultipart().readAllParts()))
     }
 
     post("/api/user/post/fridge/remove/") {

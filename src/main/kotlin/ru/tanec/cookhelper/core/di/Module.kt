@@ -1,17 +1,17 @@
 package ru.tanec.cookhelper.core.di
 
-import kotlinx.coroutines.flow.MutableSharedFlow
+
 import org.koin.dsl.module
 import ru.tanec.cookhelper.database.repository.*
-import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.repository.api.*
 import ru.tanec.cookhelper.presentation.features.websocket.chatWebsocket.controller.ChatConnectionController
 import ru.tanec.cookhelper.presentation.features.websocket.topicsWebsocket.controller.TopicConnectionController
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 val socketModule = module {
     single {ChatConnectionController()}
     single {TopicConnectionController()}
-    single { MutableSharedFlow<User>() }
+    single { UserWebsocketConnectionController() }
 }
 
 val apiRepositoryModule = module {
