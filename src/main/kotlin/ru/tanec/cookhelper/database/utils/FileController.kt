@@ -3,17 +3,10 @@ package ru.tanec.cookhelper.database.utils
 import io.ktor.http.content.*
 import io.ktor.http.content.PartData.*
 import io.ktor.util.date.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import ru.tanec.cookhelper.core.constants.*
 import ru.tanec.cookhelper.core.utils.HashTool.uniqueString
 import ru.tanec.cookhelper.database.dao.fileDao.FileDataDaoImpl
-import ru.tanec.cookhelper.database.utils.FileController.toFileData
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import java.io.File
 import java.nio.file.Files.createDirectory
@@ -26,13 +19,13 @@ object FileController {
     private val dao = FileDataDaoImpl()
 
     suspend fun uploadFile(folder: String, file: FileItem, type: String): FileData {
-        val uniqueName = uniqueString(getTimeMillis().toString().reversed())
+        val uniqueName = "${uniqueString(getTimeMillis().toString().reversed())}.${EXTENTIONS[type]}"
 
         runCatching { createDirectory(Paths.get(folder)) }
 
         if (EXTENTIONS[type] == null) return FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName.${EXTENTIONS[type]}", type)
 
-        File("$folder/$uniqueName.$type").writeBytes(file.streamProvider().readBytes())
+        File("$folder/$uniqueName").writeBytes(file.streamProvider().readBytes())
         return dao.insert(FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName.${EXTENTIONS[type]}", type))
     }
 
