@@ -18,6 +18,7 @@ fun Routing.userWebsocketRoutes() {
             controller.connect(call.request.queryParameters, userRepository).collect { state ->
                 when (state) {
                     is State.Success -> state.data?.second?.collect {
+                        println("PADLA USER $it")
                         controller.sendMessage(
                             this, WebsocketResponse(
                                 data = if (state.data.first) it.privateInfo() else it.commonInfo(),

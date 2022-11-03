@@ -22,7 +22,7 @@ fun Routing.forumApiRoutes() {
         call.respond(CreateTopicUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
-    get("api/forum/get/topic/by-problem/") {
+    get("api/forum/get/topic/by-text/") {
         call.respond(GetTopicByProblemUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
