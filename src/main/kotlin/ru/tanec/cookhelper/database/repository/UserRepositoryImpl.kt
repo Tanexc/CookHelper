@@ -69,12 +69,12 @@ class UserRepositoryImpl(
 
         if (user == null) emit(State.Error(status = USER_NOT_FOUND))
         else if (hashTool.verifyHash(password, user.password)) {
-            if (user.token == "") user.token = generateToken(
+            if (user.token == "") user = user.copy(token = generateToken(
                 user.name,
                 user.surname,
                 user.registrationTimestamp ?: 0L,
                 user.password.toString()
-            )
+            ))
             user = action(user)
             emit(State.Success(user, status = SUCCESS))
         } else emit(State.Error(status = WRONG_CREDENTIALS))
@@ -89,7 +89,7 @@ class UserRepositoryImpl(
         var user = dao.getByToken(token)
         if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
-            user.avatar = user.avatar + (toFileData(avatarPath)?.let{listOf(it)}?: emptyList())
+            user = user.copy(avatar = user.avatar + (toFileData(avatarPath)?.let{listOf(it)}?: emptyList()))
             user = action(user)
             dao.editUser(user)
             emit(State.Success(user))
@@ -102,7 +102,7 @@ class UserRepositoryImpl(
         if (user == null) emit(State.Expired(message = "token expired", status = WRONG_CREDENTIALS))
         else {
 
-            user.avatar = user.avatar.filter { it.name != avatarId}
+            user = user.copy(avatar = user.avatar.filter { it.name != avatarId})
             user = action(user)
             dao.editUser(user)
             emit(State.Success(user))
@@ -206,9 +206,9 @@ class UserRepositoryImpl(
         }
 
     override suspend fun action(user: User): User {
-        user.lastSeen = getTimeMillis()
-        dao.editUser(user)
-        return user
+        val u = user.copy(lastSeen = getTimeMillis())
+        dao.editUser(u)
+        return u
     }
 
     override suspend fun getByToken(token: String): Flow<State<User?>> = flow {

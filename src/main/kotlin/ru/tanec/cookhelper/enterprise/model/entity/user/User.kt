@@ -1,47 +1,49 @@
 package ru.tanec.cookhelper.enterprise.model.entity.user
 
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 import kotlin.random.Random
 
 @Serializable
-data class User(
-    val id: Long = 0,
+data class User @OptIn(ExperimentalSerializationApi::class) constructor(
+    @EncodeDefault val id: Long = 0,
 
-    var name: String = "",
-    var surname: String = "",
-    var nickname: String = "",
-    var email: String = "",
-    var password: ByteArray = byteArrayOf(),
+    @EncodeDefault val name: String = "",
+    @EncodeDefault val surname: String = "",
+    @EncodeDefault val nickname: String = "",
+    @EncodeDefault val email: String = "",
+    @EncodeDefault val password: ByteArray = byteArrayOf(),
 
-    var status: String = "",
-    var lastSeen: Long = 0,
+    @EncodeDefault val status: String = "",
+    @EncodeDefault val lastSeen: Long = 0,
 
-    var deleted: Boolean = false,
-    var verified: Boolean = true,
-    var code: String = "",
-    var recoveryCode: String = "",
-    var token: String = "",
+    @EncodeDefault val deleted: Boolean = false,
+    @EncodeDefault val verified: Boolean = true,
+    @EncodeDefault val code: String = "",
+    @EncodeDefault var recoveryCode: String = "",
+    @EncodeDefault val token: String = "",
 
-    var avatar: List<FileData> = listOf(),
-    val images: List<FileData> = emptyList(),
+    @EncodeDefault val avatar: List<FileData> = listOf(),
+    @EncodeDefault val images: List<FileData> = emptyList(),
 
 
-    val fridge: List<Long> = listOf(),
-    val topics: List<Long> = listOf(),
-    val starredRecipes: List<Long> = listOf(),
-    val bannedRecipes: List<Long> = listOf(),
-    val starredIngredients: List<Long> = listOf(),
-    val bannedIngredients: List<Long> = listOf(),
-    val chats: List<Long> = listOf(),
-    val starredPosts: List<Long> = listOf(),
+    @EncodeDefault val fridge: List<Long> = listOf(),
+    @EncodeDefault val topics: List<Long> = listOf(),
+    @EncodeDefault val starredRecipes: List<Long> = listOf(),
+    @EncodeDefault val bannedRecipes: List<Long> = listOf(),
+    @EncodeDefault val starredIngredients: List<Long> = listOf(),
+    @EncodeDefault val bannedIngredients: List<Long> = listOf(),
+    @EncodeDefault val chats: List<Long> = listOf(),
+    @EncodeDefault val starredPosts: List<Long> = listOf(),
 
-    val subscribers: List<Long> = listOf(),
-    val subscribes: List<Long> = listOf(),
+    @EncodeDefault val subscribers: List<Long> = listOf(),
+    @EncodeDefault val subscribes: List<Long> = listOf(),
 
-    val userRecipes: List<Long> = listOf(),
-    val userPosts: List<Long> = listOf(),
-    val registrationTimestamp: Long? = null
+    @EncodeDefault val userRecipes: List<Long> = listOf(),
+    @EncodeDefault val userPosts: List<Long> = listOf(),
+    @EncodeDefault val registrationTimestamp: Long? = null
 
 
 ) {

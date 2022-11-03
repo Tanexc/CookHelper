@@ -55,9 +55,7 @@ class UserWebsocketConnectionController {
         session: DefaultWebSocketServerSession,
         response: WebsocketResponse<User?>
     ) {
-        response.data?.let{
-            session.sendSerialized<WebsocketResponse<User>>(WebsocketResponse(data=it, status = response.status))
-        }?: session.sendSerialized(response)
+        session.sendSerialized(response)
     }
 
     suspend fun updateData(user: User, userRepository: UserRepository) {
