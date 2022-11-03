@@ -65,7 +65,7 @@ class UserDaoImpl : UserDao {
                 row[nickname] = user.nickname
                 row[email] = user.email
                 row[password] = user.getPsw()
-                row[avatar] = user.avatar.joinToString(" ")
+                row[avatar] = user.avatar.joinToString(FILE_DELIMITER) { it.name }
                 row[lastSeen] = user.lastSeen
                 row[status] = user.status
                 row[deleted] = user.deleted
@@ -97,20 +97,18 @@ class UserDaoImpl : UserDao {
     override suspend fun editUser(user: User): User = dbQuery {
         Users
             .update({ Users.id eq user.id }) { row ->
-                row[id] = user.id
                 row[name] = user.name
                 row[surname] = user.surname
                 row[nickname] = user.nickname
                 row[email] = user.email
                 row[password] = user.getPsw()
-                row[avatar] = user.avatar.joinToString(" ")
+                row[avatar] = user.avatar.joinToString(FILE_DELIMITER) { it.name }
                 row[lastSeen] = getTimeMillis()
                 row[status] = user.status
                 row[deleted] = user.deleted
                 row[verified] = user.verified
                 row[code] = user.code
                 row[recoveryCode] = user.recoveryCode
-                row[token] = user.token
                 row[fridge] = user.fridge.joinToString(" ")
                 row[topics] = user.topics.joinToString(" ")
                 row[starredRecipes] = user.starredRecipes.joinToString(" ")

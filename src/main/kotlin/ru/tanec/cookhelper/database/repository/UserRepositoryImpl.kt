@@ -29,7 +29,6 @@ class UserRepositoryImpl(
             val data = dao.editUser(user)
             emit(State.Success(data))
 
-
         } catch (e: Exception) {
             emit(State.Error(message=e.message?: "error in edit() of UserRepository"))
         }
