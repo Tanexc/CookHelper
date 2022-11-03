@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.enterprise.use_case.userApi
 
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
+import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
@@ -26,10 +27,16 @@ object LoginUseCase {
 
             print("$login $password")
 
-            val state = repository.login(
+            var state = repository.login(
                 login,
                 password
             ).last()
+
+            if (state.data != null) {
+                state = State.Success(
+                    data=state.data?.privateInfo()
+                )
+            }
 
             state.data?.let{userWebsocketConnectionController.updateData(it, repository)}
 

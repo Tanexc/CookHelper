@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.enterprise.use_case.userApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
+import ru.tanec.cookhelper.core.constants.status.EXCEPTION
 import ru.tanec.cookhelper.core.constants.status.USER_NOT_FOUND
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.checkUserToken
@@ -46,9 +47,13 @@ object AddUserImageUseCase {
 
         user = user.copy(images = user.images + fileList)
 
+        val state = repository.edit(user).last().data?.let { State.Success(
+            data = it.privateInfo()
+        ) }?: State.Error(status = EXCEPTION)
+
         userWebsocketConnectionController.updateData(user, repository)
 
-        return repository.edit(user).last().asApiResponse()
+        return state.asApiResponse()
 
 
     }

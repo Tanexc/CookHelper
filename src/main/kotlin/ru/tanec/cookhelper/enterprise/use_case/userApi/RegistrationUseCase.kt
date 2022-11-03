@@ -23,10 +23,10 @@ object RegistrationUseCase {
             paramData.asDomain()
         ).last()
 
-        return ApiResponse(state.status, state.message, state.data)
+        return ApiResponse(state.status, state.message, state.data?.privateInfo())
     }
 
-    fun List<PartData>.fromMultipart(): RegistrationData? {
+    private fun List<PartData>.fromMultipart(): RegistrationData? {
         val r = RegistrationData()
         var _params = 5
         this.forEach {

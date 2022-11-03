@@ -56,7 +56,7 @@ class UserRepositoryImpl(
             val data = dao.addNew(user.copy(registrationTimestamp = timestamp, token = token))
 
 
-            if (data != null) emit(State.Success(data.privateInfo()))
+            if (data != null) emit(State.Success(data))
             else emit(State.Error())
         } catch (e: Exception) {
             emit(State.Error(message=e.message?:"error in register of UserRepository"))
@@ -69,8 +69,6 @@ class UserRepositoryImpl(
 
         var user = dao.getByLogin(login)
 
-        println("USER FUCKKK: $user")
-
         if (user == null) emit(State.Error(status = USER_NOT_FOUND))
         else if (hashTool.verifyHash(password, user.password)) {
             if (user.token == "") user.token = generateToken(
@@ -80,7 +78,7 @@ class UserRepositoryImpl(
                 user.password.toString()
             )
             user = action(user)
-            emit(State.Success(user.privateInfo(), status = SUCCESS))
+            emit(State.Success(user, status = SUCCESS))
         } else emit(State.Error(status = WRONG_CREDENTIALS))
 
     }
@@ -96,7 +94,7 @@ class UserRepositoryImpl(
             user.avatar = user.avatar + (toFileData(avatarPath)?.let{listOf(it)}?: emptyList())
             user = action(user)
             dao.editUser(user)
-            emit(State.Success(user.privateInfo()))
+            emit(State.Success(user))
         }
     }
 
@@ -109,7 +107,7 @@ class UserRepositoryImpl(
             user.avatar = user.avatar.filter { it.name != avatarId}
             user = action(user)
             dao.editUser(user)
-            emit(State.Success(user.privateInfo()))
+            emit(State.Success(user))
         }
     }
 
@@ -130,7 +128,7 @@ class UserRepositoryImpl(
                 user.privateInfo(),
                 status = SUCCESS
             )
-        ) else emit(State.Success(requestedUser.commonInfo(), status = SUCCESS))
+        ) else emit(State.Success(requestedUser, status = SUCCESS))
 
     }
 
@@ -225,7 +223,7 @@ class UserRepositoryImpl(
     override fun getById(id: Long): Flow<State<User?>> = flow {
         emit(State.Processing())
         try {
-            val user = dao.getById(id)?.commonInfo()
+            val user = dao.getById(id)
             emit(State.Success(data = user))
         } catch(e: Exception) {
             emit(State.Error(message=e.message?: "error in getById() in UserRepository"))

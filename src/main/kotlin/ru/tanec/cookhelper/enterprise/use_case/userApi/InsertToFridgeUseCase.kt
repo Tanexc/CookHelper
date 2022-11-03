@@ -3,6 +3,7 @@ package ru.tanec.cookhelper.enterprise.use_case.userApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
+import ru.tanec.cookhelper.core.constants.status.SUCCESS
 import ru.tanec.cookhelper.core.constants.status.USER_TOKEN_INVALID
 import ru.tanec.cookhelper.core.utils.JwtTool.isNotExpired
 import ru.tanec.cookhelper.core.utils.checkUserToken
@@ -25,15 +26,17 @@ object InsertToFridgeUseCase {
         var user: User? = null
 
         parameters.filterIsInstance<PartData.FormItem>().forEach { param ->
-            when(param.name) {
+            when (param.name) {
                 "token" -> {
                     if (param.value.isNotExpired()) {
                         token = param.value
                         user = checkUserToken(userRepository, token!!)
                     }
                 }
+
                 "fridge" -> {
-                    fridge = param.value.split("*").mapNotNull { it.toLongOrNull() }.filter { ingredientRepository.getById(it).last().data != null }
+                    fridge = param.value.split("*").mapNotNull { it.toLongOrNull() }
+                        .filter { ingredientRepository.getById(it).last().data != null }
                 }
             }
         }
@@ -51,11 +54,18 @@ object InsertToFridgeUseCase {
             userWebsocketConnectionController.updateData(user!!, userRepository)
         }
 
-        return user?.let {userRepository.edit(it)}?.last()?.asApiResponse()?: ApiResponse(
+        val userPrivate = user?.let { userRepository.edit(it).last().data?.privateInfo() }
+
+        return userPrivate?.let {
+            ApiResponse(
+                status = SUCCESS,
+                data = it,
+                message = "success"
+            )
+        } ?: ApiResponse(
             status = USER_TOKEN_INVALID,
             data = null,
             message = "error"
         )
-
     }
 }
