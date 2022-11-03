@@ -26,6 +26,10 @@ fun Routing.forumApiRoutes() {
         call.respond(GetTopicByProblemUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
+    get("api/forum/get/topic/") {
+        call.respond(GetTopicUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
+    }
+
 
     get("api/forum/get/topic/by-title/") {
         call.respond(GetTopicByTitleUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))

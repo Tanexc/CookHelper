@@ -54,7 +54,11 @@ class UserWebsocketConnectionController {
     suspend fun sendMessage(
         session: DefaultWebSocketServerSession,
         response: WebsocketResponse<User?>
-    ) = session.sendSerialized(response)
+    ) {
+        response.data?.let{
+            session.sendSerialized<WebsocketResponse<User>>(WebsocketResponse(data=it, status = response.status))
+        }?: session.sendSerialized(response)
+    }
 
     suspend fun updateData(user: User, userRepository: UserRepository) {
         if (data[user.id] == null) data[user.id] = MutableSharedFlow()
