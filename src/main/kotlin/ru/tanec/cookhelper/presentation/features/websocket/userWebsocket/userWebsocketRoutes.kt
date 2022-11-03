@@ -20,7 +20,7 @@ fun Routing.userWebsocketRoutes() {
                     is State.Success -> state.data?.second?.collect {
                         controller.sendMessage(
                             this, WebsocketResponse(
-                                data = if (state.data.first) it.privateInfo() else it.commonInfo(),
+                                data = if (state.data.first) it else it.commonInfo(),
                                 status = state.status
                             )
                         )
