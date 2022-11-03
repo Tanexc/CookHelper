@@ -65,6 +65,8 @@ class UserRepositoryImpl(
 
         var user = dao.getByLogin(login)
 
+        println("USER FUCKKK: $user")
+
         if (user == null) emit(State.Error(status = USER_NOT_FOUND))
         else if (hashTool.verifyHash(password, user.password)) {
             if (user.token == "") user.token = generateToken(

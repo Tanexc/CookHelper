@@ -1,5 +1,6 @@
 package ru.tanec.cookhelper.database.dao.userDao
 
+import io.ktor.util.date.*
 import org.jetbrains.exposed.sql.*
 import ru.tanec.cookhelper.core.constants.FILE_DELIMITER
 import ru.tanec.cookhelper.core.constants.userDataFolder
@@ -83,7 +84,7 @@ class UserDaoImpl : UserDao {
                 row[userPosts] = user.userPosts.joinToString(" ")
                 row[subscribes] = user.subscribes.joinToString(" ")
                 row[subscribers] = user.subscribers.joinToString(" ")
-                row[registrationTimestamp] = user.registrationTimestamp!!
+                row[registrationTimestamp] = user.registrationTimestamp?: getTimeMillis()
                 row[images] = user.images.joinToString(FILE_DELIMITER) { it.name }
             }
 
