@@ -13,11 +13,13 @@ import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object CreateChatUseCase {
     suspend operator fun invoke(
         repository: ChatRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Chat?> {
         try {
@@ -44,6 +46,7 @@ object CreateChatUseCase {
             for (userId in chat.members) {
                 state = userRepository.getById(userId).last()
                 if (state.data != null) {
+                    userWebsocketConnectionController.updateData(state.data!!, userRepository)
                     userRepository.edit(state.data!!.copy(chats=(state.data!!.chats + listOf(chat.id))))
                 }
             }

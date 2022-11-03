@@ -9,11 +9,13 @@ import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object RepostRecipeUseCase {
     suspend operator fun invoke(
         recipeRepository: RecipeRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Recipe> {
 
@@ -49,6 +51,8 @@ object RepostRecipeUseCase {
             INVALID_TOKEN,
             null
         )
+
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         var reposts = data.reposts
         var likes = data.likes

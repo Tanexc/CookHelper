@@ -11,16 +11,18 @@ import ru.tanec.cookhelper.enterprise.model.receive.recipeApi.RecipeData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 
 object RecipeCreateUseCase {
     suspend operator fun invoke(
         repository: RecipeRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Recipe?> {
 
-        val state = when (val recipe = fromMultipart(parameters, userRepository)?.asDomain()) {
+        val state = when (val recipe = fromMultipart(parameters, userRepository, userWebsocketConnectionController)?.asDomain()) {
             null -> {
                 State.Error(status = PARAMETER_MISSED)
             }
@@ -38,7 +40,7 @@ object RecipeCreateUseCase {
     }
 
 
-    private suspend fun fromMultipart(partList: List<PartData>, userRepository: UserRepository): RecipeData? {
+    private suspend fun fromMultipart(partList: List<PartData>, userRepository: UserRepository, userWebsocketConnectionController: UserWebsocketConnectionController): RecipeData? {
         var title: String? = null
         var authorId: Long? = null
         var cookSteps: List<String>? = null
@@ -70,6 +72,7 @@ object RecipeCreateUseCase {
                     "token" -> {
                         val user = userRepository.getByToken(pt.value).last().data
                         if (user != null) {
+                            userWebsocketConnectionController.updateData(user, userRepository)
                             authorId = user.id
                         }
                     }

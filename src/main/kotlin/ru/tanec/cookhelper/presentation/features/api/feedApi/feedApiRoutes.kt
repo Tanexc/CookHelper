@@ -12,15 +12,17 @@ import ru.tanec.cookhelper.enterprise.use_case.feedApi.PostCreateUseCase
 import ru.tanec.cookhelper.enterprise.use_case.feedApi.PostGetByIdUseCase
 import ru.tanec.cookhelper.enterprise.use_case.feedApi.PostGetByUserUseCase
 import ru.tanec.cookhelper.enterprise.use_case.feedApi.PostGetUseCase
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 fun Routing.feedApiRoutes() {
 
     val postRepository: PostRepository by inject()
     val userRepository: UserRepository by inject()
+    val userWebsocketConnectionController: UserWebsocketConnectionController by inject()
 
 
     post("/api/feed/post/create/") {
-        call.respond(PostCreateUseCase(postRepository, userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(PostCreateUseCase(postRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get("/api/feed/get/by-id/") {
@@ -34,7 +36,7 @@ fun Routing.feedApiRoutes() {
 
     get("api/feed/get/by-user/") {
         // get posts by user token
-        call.respond(PostGetByUserUseCase(postRepository, userRepository, call.request.queryParameters))
+        call.respond(PostGetByUserUseCase(postRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
 

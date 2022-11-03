@@ -45,7 +45,7 @@ object GetFridgeUseCase {
                 message = "error"
             )
 
-            userWebsocketConnectionController.updateData(user)
+            userWebsocketConnectionController.updateData(user, userRepository)
 
             return ingredientRepository.getByListId(user.fridge, offset, limit).last().asApiResponse()
 

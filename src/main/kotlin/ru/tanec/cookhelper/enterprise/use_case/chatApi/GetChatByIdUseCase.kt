@@ -10,12 +10,14 @@ import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetChatByIdUseCase {
     suspend operator fun invoke(
         repository: ChatRepository,
         userRepository: UserRepository,
         messageRepository: MessageRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters,
     ): ApiResponse<ChatResponseData?> {
 
@@ -35,6 +37,8 @@ object GetChatByIdUseCase {
             message = "error",
             data = null
         )
+
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         val chat = repository.getChatById(id).last().data?: return ApiResponse(
             status = CHAT_NOT_FOUND,

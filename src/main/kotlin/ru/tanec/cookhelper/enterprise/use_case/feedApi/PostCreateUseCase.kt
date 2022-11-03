@@ -13,16 +13,18 @@ import ru.tanec.cookhelper.enterprise.model.receive.postApi.PostData
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object PostCreateUseCase {
     suspend operator fun invoke(
         repository: PostRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Post> {
 
 
-        val state = when (val post = fromMultipart(parameters, userRepository)?.asDomain()) {
+        val state = when (val post = fromMultipart(parameters, userRepository, userWebsocketConnectionController)?.asDomain()) {
             null -> {
                 State.Error(status = PARAMETER_MISSED)
             }
@@ -40,7 +42,7 @@ object PostCreateUseCase {
     }
 
 
-    private suspend fun fromMultipart(partList: List<PartData>, userRepository: UserRepository): PostData? {
+    private suspend fun fromMultipart(partList: List<PartData>, userRepository: UserRepository, userWebsocketConnectionController: UserWebsocketConnectionController): PostData? {
         var token: String? = null
         val authorId: Long?
         var text: String? = null
@@ -82,11 +84,10 @@ object PostCreateUseCase {
 
         val data = userRepository.getByToken(token ?: "").last()
 
-        authorId = when (data) {
-            is State.Success -> data.data?.id
-            else -> null
-        }
 
+        if (data.data != null) { userWebsocketConnectionController.updateData(data.data, userRepository)}
+
+        authorId = data.data?.id
 
         return if ((authorId != null) and (text != null)) PostData(
             authorId,
@@ -94,8 +95,6 @@ object PostCreateUseCase {
             label,
             attachments
         ) else null
-
-
     }
 
     private suspend fun PostData.asDomain(): Post {

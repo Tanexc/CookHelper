@@ -49,7 +49,7 @@ object RemoveFromFridgeUseCase {
 
         if (user != null) {
             user = user!!.copy(fridge = user!!.fridge.toMutableList().without(fridge!!).toSet().toList())
-            userWebsocketConnectionController.updateData(user!!)
+            userWebsocketConnectionController.updateData(user!!, userRepository)
         }
 
         return user?.let {userRepository.edit(it)}?.last()?.asApiResponse()?: ApiResponse(

@@ -34,7 +34,7 @@ object GetFridgeRecipeUseCase {
             data = null
         )
 
-        userWebsocketConnectionController.updateData(user)
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         return repository.getRecipeByIngredients(user.fridge, offset, limit).last().asApiResponse()
     }

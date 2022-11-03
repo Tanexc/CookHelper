@@ -9,11 +9,13 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetTopicByIdUseCase {
     suspend operator fun invoke(
         repository: TopicRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters
     ): ApiResponse<TopicResponseData?> {
         val token = parameters["token"]?.filter { it != '"' } ?: return ApiResponse(
@@ -32,6 +34,8 @@ object GetTopicByIdUseCase {
             message = "error",
             data = null
         )
+
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         val topic = repository.getByListId(listOf(id)).last().data?.firstOrNull() ?: return ApiResponse(
             status = TOPIC_NOT_FOUND,

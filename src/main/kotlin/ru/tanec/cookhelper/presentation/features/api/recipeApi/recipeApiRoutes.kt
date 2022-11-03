@@ -13,6 +13,7 @@ import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.recipeApi.*
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 
 fun Routing.recipeApiRoutes() {
@@ -20,9 +21,10 @@ fun Routing.recipeApiRoutes() {
     val userRepository: UserRepository by inject()
     val recipeRepository: RecipeRepository by inject()
     val commentRepository: CommentRepository by inject()
+    val userWebsocketConnectionController: UserWebsocketConnectionController by inject()
 
     post("/api/recipe/post/create/") {
-        call.respond(RecipeCreateUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(RecipeCreateUseCase(recipeRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
 
     }
 
@@ -33,13 +35,13 @@ fun Routing.recipeApiRoutes() {
     }
 
     get("/api/recipe/get/by-ingredients/") {
-        call.respond(GetRecipesByIngredientsUseCase(recipeRepository, userRepository, call.request.queryParameters))
+        call.respond(GetRecipesByIngredientsUseCase(recipeRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
 
     get("/api/recipe/post/like/") {
         try {
-            call.respond(LikeRecipeUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
+            call.respond(LikeRecipeUseCase(recipeRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
@@ -47,7 +49,7 @@ fun Routing.recipeApiRoutes() {
 
     get("/api/recipe/post/comment/") {
         try {
-            call.respond(CommentRecipeUseCase(recipeRepository, userRepository, commentRepository, call.receiveMultipart().readAllParts()))
+            call.respond(CommentRecipeUseCase(recipeRepository, userRepository, commentRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }
@@ -55,7 +57,7 @@ fun Routing.recipeApiRoutes() {
 
     get("/api/recipe/post/repost/") {
         try {
-            call.respond(RepostRecipeUseCase(recipeRepository, userRepository, call.receiveMultipart().readAllParts()))
+            call.respond(RepostRecipeUseCase(recipeRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
         } catch (_:Exception) {
             call.respond(ApiResponse<Recipe>(EXCEPTION, "exception", null))
         }

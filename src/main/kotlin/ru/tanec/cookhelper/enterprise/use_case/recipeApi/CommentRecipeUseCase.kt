@@ -13,12 +13,14 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.CommentRepository
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object CommentRecipeUseCase {
     suspend operator fun invoke(
         recipeRepository: RecipeRepository,
         userRepository: UserRepository,
         commentRepository: CommentRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Recipe> {
 
@@ -62,6 +64,8 @@ object CommentRecipeUseCase {
             INVALID_TOKEN,
             null
         )
+
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         val commentState = commentRepository.insertComment(
             Comment(

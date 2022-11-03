@@ -11,11 +11,13 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetChatByListUseCase {
     suspend operator fun invoke(
         repository: ChatRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters,
     ): ApiResponse<List<ChatResponseData>?> {
 
@@ -36,6 +38,8 @@ object GetChatByListUseCase {
             message = "error",
             data = null
         )
+
+        userWebsocketConnectionController.updateData(user, userRepository)
 
         val limit = parameters["limit"]?.filter { it != '"' }?.toIntOrNull()
 

@@ -46,7 +46,7 @@ object AddUserImageUseCase {
 
         user = user.copy(images = user.images + fileList)
 
-        userWebsocketConnectionController.updateData(user)
+        userWebsocketConnectionController.updateData(user, repository)
 
         return repository.edit(user).last().asApiResponse()
 

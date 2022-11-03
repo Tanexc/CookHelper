@@ -10,6 +10,7 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.MessageRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetMessagesUseCase {
 
@@ -17,6 +18,7 @@ object GetMessagesUseCase {
         repository: MessageRepository,
         userRepository: UserRepository,
         chatRepository: ChatRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters
     ): ApiResponse<List<Message>?> {
         try {
@@ -49,6 +51,8 @@ object GetMessagesUseCase {
                 message = "error",
                 data = null
             )
+
+            userWebsocketConnectionController.updateData(user, userRepository)
 
             val chat = chatRepository.getChatById(chatId).last().data ?: return ApiResponse(
                 status = CHAT_NOT_FOUND,

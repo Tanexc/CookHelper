@@ -9,23 +9,26 @@ import org.koin.ktor.ext.inject
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.use_case.forumApi.*
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 fun Routing.forumApiRoutes() {
 
     val topicRepository: TopicRepository by inject()
     val userRepository: UserRepository by inject()
+    val userWebsocketConnectionController: UserWebsocketConnectionController by inject()
+
 
     post("api/forum/post/topic/create/") {
-        call.respond(CreateTopicUseCase(topicRepository, userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(CreateTopicUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get("api/forum/get/topic/by-problem/") {
-        call.respond(GetTopicByProblemUseCase(topicRepository, userRepository, call.request.queryParameters))
+        call.respond(GetTopicByProblemUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
 
     get("api/forum/get/topic/by-title/") {
-        call.respond(GetTopicByTitleUseCase(topicRepository, userRepository, call.request.queryParameters))
+        call.respond(GetTopicByTitleUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
     get("api/forum/get/topic/by-list/") {
@@ -33,6 +36,6 @@ fun Routing.forumApiRoutes() {
     }
 
     get("api/forum/get/topic/by-id/") {
-        call.respond(GetTopicByIdUseCase(topicRepository, userRepository, call.request.queryParameters))
+        call.respond(GetTopicByIdUseCase(topicRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 }

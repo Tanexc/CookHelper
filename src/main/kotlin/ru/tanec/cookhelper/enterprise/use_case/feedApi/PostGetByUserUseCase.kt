@@ -11,20 +11,25 @@ import ru.tanec.cookhelper.enterprise.model.entity.post.Post
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.PostRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object PostGetByUserUseCase {
     suspend operator fun invoke(
         repository: PostRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters
     ): ApiResponse<List<Post>> {
         when(val token = parameters["token"]) {
             null -> return ApiResponse(PARAMETER_MISSED, MISSED, null)
             else -> {
                 val user = checkUserToken(userRepository, token)?: return ApiResponse(USER_TOKEN_INVALID, INVALID_TOKEN, null)
-                val part = parameters["part"]?.toIntOrNull()
-                val div = parameters["div"]?.toIntOrNull()
-                val state = repository.getByUser(user.id, part, div).last()
+
+                userWebsocketConnectionController.updateData(user, userRepository)
+
+                val offset = parameters["offset"]?.toIntOrNull()
+                val limit = parameters["limit"]?.toIntOrNull()
+                val state = repository.getByUser(user.id, offset, limit).last()
                 return ApiResponse(state.status, state.message, state.data)
             }
         }

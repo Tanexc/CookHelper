@@ -12,11 +12,13 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.enterprise.model.entity.forum.TopicData
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object CreateTopicUseCase {
     suspend operator fun invoke(
         repository: TopicRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<Topic?> {
 
@@ -29,7 +31,10 @@ object CreateTopicUseCase {
                     when (param.name) {
                         "problem" -> topicData.problem = param.value.filter { it != '"' }
                         "title" -> topicData.title = param.value.filter { it != '"' }
-                        "token" -> topicData.authorId = checkUserToken(userRepository, param.value)?.id
+                        "token" -> {
+                            val user = checkUserToken(userRepository, param.value)
+                            user?.let {userWebsocketConnectionController.updateData(user, userRepository)}
+                            topicData.authorId = user?.id}
                     }
                 }
 

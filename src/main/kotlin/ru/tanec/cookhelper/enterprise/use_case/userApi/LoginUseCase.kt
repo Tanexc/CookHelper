@@ -31,7 +31,7 @@ object LoginUseCase {
                 password
             ).last()
 
-            state.data?.let{userWebsocketConnectionController.updateData(it)}
+            state.data?.let{userWebsocketConnectionController.updateData(it, repository)}
 
             return ApiResponse(state.status, state.message, state.data)
         }

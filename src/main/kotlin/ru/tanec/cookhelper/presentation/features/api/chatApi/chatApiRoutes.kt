@@ -13,28 +13,30 @@ import ru.tanec.cookhelper.enterprise.use_case.chatApi.CreateChatUseCase
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByIdUseCase
 import ru.tanec.cookhelper.enterprise.use_case.chatApi.GetChatByListUseCase
 import ru.tanec.cookhelper.enterprise.use_case.messageApi.GetMessagesUseCase
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 fun Routing.chatApiRoutes() {
 
     val chatRepository: ChatRepository by inject()
     val messageRepository: MessageRepository by inject()
     val userRepository: UserRepository by inject()
+    val userWebsocketConnectionController: UserWebsocketConnectionController by inject()
 
 
     post("/api/chat/post/create/") {
-        call.respond(CreateChatUseCase(chatRepository, userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(CreateChatUseCase(chatRepository, userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get("/api/chat/get/by-list-id/") {
-        call.respond(GetChatByListUseCase(chatRepository, userRepository, call.request.queryParameters))
+        call.respond(GetChatByListUseCase(chatRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
     get("/api/chat/get/messages/") {
-        call.respond(GetMessagesUseCase(messageRepository, userRepository, chatRepository, call.request.queryParameters))
+        call.respond(GetMessagesUseCase(messageRepository, userRepository, chatRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
     get("/api/chat/get/by-id/") {
-        call.respond(GetChatByIdUseCase(chatRepository, userRepository, messageRepository, call.request.queryParameters))
+        call.respond(GetChatByIdUseCase(chatRepository, userRepository, messageRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
 }

@@ -2,6 +2,7 @@ package ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.contro
 
 import io.ktor.http.*
 import io.ktor.server.websocket.*
+import io.ktor.util.date.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
@@ -53,12 +54,11 @@ class UserWebsocketConnectionController {
     suspend fun sendMessage(
         session: DefaultWebSocketServerSession,
         response: WebsocketResponse<User?>
-    ) {
-        session.sendSerialized(response)
-    }
+    ) = session.sendSerialized(response)
 
-    suspend fun updateData(user: User) {
-        if (data[user.id] == null) data[user.id] = MutableSharedFlow()
-        data[user.id]!!.emit(user.privateInfo())
+    suspend fun updateData(user: User, userRepository: UserRepository) {
+        val u = userRepository.edit(user.copy(lastSeen = getTimeMillis())).last().data?: user
+        if (data[u.id] == null) data[u.id] = MutableSharedFlow()
+        data[u.id]!!.emit(u.privateInfo())
     }
 }
