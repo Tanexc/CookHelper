@@ -62,7 +62,7 @@ fun Routing.userApiRoutes() {
     }
 
     post("/api/user/post/image/") {
-        call.respond(AddUserImageUseCase(userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
+        call.respond(UploadUserImageUseCase(userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get("/api/user/get/fridge/recipe/") {

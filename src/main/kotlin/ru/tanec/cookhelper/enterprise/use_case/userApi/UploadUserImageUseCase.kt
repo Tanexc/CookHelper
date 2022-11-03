@@ -3,7 +3,6 @@ package ru.tanec.cookhelper.enterprise.use_case.userApi
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.constants.status.EXCEPTION
 import ru.tanec.cookhelper.core.constants.status.USER_NOT_FOUND
 import ru.tanec.cookhelper.core.constants.userDataFolder
 import ru.tanec.cookhelper.core.utils.checkUserToken
@@ -13,7 +12,7 @@ import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
-object AddUserImageUseCase {
+object UploadUserImageUseCase {
     suspend operator fun invoke(
         repository: UserRepository,
         userWebsocketConnectionController: UserWebsocketConnectionController,
@@ -26,7 +25,7 @@ object AddUserImageUseCase {
         parameters.forEach {
             when (it) {
                 is PartData.FormItem -> {
-                    token = if (it.value == "token") it.value else null
+                    token = if (it.name == "token") it.value else null
                 }
 
                 is PartData.FileItem -> {
@@ -47,14 +46,12 @@ object AddUserImageUseCase {
 
         user = user.copy(images = user.images + fileList)
 
-        val state = repository.edit(user).last().data?.let { State.Success(
-            data = it.privateInfo()
-        ) }?: State.Error(status = EXCEPTION)
+        val state = repository.edit(user).last()
+
+        user = state.data?: user
 
         userWebsocketConnectionController.updateData(user, repository)
 
-        return state.asApiResponse()
-
-
+        return state.asApiResponse(user.privateInfo())
     }
 }
