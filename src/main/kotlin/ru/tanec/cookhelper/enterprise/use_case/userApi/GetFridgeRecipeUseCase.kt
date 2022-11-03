@@ -9,11 +9,13 @@ import ru.tanec.cookhelper.enterprise.model.entity.recipe.Recipe
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.RecipeRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetFridgeRecipeUseCase {
     suspend operator fun invoke(
         repository: RecipeRepository,
         userRepository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters
     ): ApiResponse<List<Recipe>?> {
         val limit = parameters["limit"]?.toIntOrNull()?: 40
@@ -31,6 +33,8 @@ object GetFridgeRecipeUseCase {
             message = "error",
             data = null
         )
+
+        userWebsocketConnectionController.updateData(user)
 
         return repository.getRecipeByIngredients(user.fridge, offset, limit).last().asApiResponse()
     }

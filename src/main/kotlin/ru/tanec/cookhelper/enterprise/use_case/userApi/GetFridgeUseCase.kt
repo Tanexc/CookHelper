@@ -11,11 +11,13 @@ import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object GetFridgeUseCase {
     suspend operator fun invoke(
         userRepository: UserRepository,
         ingredientRepository: IngredientRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: Parameters
     ): ApiResponse<List<Ingredient>?> {
         try {
@@ -42,6 +44,8 @@ object GetFridgeUseCase {
                 data = null,
                 message = "error"
             )
+
+            userWebsocketConnectionController.updateData(user)
 
             return ingredientRepository.getByListId(user.fridge, offset, limit).last().asApiResponse()
 

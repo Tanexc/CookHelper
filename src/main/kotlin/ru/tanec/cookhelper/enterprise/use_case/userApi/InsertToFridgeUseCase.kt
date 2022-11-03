@@ -10,11 +10,13 @@ import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.IngredientRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object InsertToFridgeUseCase {
     suspend operator fun invoke(
         userRepository: UserRepository,
         ingredientRepository: IngredientRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
     ): ApiResponse<User?> {
 
@@ -44,7 +46,12 @@ object InsertToFridgeUseCase {
             )
         }
 
-        return user?.let {userRepository.edit(it.copy(fridge = (it.fridge + fridge!!).toSet().toList()))}?.last()?.asApiResponse()?: ApiResponse(
+        if (user != null) {
+            user = user!!.copy(fridge = (user!!.fridge + fridge!!).toSet().toList())
+            userWebsocketConnectionController.updateData(user!!)
+        }
+
+        return user?.let {userRepository.edit(it)}?.last()?.asApiResponse()?: ApiResponse(
             status = USER_TOKEN_INVALID,
             data = null,
             message = "error"

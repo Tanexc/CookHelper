@@ -56,4 +56,9 @@ class UserWebsocketConnectionController {
     ) {
         session.sendSerialized(response)
     }
+
+    suspend fun updateData(user: User) {
+        if (data[user.id] == null) data[user.id] = MutableSharedFlow()
+        data[user.id]!!.emit(user.privateInfo())
+    }
 }

@@ -33,7 +33,7 @@ fun Routing.userApiRoutes() {
 
     post("/api/user/post/auth/") {
         val params = call.receiveMultipart().readAllParts()
-        call.respond(LoginUseCase(userRepository, params))
+        call.respond(LoginUseCase(userRepository, userWebsocketConnectionController, params))
     }
 
     get("/api/user/get/email-availability/") {
@@ -46,27 +46,27 @@ fun Routing.userApiRoutes() {
     }
 
     post("/api/user/post/fridge/insert/") {
-        call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository,  call.receiveMultipart().readAllParts()))
+        call.respond(InsertToFridgeUseCase(userRepository, ingredientRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     post("/api/user/post/fridge/remove/") {
-        call.respond(RemoveFromFridgeUseCase(userRepository, ingredientRepository, call.receiveMultipart().readAllParts()))
+        call.respond(RemoveFromFridgeUseCase(userRepository, ingredientRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get ("api/user/get/fridge/") {
-        call.respond(GetFridgeUseCase(userRepository, ingredientRepository, call.request.queryParameters))
+        call.respond(GetFridgeUseCase(userRepository, ingredientRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
     post("/api/user/post/avatar/") {
-        call.respond(SetAvatarUseCase(userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(SetAvatarUseCase(userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     post("/api/user/post/image/") {
-        call.respond(AddUserImageUseCase(userRepository, call.receiveMultipart().readAllParts()))
+        call.respond(AddUserImageUseCase(userRepository, userWebsocketConnectionController, call.receiveMultipart().readAllParts()))
     }
 
     get("/api/user/get/fridge/recipe/") {
-        call.respond(GetFridgeRecipeUseCase(recipeRepository, userRepository, call.request.queryParameters))
+        call.respond(GetFridgeRecipeUseCase(recipeRepository, userRepository, userWebsocketConnectionController, call.request.queryParameters))
     }
 
 

@@ -10,10 +10,12 @@ import ru.tanec.cookhelper.core.utils.checkUserToken
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
+import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
 
 object SetAvatarUseCase {
     suspend operator fun invoke(
         repository: UserRepository,
+        userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>,
     ): ApiResponse<User?> {
 
@@ -36,13 +38,17 @@ object SetAvatarUseCase {
             }
         }
 
-        val user = checkUserToken(repository, token ?: "") ?: return State.Error<User>(status= USER_NOT_FOUND).asApiResponse()
+        var user = checkUserToken(repository, token ?: "") ?: return State.Error<User>(status= USER_NOT_FOUND).asApiResponse()
 
         val fileList =
             avatar?.let { listOf(FileController.uploadFile(userDataFolder, it, "${it.contentType!!.contentType}/${it.contentType!!.contentSubtype}")) }
                 ?: listOf()
 
-        return repository.edit(user.copy(avatar = user.avatar + fileList)).last().asApiResponse()
+        user = user.copy(avatar = user.avatar + fileList)
+
+        userWebsocketConnectionController.updateData(user)
+
+        return repository.edit(user).last().asApiResponse()
 
 
     }
