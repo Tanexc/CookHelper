@@ -14,8 +14,10 @@ fun Routing.topicWebsocketRoutes() {
     val controller: TopicConnectionController by inject()
 
     webSocket("/websocket/topic/") {
+
         val flow = controller.connect(this, call.parameters)
         var user: User?
+
         flow.collect {
             if (it is State.Success) {
                 user = it.addition as User?
@@ -23,8 +25,8 @@ fun Routing.topicWebsocketRoutes() {
                 if (user != null) {
 
                     try {
-                        for (frame in incoming) {
-
+                        var process = true
+                        while (process) {
                             val data: ForumReceiveReplyData = this.receiveDeserialized()
                             when (val answer = controller.receiveMessage(data, user!!)) {
                                 is State.Success -> {
@@ -35,13 +37,13 @@ fun Routing.topicWebsocketRoutes() {
                                     )
                                 }
 
-                                else -> break
+                                else -> process = false
                             }
-
                         }
                     } finally {
                         controller.disconnect(this, it.data?.id)
                         this.close()
+                        println(it.status)
                     }
                 }
             }

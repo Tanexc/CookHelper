@@ -22,7 +22,6 @@ fun Routing.chatWebsocketRoutes() {
         val flow = controller.connect(this, call.parameters)
         var user: User?
 
-
         flow.collect {
             if (it is State.Success) {
                 user = it.addition as User?

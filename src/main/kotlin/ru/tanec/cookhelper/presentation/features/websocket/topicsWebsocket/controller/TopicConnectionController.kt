@@ -22,9 +22,9 @@ import ru.tanec.cookhelper.enterprise.model.response.ReplyResponseData
 
 class TopicConnectionController {
     val data: MutableMap<Long, MutableList<DefaultWebSocketServerSession>> = mutableMapOf()
-    val topicDao: TopicDao = TopicDaoImpl()
-    val replyDao: ReplyDao = ReplyDaoImpl()
-    val userDao: UserDao = UserDaoImpl()
+    private val topicDao: TopicDao = TopicDaoImpl()
+    private val replyDao: ReplyDao = ReplyDaoImpl()
+    private val userDao: UserDao = UserDaoImpl()
 
     suspend fun connect(
         session: DefaultWebSocketServerSession,
@@ -37,7 +37,7 @@ class TopicConnectionController {
         val topic = topicDao.getById(id ?: -1)
 
         when (id == null || token == null) {
-            true -> emit(State.Error(data=topic, status=PARAMETER_MISSED))
+            true -> emit(State.Error(data = topic, status = PARAMETER_MISSED))
             false -> {
                 if (user == null) emit(State.Error(status = USER_TOKEN_INVALID))
                 else if (topic == null) emit(State.Error(status = TOPIC_NOT_FOUND))
@@ -47,10 +47,7 @@ class TopicConnectionController {
                     emit(State.Success(data = topic, addition = user))
                 }
             }
-
         }
-
-
     }
 
     fun disconnect(session: DefaultWebSocketServerSession, id: Long?): Boolean {
@@ -66,30 +63,29 @@ class TopicConnectionController {
     ) {
 
         val response = ReplyResponseData(
-            id=reply.id,
-            author=user.smallInfo(),
-            text=reply.text,
-            attachments=reply.attachments,
-            replyToId=reply.replyToId,
-            timestamp=reply.timestamp,
+            id = reply.id,
+            author = user.smallInfo(),
+            text = reply.text,
+            attachments = reply.attachments,
+            replyToId = reply.replyToId,
+            timestamp = reply.timestamp,
             ratingNegative = reply.ratingNegative,
             ratingPositive = reply.ratingPositive,
-            replies = reply.replies.mapNotNull{replyDao.getById(it)}
+            replies = reply.replies.mapNotNull { replyDao.getById(it) }
         )
 
-        for (receiver: DefaultWebSocketServerSession in data[topicId]?: listOf()) {
+        for (receiver: DefaultWebSocketServerSession in data[topicId] ?: listOf()) {
             receiver.sendSerialized(response)
         }
-
-
     }
 
     suspend fun receiveMessage(
         data: ForumReceiveReplyData,
         user: User
     ): State<Reply?> {
-        val processedData = replyDao.insert(data.asDomain(user.id, listOf(), listOf(), getTimeMillis()))?: return State.Error(status=ANSWER_NOT_ADDED)
-        return State.Success(data = processedData, status=SUCCESS)
+        val processedData = replyDao.insert(data.asDomain(user.id, listOf(), listOf(), getTimeMillis()))
+            ?: return State.Error(status = ANSWER_NOT_ADDED)
+        return State.Success(data = processedData, status = SUCCESS)
 
     }
 }
