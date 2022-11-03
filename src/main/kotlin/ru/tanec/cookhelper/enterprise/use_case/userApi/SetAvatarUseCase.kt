@@ -46,9 +46,11 @@ object SetAvatarUseCase {
 
         user = user.copy(avatar = user.avatar + fileList)
 
+        val state = repository.edit(user).last()
+
         userWebsocketConnectionController.updateData(user, repository)
 
-        return repository.edit(user).last().asApiResponse(user.privateInfo())
+        return state.asApiResponse(user.privateInfo())
 
 
     }

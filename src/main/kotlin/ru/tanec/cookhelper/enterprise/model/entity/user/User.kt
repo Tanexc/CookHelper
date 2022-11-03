@@ -85,7 +85,7 @@ data class User(
         userPosts = this.userPosts,
         starredPosts = this.starredPosts,
         subscribers = this.subscribers,
-        subscribes = this.subscribes
+        subscribes = this.subscribes,
     )
 
     fun commonInfo(): User {
