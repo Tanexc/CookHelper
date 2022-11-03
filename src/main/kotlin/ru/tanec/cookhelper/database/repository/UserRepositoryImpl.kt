@@ -24,7 +24,6 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override fun edit(user: User): Flow<State<User?>> = flow {
-        emit(State.Processing())
         try {
 
             val data = dao.editUser(user)

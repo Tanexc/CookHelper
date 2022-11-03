@@ -104,7 +104,7 @@ class UserDaoImpl : UserDao {
                 row[email] = user.email
                 row[password] = user.getPsw()
                 row[avatar] = user.avatar.joinToString(" ")
-                row[lastSeen] = user.lastSeen
+                row[lastSeen] = getTimeMillis()
                 row[status] = user.status
                 row[deleted] = user.deleted
                 row[verified] = user.verified
