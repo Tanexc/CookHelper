@@ -20,7 +20,9 @@ data class TopicData(
         attachments = attachment,
         timestamp = getTimeMillis(),
         closed=false,
-        tags = tags
+        tags = tags,
+        ratingPositive = emptyList(),
+        ratingNegative = emptyList()
     )
 
     fun equipped(): Boolean {
