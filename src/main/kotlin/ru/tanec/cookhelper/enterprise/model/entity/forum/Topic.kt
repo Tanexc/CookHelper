@@ -16,17 +16,24 @@ data class Topic(
     val attachments: List<FileData>,
     val tags: List<String>,
     val timestamp: Long,
-    val closed: Boolean
+    val closed: Boolean,
+    val ratingPositive: List<Long>,
+    val ratingNegative: List<Long>
 ) {
-    fun asResponseData(author: User, replies: List<ReplyResponseData>): TopicResponseData = TopicResponseData(
-        id= id,
-        author=author,
-        title=title,
-        text=text,
-        replies = replies,
-        attachments = attachments,
-        timestamp=timestamp,
-        closed=closed,
-        tags=tags
-    )
+    fun asResponseData(author: User?, replies: List<ReplyResponseData>): TopicResponseData? {
+        if (author == null) return null
+        return TopicResponseData(
+            id = id,
+            author = author,
+            title = title,
+            text = text,
+            replies = replies,
+            attachments = attachments,
+            timestamp = timestamp,
+            closed = closed,
+            tags = tags,
+            ratingPositive = ratingPositive,
+            ratingNegative = ratingNegative
+        )
+    }
 }

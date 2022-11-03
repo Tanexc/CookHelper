@@ -13,6 +13,16 @@ interface TopicDao {
     suspend fun insert(topic: Topic): Topic?
 
     suspend fun editTopic(topic: Topic): Topic?
+
     suspend fun getTopicMessages(id: Long, offset: Int, limit: Int): List<Long>?
+
+    suspend fun getTopicList(
+        queryString: String,
+        noRepliesFilter: Boolean,
+        tagFilter: List<String>,
+        imageFilter: Boolean,
+        ratingNeutralFilter: Boolean,
+        ratingPositiveFilter: Boolean,
+        ratingNegativeFilter: Boolean): List<Topic>
 
 }

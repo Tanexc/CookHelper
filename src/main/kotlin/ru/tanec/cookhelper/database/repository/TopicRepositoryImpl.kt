@@ -4,12 +4,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.tanec.cookhelper.core.State
 import ru.tanec.cookhelper.core.constants.status.*
+import ru.tanec.cookhelper.core.utils.getPage
 import ru.tanec.cookhelper.database.dao.answerDao.ReplyDao
 import ru.tanec.cookhelper.database.dao.answerDao.ReplyDaoImpl
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Reply
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
+import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 
 class TopicRepositoryImpl(
@@ -84,6 +86,42 @@ class TopicRepositoryImpl(
         replyDao.getByListId(dao.getTopicMessages(id, offset, limit) ?: emptyList())
 
     override suspend fun getReplies(ids: List<Long>): List<Reply> = replyDao.getByListId(ids)
+    override suspend fun getTopicList(
+        queryString: String,
+        noRepliesFilter: Boolean,
+        tagFilter: List<String>,
+        imageFilter: Boolean,
+        ratingNeutralFilter: Boolean,
+        ratingPositiveSort: Boolean,
+        ratingNegativeSort: Boolean,
+        ratingPositiveFilter: Boolean,
+        ratingNegativeFilter: Boolean,
+        recencySort: Boolean,
+        offset: Int?,
+        limit: Int?
+    ): Flow<State<List<Topic>?>> = flow {
+        try {
+            var data = dao.getTopicList(
+                queryString,
+                noRepliesFilter,
+                tagFilter,
+                imageFilter,
+                ratingNeutralFilter,
+                ratingPositiveFilter,
+                ratingNegativeFilter
+            )
+
+            if (ratingNegativeSort) data = data.sortedBy { it.ratingNegative.size }
+            if (ratingPositiveSort) data = data.sortedBy { it.ratingPositive.size }
+            if (recencySort) data = data.sortedBy { it.timestamp }
+
+            data = data.getPage(limit, offset)
+
+            emit(State.Success(data = data))
+        } catch (e: Exception) {
+            emit(State.Error(status = EXCEPTION, message = "error in getTopicList of TopicRepository. Message: ${e.message}"))
+        }
+    }
 
 
 }

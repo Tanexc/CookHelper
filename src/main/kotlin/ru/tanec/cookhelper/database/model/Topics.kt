@@ -16,4 +16,6 @@ object Topics: Table() {
     val closed = bool("closed")
     val attachments = text("attachments")
     val tags = text("tags")
+    val ratingPositive = text("ratingPositive")
+    val ratingNegative = text("ratingNegative")
 }

@@ -14,5 +14,7 @@ data class TopicResponseData(
     val attachments: List<FileData>,
     val tags: List<String>,
     val timestamp: Long,
-    val closed: Boolean
+    val closed: Boolean,
+    val ratingPositive: List<Long>,
+    val ratingNegative: List<Long>
 )

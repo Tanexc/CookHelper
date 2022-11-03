@@ -17,15 +17,18 @@ data class Reply(
     val authorId: Long,
     val replies: List<Long>
 ) {
-    fun asResponseData(user: User?, repliesList: List<Reply>) = ReplyResponseData(
-        id=id,
-        text=text,
-        attachments=attachments,
-        replyToId=replyToId,
-        timestamp=timestamp,
-        ratingNegative=ratingNegative,
-        ratingPositive=ratingPositive,
-        author=user?.smallInfo(),
-        replies = repliesList
-    )
+    fun asResponseData(user: User?, repliesList: List<Reply>): ReplyResponseData? {
+        if (user == null) return null
+        return ReplyResponseData(
+            id=id,
+            text=text,
+            attachments=attachments,
+            replyToId=replyToId,
+            timestamp=timestamp,
+            ratingNegative=ratingNegative,
+            ratingPositive=ratingPositive,
+            author=user?.smallInfo(),
+            replies = repliesList
+        )
+    }
 }
