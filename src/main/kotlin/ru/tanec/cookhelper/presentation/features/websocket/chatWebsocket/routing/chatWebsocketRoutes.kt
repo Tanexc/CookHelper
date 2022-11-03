@@ -47,6 +47,8 @@ fun Routing.chatWebsocketRoutes() {
                     } finally {
                         controller.disconnect(this, it.data?.id)
                         this.close()
+
+                        println("AAAAAAAAAAAAAAA ${it.status}")
                     }
                 }
             }
