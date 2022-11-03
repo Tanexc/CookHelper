@@ -23,6 +23,9 @@ fun Routing.chatWebsocketRoutes() {
         var user: User?
 
         flow.collect {
+
+            println("AAAAAAAAAAAAAAA ${it.status}")
+
             if (it is State.Success) {
                 user = it.addition as User?
 
@@ -47,8 +50,6 @@ fun Routing.chatWebsocketRoutes() {
                     } finally {
                         controller.disconnect(this, it.data?.id)
                         this.close()
-
-                        println("AAAAAAAAAAAAAAA ${it.status}")
                     }
                 }
             }
