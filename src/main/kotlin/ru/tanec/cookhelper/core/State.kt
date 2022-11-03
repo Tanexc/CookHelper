@@ -13,7 +13,7 @@ sealed class State<T>(
     val status: Int
 ) {
 
-    fun asApiResponse(): ApiResponse<T?> = ApiResponse(this.status, this.message, this.data)
+    fun asApiResponse(data: T? = null): ApiResponse<T?> = ApiResponse(this.status, this.message, data ?: this.data)
 
     fun asWebsocketResponse(): WebsocketResponse<T> = WebsocketResponse(this.status, this.data)
 

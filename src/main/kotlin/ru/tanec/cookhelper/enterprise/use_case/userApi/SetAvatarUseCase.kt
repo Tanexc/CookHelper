@@ -48,7 +48,7 @@ object SetAvatarUseCase {
 
         userWebsocketConnectionController.updateData(user, repository)
 
-        return repository.edit(user).last().asApiResponse()
+        return repository.edit(user).last().asApiResponse(user.privateInfo())
 
 
     }
