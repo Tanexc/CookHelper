@@ -20,11 +20,17 @@ In this repository you can find server part of our project.
 
 ## Tech stack
 
-- [Kotlin](https://kotlinlang.org/) based 
+- [Kotlin](https://kotlinlang.org/) based.
 
-- [Ktor](https://ktor.io/) that used to create the server
+- [Ktor](https://ktor.io/) that used to create the server.
 
 - [Koin](https://insert-koin.io/) for dependency injection.
+
+- [Exposed](https://github.com/JetBrains/Exposed) is an ORM Framework that helps to use the database.
+
+- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for asynchronous work.
+
+- [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) to emit values from data layer reactively.
 
 - Architecture
   - Repository Pattern
