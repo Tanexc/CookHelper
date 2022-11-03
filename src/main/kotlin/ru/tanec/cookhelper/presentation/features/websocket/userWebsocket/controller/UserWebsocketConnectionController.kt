@@ -60,6 +60,6 @@ class UserWebsocketConnectionController {
         val userToUpdate = userRepository.getFullUser(user).last()?: return
         val u = userRepository.edit(userToUpdate.copy(lastSeen = getTimeMillis())).last().data?: user
         if (data[u.id] == null) data[u.id] = MutableSharedFlow()
-        data[u.id]!!.emit(u.privateInfo())
+        data[u.id]!!.emit(u)
     }
 }
