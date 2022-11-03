@@ -9,10 +9,10 @@ import io.ktor.server.response.*
 fun Application.configureRouting() {
 
     install(StatusPages) {
-        exception<AuthenticationException> { call, cause ->
+        exception<AuthenticationException> { call, _ ->
             call.respond(HttpStatusCode.Unauthorized)
         }
-        exception<AuthorizationException> { call, cause ->
+        exception<AuthorizationException> { call, _ ->
             call.respond(HttpStatusCode.Forbidden)
         }
     }
