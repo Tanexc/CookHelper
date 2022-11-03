@@ -11,4 +11,5 @@ interface UserDao {
     suspend fun getByLogin(login: String): User?
     suspend fun getByToken(token: String): User?
     suspend fun getByNickname(nickname: String): List<User>
+    suspend fun getFullUser(user: User): User?
 }

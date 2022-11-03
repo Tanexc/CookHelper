@@ -77,4 +77,5 @@ interface UserRepository {
     ): Boolean
 
     suspend fun action(user: User): User
+    suspend fun getFullUser(user: User): Flow<User?>
 }

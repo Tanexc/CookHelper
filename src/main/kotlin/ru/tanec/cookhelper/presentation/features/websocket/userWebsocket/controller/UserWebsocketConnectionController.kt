@@ -57,7 +57,8 @@ class UserWebsocketConnectionController {
     ) = session.sendSerialized(response)
 
     suspend fun updateData(user: User, userRepository: UserRepository) {
-        val u = userRepository.edit(user.copy(lastSeen = getTimeMillis())).last().data?: user
+        val userToUpdate = userRepository.getFullUser(user).last()?: return
+        val u = userRepository.edit(userToUpdate.copy(lastSeen = getTimeMillis())).last().data?: user
         if (data[u.id] == null) data[u.id] = MutableSharedFlow()
         data[u.id]!!.emit(u.privateInfo())
     }

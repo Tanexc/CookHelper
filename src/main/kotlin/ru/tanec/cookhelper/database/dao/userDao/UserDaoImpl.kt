@@ -127,6 +127,13 @@ class UserDaoImpl : UserDao {
         user
     }
 
+    override suspend fun getFullUser(user: User): User? = dbQuery {
+        Users
+            .select {Users.id eq user.id}
+            .map(::resultRowToUser)
+            .singleOrNull()
+    }
+
     override suspend fun deleteById(id: Long): Boolean = dbQuery {
 
         Users

@@ -36,6 +36,10 @@ class UserRepositoryImpl(
         }
     }
 
+    override suspend fun getFullUser(user: User): Flow<User?> = flow {
+        emit(dao.getFullUser(user))
+    }
+
     override fun register(
         user: User
     ): Flow<State<User?>> = flow {
