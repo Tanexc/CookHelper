@@ -26,6 +26,7 @@ object FileController {
         if (EXTENTIONS[type] == null) return FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName", type)
 
         File("$folder/$uniqueName").writeBytes(file.streamProvider().readBytes())
+
         return dao.insert(FileData(-1, uniqueName, "$apiDomen/$folder/$uniqueName", type))
     }
 
