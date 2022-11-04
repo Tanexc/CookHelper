@@ -6,7 +6,7 @@ import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 data class TopicData(
     var authorId:Long? = null,
     var title: String? = null,
-    var problem: String? = null,
+    var text: String? = null,
     var attachment: List<FileData> = emptyList(),
     var tags: List<String> = emptyList()
 
@@ -15,7 +15,7 @@ data class TopicData(
         id=0,
         authorId=authorId?: 0,
         title=title?:"",
-        text=problem?: "",
+        text=text?: "",
         replies= emptyList(),
         attachments = attachment,
         timestamp = getTimeMillis(),
@@ -26,6 +26,6 @@ data class TopicData(
     )
 
     fun equipped(): Boolean {
-        return (authorId != null) and (title != null) and (problem != null)
+        return (authorId != null) and (title != null) and (text != null)
     }
 }

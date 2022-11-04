@@ -1,16 +1,19 @@
 package ru.tanec.cookhelper.enterprise.use_case.chatApi
 
+import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.coroutines.flow.last
 import ru.tanec.cookhelper.core.State
-import ru.tanec.cookhelper.core.constants.status.CHAT_NOT_CREATED
-import ru.tanec.cookhelper.core.constants.status.EXCEPTION
-import ru.tanec.cookhelper.core.constants.status.PARAMETER_MISSED
-import ru.tanec.cookhelper.core.constants.status.SUCCESS
+import ru.tanec.cookhelper.core.constants.chatDataFolder
+import ru.tanec.cookhelper.core.constants.status.*
 import ru.tanec.cookhelper.core.utils.getChatOrNull
+import ru.tanec.cookhelper.database.utils.FileController.uploadFile
 import ru.tanec.cookhelper.enterprise.model.entity.chat.Chat
+import ru.tanec.cookhelper.enterprise.model.entity.chat.ChatData
 import ru.tanec.cookhelper.enterprise.model.entity.user.User
 import ru.tanec.cookhelper.enterprise.model.response.ApiResponse
+import ru.tanec.cookhelper.enterprise.model.response.ChatResponseData
+import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.ChatRepository
 import ru.tanec.cookhelper.enterprise.repository.api.UserRepository
 import ru.tanec.cookhelper.presentation.features.websocket.userWebsocket.controller.UserWebsocketConnectionController
@@ -21,37 +24,44 @@ object CreateChatUseCase {
         userRepository: UserRepository,
         userWebsocketConnectionController: UserWebsocketConnectionController,
         parameters: List<PartData>
-    ): ApiResponse<Chat?> {
+    ): ApiResponse<ChatResponseData?> {
         try {
-            var chat = parameters.getChatOrNull(userRepository)?: return ApiResponse(
-                status = PARAMETER_MISSED,
-                message = "error",
-                data = null
-            )
 
-            when(val r = repository.insert(chat).last()) {
-                is State.Error -> return ApiResponse(
-                    status = CHAT_NOT_CREATED,
-                    message = "error",
-                    data = null
-                )
-                is State.Success -> {
-                    r.data?.let {chat = r.data}
-                }
+            var token: String? = null
+            val chatData = ChatData()
 
-                else -> {}
-            }
-
-            var state: State<User?>
-            for (userId in chat.members) {
-                state = userRepository.getById(userId).last()
-                if (state.data != null) {
-                    userWebsocketConnectionController.updateData(state.data!!, userRepository)
-                    userRepository.edit(state.data!!.copy(chats=(state.data!!.chats + listOf(chat.id))))
+            parameters.filterIsInstance<PartData.FormItem>().forEach {parameter ->
+                when (parameter.name) {
+                    "token" -> token = parameter.value
+                    "members" -> chatData.members = parameter.value.split("*").mapNotNull{ it.toLongOrNull() }
+                    "title" -> chatData.title = parameter.value
                 }
             }
 
-            return ApiResponse(status = SUCCESS, message = "success", data = chat)
+            val userState = userRepository.getByToken(token ?: "").last()
+
+            var user = userState.data ?: return State.Error<ChatResponseData?>(status = USER_NOT_FOUND).asApiResponse()
+
+
+
+            parameters.filterIsInstance<PartData.FileItem>().forEach {parameter ->
+                chatData.avatar = chatData.avatar.plus(uploadFile(chatDataFolder, parameter, "${parameter.contentType?.contentType}/${parameter.contentType?.contentSubtype}"))
+            }
+
+            return when(val chat = chatData.asDomain()) {
+                is Chat -> {
+
+                    val member = userRepository.getById(chat.members.firstOrNull { it != user.id } ?: user.id).last().data?: user
+
+                    val chatResponseData = chat.asResponseData(member.smallInfo(), null, 0, emptyList())
+
+                    State.Success<ChatResponseData?>(data=chatResponseData).asApiResponse()
+
+                }
+
+                else -> State.Error<ChatResponseData?>(status = PARAMETER_MISSED).asApiResponse()
+            }
+
 
         } catch (e: Exception) {
             return ApiResponse(

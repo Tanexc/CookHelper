@@ -59,6 +59,7 @@ class UserWebsocketConnectionController {
     }
 
     suspend fun updateData(user: User, userRepository: UserRepository) {
+        userRepository.edit(user)
         if (data[user.id] == null) data[user.id] = MutableSharedFlow()
         data[user.id]!!.emit(user)
     }

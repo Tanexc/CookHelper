@@ -23,12 +23,14 @@ data class Chat(
         messages: List<MessageResponseData>
     ): ChatResponseData = ChatResponseData(
         id = id,
-        title = title ?: "${member.name} ${member.surname}",
+        title = title,
         members = members,
+        member = member,
         messages = messages,
-        images = avatar,
+        attachments = attachments,
         creationTimestamp = creationTimestamp,
         lastMessage = lastMessage,
         newMessagesCount = newMessagesCount,
+        avatar=avatar
     )
 }

@@ -11,7 +11,6 @@ import ru.tanec.cookhelper.database.dao.topicDao.TopicDao
 import ru.tanec.cookhelper.database.dao.topicDao.TopicDaoImpl
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Reply
 import ru.tanec.cookhelper.enterprise.model.entity.forum.Topic
-import ru.tanec.cookhelper.enterprise.model.response.TopicResponseData
 import ru.tanec.cookhelper.enterprise.repository.api.TopicRepository
 
 class TopicRepositoryImpl(
@@ -92,8 +91,8 @@ class TopicRepositoryImpl(
         tagFilter: List<String>,
         imageFilter: Boolean,
         ratingNeutralFilter: Boolean,
-        ratingPositiveSort: Boolean,
-        ratingNegativeSort: Boolean,
+        ratingSort: Boolean,
+        reverseSort: Boolean,
         ratingPositiveFilter: Boolean,
         ratingNegativeFilter: Boolean,
         recencySort: Boolean,
@@ -110,10 +109,8 @@ class TopicRepositoryImpl(
                 ratingPositiveFilter,
                 ratingNegativeFilter
             )
-
-            if (ratingNegativeSort) data = data.sortedBy { it.ratingNegative.size }
-            if (ratingPositiveSort) data = data.sortedBy { it.ratingPositive.size }
-            if (recencySort) data = data.sortedBy { it.timestamp }
+            data = if (ratingSort and !reverseSort) data.sortedBy { it.ratingPositive.size } else data.sortedBy { it.ratingNegative.size }
+            data = if (recencySort and !reverseSort) data.sortedBy { it.timestamp } else data.sortedBy { it.timestamp }.reversed()
 
             data = data.getPage(limit, offset)
 

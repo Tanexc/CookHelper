@@ -36,8 +36,8 @@ object GetTopicUseCase {
         val ratingPositiveFilter = parameters["ratingPositiveFilter"]?.toBoolean() ?: false
         val ratingNegativeFilter = parameters["ratingNegativeFilter"]?.toBoolean() ?: false
 
-        val ratingPositiveSort = parameters["ratingPositiveSort"]?.toBoolean() ?: false
-        val ratingNegativeSort = parameters["ratingNegativeSort"]?.toBoolean() ?: false
+        val ratingSort = parameters["ratingSort"]?.toBoolean() ?: false
+        val reverseSort = parameters["reverseSort"]?.toBoolean() ?: false
         val recencySort = parameters["recencySort"]?.toBoolean() ?: false
 
         val offset = parameters["offset"]?.toIntOrNull()
@@ -56,8 +56,8 @@ object GetTopicUseCase {
             tagFilter,
             imageFilter,
             ratingNeutralFilter,
-            ratingPositiveSort,
-            ratingNegativeSort,
+            ratingSort,
+            reverseSort,
             ratingPositiveFilter,
             ratingNegativeFilter,
             recencySort,

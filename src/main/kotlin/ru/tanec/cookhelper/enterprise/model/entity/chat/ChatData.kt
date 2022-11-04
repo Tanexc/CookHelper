@@ -1,5 +1,6 @@
 package ru.tanec.cookhelper.enterprise.model.entity.chat
 
+
 import io.ktor.util.date.*
 import ru.tanec.cookhelper.enterprise.model.entity.attachment.FileData
 
@@ -22,4 +23,5 @@ data class ChatData(
         ) else null
     }
 
+    fun eqquiped(): Boolean = members != null
 }
