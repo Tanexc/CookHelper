@@ -42,24 +42,26 @@ object CreateChatUseCase {
 
             var user = userState.data ?: return State.Error<ChatResponseData?>(status = USER_NOT_FOUND).asApiResponse()
 
-
-
             parameters.filterIsInstance<PartData.FileItem>().forEach {parameter ->
                 chatData.avatar = chatData.avatar.plus(uploadFile(chatDataFolder, parameter, "${parameter.contentType?.contentType}/${parameter.contentType?.contentSubtype}"))
             }
 
-            return when(val chat = chatData.asDomain()) {
+            when(val chat = chatData.asDomain()) {
                 is Chat -> {
 
                     val member = userRepository.getById(chat.members.firstOrNull { it != user.id } ?: user.id).last().data?: user
+                    val ch = repository.insert(chat).last().data?: return State.Error<ChatResponseData?>(status = CHAT_NOT_CREATED).asApiResponse()
+
+                    user = user.copy(chats = user.chats.plus(ch.id))
+                    userWebsocketConnectionController.updateData(user, userRepository)
 
                     val chatResponseData = chat.asResponseData(member.smallInfo(), null, 0, emptyList())
 
-                    State.Success<ChatResponseData?>(data=chatResponseData).asApiResponse()
+                    return State.Success<ChatResponseData?>(data=chatResponseData).asApiResponse()
 
                 }
 
-                else -> State.Error<ChatResponseData?>(status = PARAMETER_MISSED).asApiResponse()
+                else -> return State.Error<ChatResponseData?>(status = PARAMETER_MISSED).asApiResponse()
             }
 
 
